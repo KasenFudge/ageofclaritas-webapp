@@ -1,0 +1,72 @@
+version: "3.7"
+services:
+  db:
+    build:
+      context: .
+      dockerfile: ./_docker/postgres/Dockerfile
+    container_name: db
+    env_file:
+      - .env/.env.docker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_SUPER_PASSWORD}
+    ports:
+      - "${DB_PORT_EXT}:5432" # HOST:CONTAINER
+
+  webapp:
+    # Friendly Container Name
+    container_name: webapp
+    # Build options for Docker Image
+    build:
+      # Use this Dockerfile
+      dockerfile: ./_docker/webapp/Dockerfile
+      # Pretend the Dockerfile exists in this directory
+      context: .
+      # Arguments to pass from the current environment to Docker build
+      # These must be declared as ARG entries at the top level of the Dockerfile
+      # **AND** declared under each FROM heading where they are to be used
+      args:
+        HACK_WEB_APP_ROOT: ${HACK_WEB_APP_ROOT}
+        PYTHON_VERSION: ${PYTHON_VERSION}
+        POETRY_VERSION: ${POETRY_VERSION}
+        STARTUP_SCRIPT: startup.sh
+    # This service depends on the following services
+    depends_on:
+      db:
+        condition: service_started
+    # The environment inside of the container is populated using this file
+    env_file:
+      - .env/.env.docker
+    # This container's application is available on the Docker network at this port
+    expose:
+      - 8000
+    # This container is always restarted when the host is restarted
+    restart: always
+    # Mount the following volumes
+    volumes:
+      - static_volume:${STATIC_ROOT}
+      - media_volume:${MEDIA_ROOT}
+#      - ${HACK_WEB_APP_ROOT_LOCAL}:${HACK_WEB_APP_ROOT} # this is better for dev, but doesn't work as intended atm
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./_docker/nginx/Dockerfile
+    container_name: nginx
+    depends_on:
+      webapp:
+        condition: service_started
+    env_file:
+      - .env/.env.docker
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:${STATIC_ROOT}
+      - media_volume:${MEDIA_ROOT}
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
