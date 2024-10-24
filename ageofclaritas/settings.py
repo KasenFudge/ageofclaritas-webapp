@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import json
 from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+
+if Path(".env/.env.app-ageofclaritas").exists():
+    load_dotenv(find_dotenv(".env/.env.app-ageofclaritas"))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

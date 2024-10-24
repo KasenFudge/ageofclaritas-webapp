@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates
+{
+    "name": "Your Dev Container",
+    "dockerComposeFile": "docker-compose-devcontainer.yml",
+    "service": "webapp",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [8000],
+    "shutdownAction": "stopCompose",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/opt/pysetup/.venv",
+            },
+            "extensions": [
+                "firefox-devtools.vscode-firefox-debug",
+                "ms-vscode-remote.remote-wsl",
+                "batisteo.vscode-django",
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "ms-python.python",
+                "ms-python.pylint",
+                "njpwerner.autodocstring",
+                "github.vscode-github-actions",
+                "yzhang.markdown-all-in-one"
+            ]
+        }
+    }
+}

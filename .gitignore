@@ -101,9 +101,6 @@ Thumbs.db
 *.userosscache
 *.sln.docstates
 
-# Specific Virtual Environment
-AoCVenv/
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

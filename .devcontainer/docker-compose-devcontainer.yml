@@ -1,0 +1,55 @@
+services:
+  db:
+    build:
+      context: ..
+      dockerfile: ./_docker/postgres/Dockerfile
+    container_name: db
+    env_file:
+      - ../.env/.env.docker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: testpassword
+    ports:
+      - "5436:5432" # HOST:CONTAINER
+
+  webapp:
+    # Friendly Container Name
+    container_name: webapp
+    # Build options for Docker Image
+    build:
+      # Use this Dockerfile
+      dockerfile: ./_docker/webapp/Dockerfile
+      # Pretend the Dockerfile exists in this directory
+      context: ..
+      # Arguments to pass from the current environment to Docker build
+      # These must be declared as ARG entries at the top level of the Dockerfile
+      # **AND** declared under each FROM heading where they are to be used
+      args:
+        AOC_WEB_APP_ROOT: /home/ageofclaritas/apps/ageofclaritas-webapp/
+        PYTHON_VERSION: 3.12.5
+        POETRY_VERSION: 1.8.3
+        STARTUP_SCRIPT: startup-dev.sh
+    # This service depends on the following services
+    depends_on:
+      db:
+        condition: service_started
+    # The environment inside of the container is populated using this file
+    env_file:
+      - ../.env/.env.docker
+    ports:
+      - 8000:8000
+    # This container is always restarted when the host is restarted
+    restart: always
+    # Mount the following volumes
+    volumes:
+      - ../..:/workspaces:cached
+      - media_volume:/home/hackkstate/webfiles/media/
+    security_opt:
+      - seccomp:unconfined
+    # Overrides default command so things don't shut down after the process ends.
+    command: /bin/sh -c "while sleep 1000; do :; done"
+volumes:
+  postgres_data:
+  media_volume:
