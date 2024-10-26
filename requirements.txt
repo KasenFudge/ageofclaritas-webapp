@@ -28,6 +28,7 @@ poetry-plugin-export==1.8.0
 psycopg2-binary==2.9.9
 ptyprocess==0.7.0
 pyproject_hooks==1.2.0
+python-dotenv==1.0.1
 pywin32-ctypes==0.2.3
 RapidFuzz==3.10.0
 requests==2.32.3

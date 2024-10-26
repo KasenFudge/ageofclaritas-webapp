@@ -1,6 +1,7 @@
 # Environment Files
 For environment files, which are not included in the GitHub Repo, you'll need to make a .env folder.
-I then recommend putting the following in it.
+I then recommend putting the following in it.\n
+Note that anything that looks empty, like "//" or "xxxxxxxxxxx" needs to be filled in on your end.
 ## /.env/.env.app-ageofclaritas
 This is an example of the environment file for the age of claritas application
 ```
