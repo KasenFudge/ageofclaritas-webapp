@@ -5,12 +5,12 @@ from enum import Enum
 # Create your models here.
 
 class TalentType(Enum):
-    "SKILL"
-    "ABILITY"
-    "WARRIOR_TITLE"
-    "TIER_1"
-    "TIER_2"
-    "TIER_3"
+    SKILL = 'skill'
+    ABILITY = 'ability'
+    WARRIOR_TITLE = 'warrior title'
+    TIER_1 = 'tier 1'
+    TIER_2 = 'tier 2'
+    TIER_3 = 'tier 3'
 
 class Class(models.Model):
     name = models.CharField(max_length=40)
@@ -29,7 +29,11 @@ class Talent(models.Model):
     rank3_effect = models.CharField(null=True)
     is_rankless = models.BooleanField(default=False)
     class_for = models.ForeignKey(Class, on_delete=models.CASCADE)
-    type_of = TalentType
+    talent_type = models.CharField(
+        max_length=15,
+        choices = [(member.value, member.name) for member in TalentType],
+        default='ability'
+    )
 
     def __str__(self):
         return self.name

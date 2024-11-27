@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Package that allows rich text editing on character fields
+    'django_summernote',
 
     #Account and General Portion of the website
     'accounts.apps.AccountsConfig',
