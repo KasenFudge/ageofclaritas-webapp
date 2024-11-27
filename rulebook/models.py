@@ -13,22 +13,43 @@ class TalentType(Enum):
     "TIER_3"
 
 class Class(models.Model):
-    class_name = models.CharField(max_length=40)
-    class_description = models.CharField()
+    name = models.CharField(max_length=40)
+    description = models.CharField()
+    # image = models.ImageField()
 
     def __str__(self):
-        return self.class_name
+        return self.name
 
 class Talent(models.Model):
-    talent_name = models.CharField(max_length=40)
-    talent_description = models.CharField()
-    talent_rankless = models.CharField(null=True)
-    talent_rank1 = models.CharField(null=True)
-    talent_rank2 = models.CharField(null=True)
-    talent_rank3 = models.CharField(null=True)
+    name = models.CharField(max_length=40)
+    description = models.CharField()
+    rankless_effect = models.CharField(null=True)
+    rank1_effect = models.CharField(null=True)
+    rank2_effect = models.CharField(null=True)
+    rank3_effect = models.CharField(null=True)
     is_rankless = models.BooleanField(default=False)
-    talent_class = models.ForeignKey(Class, on_delete=models.CASCADE)
-    talent_type = TalentType
+    class_for = models.ForeignKey(Class, on_delete=models.CASCADE)
+    type_of = TalentType
 
     def __str__(self):
-        return self.talent_name
+        return self.name
+    
+class Kin(models.Model):
+    name = models.CharField(max_length=40)
+    description = models.CharField()
+    size = models.CharField()
+
+    def __str__(self):
+        return self.name
+
+class Kin_Image(models.Model):
+    image = models.ImageField()
+    kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
+
+class Attribute(models.Model):
+    name = models.CharField(max_length=40)
+    description = models.CharField()
+    kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
