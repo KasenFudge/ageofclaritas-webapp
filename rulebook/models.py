@@ -7,28 +7,25 @@ from enum import Enum
 class TalentType(Enum):
     SKILL = 'skill'
     ABILITY = 'ability'
-    WARRIOR_TITLE = 'warrior title'
+    WEAPON_WARRIOR_TITLE = 'weapon'
+    ARMOR_WARRIOR_TITLE = 'armor'
+    SUPPORT_WARRIOR_TITLE = 'support'
+    OTHER_WARRIOR_TITLE = 'other'
     TIER_1 = 'tier 1'
     TIER_2 = 'tier 2'
     TIER_3 = 'tier 3'
 
 class Class(models.Model):
-    name = models.CharField(max_length=40)
-    description = models.CharField()
-    # image = models.ImageField()
+    name = models.CharField()
 
     def __str__(self):
         return self.name
 
 class Talent(models.Model):
-    name = models.CharField(max_length=40)
-    description = models.CharField()
-    rankless_effect = models.CharField(null=True)
-    rank1_effect = models.CharField(null=True)
-    rank2_effect = models.CharField(null=True)
-    rank3_effect = models.CharField(null=True)
+    name = models.CharField()
+    description = models.CharField(blank=True, default='')
     is_rankless = models.BooleanField(default=False)
-    class_for = models.ForeignKey(Class, on_delete=models.CASCADE)
+    class_for = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
     talent_type = models.CharField(
         max_length=15,
         choices = [(member.value, member.name) for member in TalentType],
@@ -39,7 +36,7 @@ class Talent(models.Model):
         return self.name
     
 class Kin(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField()
     description = models.CharField()
     size = models.CharField()
 
@@ -47,13 +44,17 @@ class Kin(models.Model):
         return self.name
 
 class Kin_Image(models.Model):
-    image = models.ImageField()
+    image = models.ImageField(upload_to="static/images/", default="static/images/4guysHouseOctavious.jpg")
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
 
 class Attribute(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField()
     description = models.CharField()
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+    
+class Definition(models.Model):
+    name = models.CharField()
+    description = models.CharField()

@@ -4,6 +4,7 @@ from . import views
 app_name = "rulebook"
 urlpatterns = [
     path("", views.Index, name="index"),
-    path("Classes/", views.ClassesView.as_view(), name="classes"),
-    path("Kin/", views.KinView.as_view(), name="kin"),
+    path("classes/", views.ClassesView.as_view(), name="classes"),
+    path("classes/<str:classname>/", views.ClassDetailView.as_view(), name="class_detail"),
+    path("kin/", views.KinView.as_view(), name="kin"),
 ]
