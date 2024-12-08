@@ -24,9 +24,8 @@ class ClassDetailView(ListView):
 
     def get_queryset(self):
         # Filter classes that have subclasses and are within allowed names
-        return Class.objects.prefetch_related('subclasses', 'talent_set').filter(
-            name__in=self.allowed_names,
-            subclasses__isnull=False
+        return Class.objects.prefetch_related('talent_set', 'subclasses', 'subclasses__talent_set').filter(
+            name__in=self.allowed_names
         ).distinct()
 
     def get_context_data(self, **kwargs):
@@ -41,21 +40,45 @@ class ClassDetailView(ListView):
 
         # Fetch the base class
         base_class = get_object_or_404(self.get_queryset(), name=class_name)
-        base_talents = base_class.talent_set.all()
+        base_skills = base_class.talent_set.filter(talent_type='skill').order_by('name')
+        base_abilities = base_class.talent_set.filter(talent_type='ability').order_by('name')
+
+        # Force Void Ability to be first for Spellbinder
+        if base_class.name == 'Spellbinder':
+            void = base_abilities.filter(name="Void").first()
+
+            if void:
+                # Remove the ability from the list
+                base_abilities = base_abilities.exclude(id=void.id)
+                # Add it to the front
+                base_abilities = [void] + list(base_abilities)
 
         # Fetch subclasses and their talents
-        subclasses = base_class.subclasses.all()
-        subclass_talents = {
-            subclass.name: subclass.talent_set.all()
-            for subclass in subclasses
-        }
+        subclasses_ref = base_class.subclasses.all()
+        subclasses = [
+            (subclass, {
+                'skills': subclass.talent_set.filter(talent_type='skill').order_by('name'),
+                'abilities': subclass.talent_set.filter(talent_type='ability').order_by('name'),
+            })
+            for subclass in subclasses_ref
+        ]
+
+        # Fetch Warrior titles (Only for Warriors, empty elsewhere)
+        weapon_titles = base_class.talent_set.filter(talent_type='weapon').order_by('name')
+        armor_titles = base_class.talent_set.filter(talent_type='armor').order_by('name')
+        support_titles = base_class.talent_set.filter(talent_type='support').order_by('name')
+        other_titles = base_class.talent_set.filter(talent_type='other').order_by('name')
         
 
         # Add to context
         context['base_class'] = base_class
-        context['base_talents'] = base_talents
+        context['base_skills'] = base_skills
+        context['base_abilities'] = base_abilities
         context['subclasses'] = subclasses
-        context['subclass_talents'] = subclass_talents
+        context['weapon_titles'] = weapon_titles
+        context['armor_titles'] = armor_titles
+        context['support_titles'] = support_titles
+        context['other_titles'] = other_titles
 
         return context
 

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 id="{{ base_class.name.lower }}">{{ base_class.name }}</h1>
+
+    {% if base_skills %}
+        <h2>Skills</h2>
+        {% for skill in base_skills %}
+            <h4>{{ skill.name }}</h4>
+            {{ skill.description|safe }}
+        {% endfor %}
+    {% endif %}
+
+    {% if base_abilities %}
+        <h2>Abilities</h2>
+        {% for ability in base_abilities %}
+            <h4>{{ ability.name }}</h4>
+            {{ ability.description|safe }}
+        {% endfor %}
+    {% endif %}
+
+    {% for subclass, talents in subclasses %}
+        <h1 id="{{ subclass.name.lower }}">{{ subclass.name }}</h1>
+            {% if talents.skills %}
+                <h2>Skills</h2>
+                {% for skill in talents.skills %}
+                    <h4>{{ skill.name }}</h4>
+                    {{ skill.description|safe }}
+                {% endfor %}
+            {% endif %}
+
+            {% if talents.abilities %}
+                <h2>Abilities</h2>
+                {% for ability in talents.abilities %}
+                    <h4>{{ ability.name }}</h4>
+                    {{ ability.description|safe }}
+                {% endfor %}
+            {% endif %}
+    {% endfor %}
+
+    {% if base_class.name == "Warrior" %}
+        <h1 id="warrior-titles">Warrior Titles</h1>
+        <p>
+            A player can earn up to 5 titles. Each warrior can eventually get 1 major title and can have 2 minor ones active at a time. 
+            The major title can go up to R3 and is mostly permanent. Minor titles can only get to R2 and may be switched out at a rest/in town. 
+            R1s are free, R2s and R3s are 5 XP. The warrior must accomplish a task to earn each rank. A player starts with 1 active slot and gets 
+            another active when they join the guild and another active when they join the faction.
+        </p>
+        <h2>Weapon Titles</h2>
+        {% for title in weapon_titles %}
+            <h4>{{ title.name }}</h4>
+            {{ title.description|safe }}
+        {% endfor %}
+        <h2>Armor Titles</h2>
+        {% for title in armor_titles %}
+            <h4>{{ title.name }}</h4>
+            {{ title.description|safe }}
+        {% endfor %}
+        <h2>Support Titles</h2>
+        {% for title in support_titles %}
+            <h4>{{ title.name }}</h4>
+            {{ title.description|safe }}
+        {% endfor %}
+        <h2>Other Titles</h2>
+        {% for title in other_titles %}
+            <h4>{{ title.name }}</h4>
+            {{ title.description|safe }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

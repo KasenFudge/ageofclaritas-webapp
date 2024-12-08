@@ -24,7 +24,7 @@ class Class(models.Model):
 
 class Talent(models.Model):
     name = models.CharField()
-    description = models.CharField(blank=True, default='')
+    description = models.TextField(blank=True, default='')
     is_rankless = models.BooleanField(default=False)
     class_for = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
     talent_type = models.CharField(
@@ -38,7 +38,7 @@ class Talent(models.Model):
     
 class Kin(models.Model):
     name = models.CharField()
-    description = models.CharField()
+    description = models.TextField()
     size = models.CharField()
 
     def __str__(self):
@@ -50,7 +50,7 @@ class Kin_Image(models.Model):
 
 class Attribute(models.Model):
     name = models.CharField()
-    description = models.CharField()
+    description = models.TextField()
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -58,4 +58,4 @@ class Attribute(models.Model):
     
 class Definition(models.Model):
     name = models.CharField()
-    description = models.CharField()
+    description = models.TextField()
