@@ -1,14 +1,17 @@
-{% extends 'rulebook/base/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
     <center>
         <h1>Classes</h1>
+        <h2>Skills and Abilities</h2>
+        {% include 'rulebook/skill-ability-table.html' %}
         <p>
             A character's Class determines many of the Talents they have access to and influences their playstyle. 
             Click on a Class or Faction to view their Class-specific Talents on a separate page.
+            Every Character can purchase skills 
         </p>
-        <img src="{% static 'images/4guysHouseOctavious.jpg' %}">
+        <img src="{% static '/images/4guysHouseOctavious.jpg' %}">
         <h1><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></h1>
         <p>
             Clerics have control of Interplanary powers, which they use to heal and protect themselves and others. They can further 

@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     
     # Package that allows rich text editing on character fields
     'django_summernote',
-
+    
+    'ageofclaritas',
     #Account and General Portion of the website
     'accounts.apps.AccountsConfig',
     #Rulebook Portion of the website
@@ -68,7 +69,11 @@ ROOT_URLCONF = 'ageofclaritas.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, "ageofclaritas/templates/base"),
+
+            os.path.join(BASE_DIR, "rulebook/templates")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,8 +138,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'djangobower.finders.BowerFinder',
+]
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.getenv('STATIC_ROOT')
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' #bug here for .ico files
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.getenv("MEDIA_ROOT")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

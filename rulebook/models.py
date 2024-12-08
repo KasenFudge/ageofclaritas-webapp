@@ -17,6 +17,7 @@ class TalentType(Enum):
 
 class Class(models.Model):
     name = models.CharField()
+    subclasses = models.ManyToManyField("self", symmetrical=False, related_name="parent_classes", blank=True)
 
     def __str__(self):
         return self.name
@@ -44,7 +45,7 @@ class Kin(models.Model):
         return self.name
 
 class Kin_Image(models.Model):
-    image = models.ImageField(upload_to="static/images/", default="static/images/4guysHouseOctavious.jpg")
+    image = models.ImageField(upload_to="images/", default="static/images/4guysHouseOctavious.jpg")
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
 
 class Attribute(models.Model):
