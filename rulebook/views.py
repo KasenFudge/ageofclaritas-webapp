@@ -82,6 +82,51 @@ class ClassDetailView(ListView):
 
         return context
 
+class WizardDetailView(ListView):
+    model = Class
+    template_name = "rulebook/wizard_detail.html"
+    context_object_name = "wizard_data"
+
+
+    elemental_names = ['Hydromancy', 'Kairomancy', 'Pyromancy']
+    manifold_names = ['Kinesiomancy', 'Avlomancy', 'Neuromancy']
+
+    def get_queryset(self):
+        # Get all wizard schools for context processing
+        elemental_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.elemental_names)
+        manifold_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.manifold_names)
+        return elemental_classes | manifold_classes  # Combine the querysets for overall context
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Retrieve elemental and manifold classes
+        elemental_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.elemental_names).order_by('name')
+        manifold_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.manifold_names).order_by('name')
+
+        elementals = [
+            (elemental, {
+                'tier_1': elemental.talent_set.filter(talent_type='tier_1').order_by('name'),
+                'tier_2': elemental.talent_set.filter(talent_type='tier_2').order_by('name'),
+                'tier_3': elemental.talent_set.filter(talent_type='tier_3').order_by('name'),
+            })
+            for elemental in elemental_classes
+        ]
+
+        manifolds = [
+            (manifold, {
+                'tier_1': manifold.talent_set.filter(talent_type='tier_1').order_by('name'),
+                'tier_2': manifold.talent_set.filter(talent_type='tier_2').order_by('name'),
+                'tier_3': manifold.talent_set.filter(talent_type='tier_3').order_by('name'),
+            })
+            for manifold in manifold_classes
+        ]
+
+        context['elementals'] = elementals
+        context['manifolds'] = manifolds
+
+        return context
+
 
 class KinView(ListView):
     template_name = "rulebook/kins.html"

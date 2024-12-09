@@ -11,9 +11,9 @@ class TalentType(Enum):
     ARMOR_WARRIOR_TITLE = 'armor'
     SUPPORT_WARRIOR_TITLE = 'support'
     OTHER_WARRIOR_TITLE = 'other'
-    TIER_1 = 'tier 1'
-    TIER_2 = 'tier 2'
-    TIER_3 = 'tier 3'
+    TIER_1 = 'tier_1'
+    TIER_2 = 'tier_2'
+    TIER_3 = 'tier_3'
 
 class Class(models.Model):
     name = models.CharField()

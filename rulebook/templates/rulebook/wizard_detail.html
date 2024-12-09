@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Wizard - Magic</h1>
+    <p>
+        Magic has its own unique mechanics and rules. Each Wizard can use one elemental magic and one manifold magic. 
+        Tier 1 and 2 Spells are purchased like abilities, which can be used a limited amount of times. 
+        Tier 3 spells are purchased like skills, which can be used once per rank owned, per quest. Tier 1 and 2 magic 
+        refreshes at the end of every encounter (unlike abilities).
+    </p>
+    <p>
+        Much like Abilities, a player must work their way up to higher tiers of magic:
+        <ul>
+            <li>
+                In order to gain access to the second tier of a magic type, 
+                a player must have a R1 Spell of the first tier of that magic type.
+            </li>
+            <li>
+                In order to gain access to the third tier of a magic type, 
+                the player must have spent 30 XP in that type of magic.
+            </li>
+        </ul>
+    </p>
+    <p>
+        Tomes are an equippable “weapon” that typically enhance a player’s magic of a specific type:
+        <ul>
+            <li>
+                A Tier 1 tome allows the player to cast R1, Tier 1 Spells of that type infinitely.
+            </li>
+            <li>
+                A Tier 2 tome allows the player to refresh all of their Tier 2 Spells after 
+                focusing for 30 uninterrupted seconds. 
+            </li>
+            <li>
+                Other tomes exist that may have different effects, but they are not standard and thereby 
+                cannot be started with, or purchased from regular vendors.
+            </li>
+        </ul>
+    </p>
+
+    <img src="{% static 'images/Wizard-Detail-Image.jpg' %}">
+
+    <h1>Elemental</h1>
+    {% for elemental, talents in subclasses %}
+        <h2 id="{{ elemental.name }}">{{ elemental.name }}</h2>
+        {% if talents.tier_1 %}
+            <h3>Tier 1</h3>
+            {% for talent in talents.tier_1 %}
+                <h4>{{ talent.name }}</h4>
+                {{ talent.description|safe }}
+            {% endfor %}
+        {% endif %}
+        {% if talents.tier_2 %}
+            <h3>Tier 2</h3>
+            {% for talent in talents.tier_2 %}
+                <h4>{{ talent.name }}</h4>
+                {{ talent.description|safe }}
+            {% endfor %}
+        {% endif %}
+        {% if talents.tier_3 %}
+            <h3>Tier 3</h3>
+            {% for talent in talents.tier_3 %}
+                <h4>{{ talent.name }}</h4>
+                {{ talent.description|safe }}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    <h1>Manifold</h1>
+    {% for manifold, talents in subclasses %}
+        <h2 id="{{ manifold.name }}">{{ manifold.name }}</h2>
+        {% if manifold.name == "Manifold" %}
+            <p class="text-center">
+                Every time a Neuromancy spell is purchased, it increases the player's Mental Fortitude by 1. 
+                Mental Fortitude is required to use all Tier 2 and 3 neuromantic spells and is refreshed every encounter.
+            </p>
+        {% endif %}
+        {% if talents.tier_1 %}
+            <h3>Tier 1</h3>
+            {% for talent in talents.tier_1 %}
+                <h4>{{ talent.name }}</h4>
+                {{ talent.description|safe }}
+            {% endfor %}
+        {% endif %}
+        {% if talents.tier_2 %}
+            <h3>Tier 2</h3>
+            {% for talent in talents.tier_2 %}
+                <h4>{{ talent.name }}</h4>
+                {{ talent.description|safe }}
+            {% endfor %}
+        {% endif %}
+        {% if talents.tier_3 %}
+            <h3>Tier 3</h3>
+            {% for talent in talents.tier_3 %}
+                <h4>{{ talent.name }}</h4>
+                {{ talent.description|safe }}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}
