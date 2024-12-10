@@ -129,7 +129,9 @@ class WizardDetailView(ListView):
 
 
 class KinView(ListView):
+    model = Kin
     template_name = "rulebook/kins.html"
+    context_object_name = "kin_data"
 
     def get_queryset(self):
-        return Kin.objects.order_by("name")
+        return Kin.objects.prefetch_related("attribute_set", "kin_image_set").order_by("name")

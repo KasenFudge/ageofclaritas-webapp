@@ -18,10 +18,20 @@
 }
 
 h1 {
-    text-align: center;
     padding-top: 55px;
 }
 
-h2 {
-    text-align: center;
+.box-header-link a {
+    font-size: 2rem;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}
+
+.vh-75 {
+    height: 75vh;
+  }
+
+.vh-50 {
+height: 50vh;
 }

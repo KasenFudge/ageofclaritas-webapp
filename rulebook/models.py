@@ -38,20 +38,22 @@ class Talent(models.Model):
     
 class Kin(models.Model):
     name = models.CharField()
-    description = models.TextField()
-    size = models.CharField()
+    short_description = models.TextField(blank=True, default="")
+    description = models.TextField(blank=True, default="")
+    size = models.CharField(blank=True, default="")
 
     def __str__(self):
         return self.name
 
 class Kin_Image(models.Model):
-    image = models.ImageField(upload_to="images/", default="static/images/4guysHouseOctavious.jpg")
+    image = models.ImageField(upload_to="images/Kin/", blank=True)
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
 
 class Attribute(models.Model):
     name = models.CharField()
     description = models.TextField()
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
+    can_start_with = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

@@ -28,12 +28,18 @@ class AttributeInline(SummernoteModelAdminMixin, admin.TabularInline):
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
-            return 2  # Display three extra forms on creation
+            return 3  # Display three extra forms on creation
         else:
             return 0  # No extra forms on editing existing objects
 
 class KinImageInline(admin.TabularInline):
     model = Kin_Image
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj is None:  # Check if creating a new object
+            return 2  # Display three extra forms on creation
+        else:
+            return 0  # No extra forms on editing existing objects
 
 class KinAdmin(SummernoteModelAdmin):
     summernote_fields = ("description",)
