@@ -5,15 +5,26 @@ from django.views.generic import TemplateView, DetailView, ListView
 from .models import Class, Kin
 
 # Create your views here.
-def Index(request):
-    return render(request, "rulebook/index.html")
+class IndexView(TemplateView):
+    template_name = "rulebook/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Rulebook'
+        return context
 
 class ClassesView(TemplateView):
     template_name = "rulebook/classes.html"
-    title = "Classes"
 
-    def get_queryset(self):
-        return Class.objects.order_by("name")
+    # def get_queryset(self):
+    #    return Class.objects.order_by("name")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Classes'
+        return context
 
 class ClassDetailView(ListView):
     model = Class
@@ -71,6 +82,7 @@ class ClassDetailView(ListView):
         
 
         # Add to context
+        context['title'] = base_class.name
         context['base_class'] = base_class
         context['base_skills'] = base_skills
         context['base_abilities'] = base_abilities
@@ -122,11 +134,11 @@ class WizardDetailView(ListView):
             for manifold in manifold_classes
         ]
 
+        context['title'] = 'Wizard & Magic'
         context['elementals'] = elementals
         context['manifolds'] = manifolds
 
         return context
-
 
 class KinView(ListView):
     model = Kin
@@ -135,6 +147,12 @@ class KinView(ListView):
 
     def get_queryset(self):
         return Kin.objects.prefetch_related("attribute_set", "kin_image_set").order_by("name")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Kin'
+        return context
 
 class KinDetailView(DetailView):
     model = Kin
@@ -145,5 +163,47 @@ class KinDetailView(DetailView):
         kin_name = self.kwargs.get("kin_name").capitalize()
         return Kin.objects.prefetch_related("attribute_set", "kin_image_set").get(name__iexact=kin_name)
     
-def Definitions(request):
-    return render(request, "rulebook/defintions.html")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        kin_name = self.kwargs.get('classname').capitalize()
+        kin = get_object_or_404(self.get_queryset(), name=kin_name)
+
+        context['title'] = kin.name
+        return context
+    
+class BackgroundsView(TemplateView):
+    template_name = "rulebook/backgrounds.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Backgrounds'
+        return context
+
+class ModifiersView(TemplateView):
+    template_name = "rulebook/modifiers.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Modifiers'
+        return context
+
+class TechniquesView(TemplateView):
+    template_name = "rulebook/techniques.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Techniques'
+        return context
+
+class DefinitionsView(TemplateView):
+    template_name = "rulebook/definitions.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Definitions'
+        return context

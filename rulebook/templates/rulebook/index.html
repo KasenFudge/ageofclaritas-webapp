@@ -20,20 +20,20 @@
         </div>
         <div class="d-block border border-dark table-of-contents-box">
             <p class="contents-text m-0">
-                <span class="box-header-link">
-                    <a href="#">Modifiers</a> - </span>
-                Modifiers represent some significant change to a player that typically has some upside and downside.
-            </p>
-        </div>
-        <div class="d-block border border-dark table-of-contents-box">
-            <p class="contents-text m-0">
-                <span class="box-header-link"><a href="#">Backgrounds</a> - </span>
+                <span class="box-header-link"><a href="{% url 'rulebook:backgrounds' %}">Backgrounds</a> - </span>
                 Utilize them to support your character's backstory or bolster your skills. Most Backgrounds are either informative or role-played.
             </p>
         </div>
         <div class="d-block border border-dark table-of-contents-box">
             <p class="contents-text m-0">
-                <span class="box-header-link"><a href="#">Techniques</a> - </span>
+                <span class="box-header-link">
+                    <a href="{% url 'rulebook:modifiers' %}">Modifiers</a> - </span>
+                Modifiers represent some significant change to a player that typically has some upside and downside.
+            </p>
+        </div>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
+                <span class="box-header-link"><a href="{% url 'rulebook:techniques' %}">Techniques</a> - </span>
                 Techniques modify how another Talent operates. They are earned in game.
             </p>
         </div>
