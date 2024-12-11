@@ -17,7 +17,7 @@ class ClassesView(TemplateView):
 
 class ClassDetailView(ListView):
     model = Class
-    template_name = "rulebook/class_detail.html"
+    template_name = "rulebook/class-detail.html"
     context_object_name = "class_data"
 
     allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior']
@@ -84,7 +84,7 @@ class ClassDetailView(ListView):
 
 class WizardDetailView(ListView):
     model = Class
-    template_name = "rulebook/wizard_detail.html"
+    template_name = "rulebook/wizard-detail.html"
     context_object_name = "wizard_data"
 
 
@@ -130,8 +130,20 @@ class WizardDetailView(ListView):
 
 class KinView(ListView):
     model = Kin
-    template_name = "rulebook/kins.html"
-    context_object_name = "kin_data"
+    template_name = "rulebook/kin.html"
+    context_object_name = "kin_list"
 
     def get_queryset(self):
         return Kin.objects.prefetch_related("attribute_set", "kin_image_set").order_by("name")
+
+class KinDetailView(DetailView):
+    model = Kin
+    template_name = "rulebook/kin-detail.html"
+    context_object_name = "kin"
+
+    def get_object(self):
+        kin_name = self.kwargs.get("kin_name").capitalize()
+        return Kin.objects.prefetch_related("attribute_set", "kin_image_set").get(name__iexact=kin_name)
+    
+def Definitions(request):
+    return render(request, "rulebook/defintions.html")

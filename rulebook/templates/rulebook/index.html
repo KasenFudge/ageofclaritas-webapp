@@ -3,38 +3,42 @@
 
 {% block content %}
     <div class="content-block">
-        <div class="d-block bg-light text-dark">
-            <p>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
                 <span class="box-header-link"><a href="{% url 'rulebook:classes' %}">Classes</a> - </span>
                 A character's Class determines most of the Talents they have access to and influences their playstyle.
             </p>
         </div>
-        <div class="d-block bg-light text-dark">
-            <p>
-                <span class="box-header-link"><a href="{% url 'rulebook:kin' %}">Kin</a> - </span>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
+                <span class="box-header-link">
+                    <a href="{% url 'rulebook:kin' %}">Kin</a>
+                    <span class="d-none d-sm-inline"> - </span> <!-- This span will be hidden on small screens -->
+                </span>
                 A character's Kin will decide their appearance and will influence how the character will act. 
             </p>
         </div>
-        <div class="d-block bg-light text-dark">
-            <p>
-                <span class="box-header-link"><a href="#">Modifiers</a> - </span>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
+                <span class="box-header-link">
+                    <a href="#">Modifiers</a> - </span>
                 Modifiers represent some significant change to a player that typically has some upside and downside.
             </p>
         </div>
-        <div class="d-block bg-light text-dark">
-            <p>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
                 <span class="box-header-link"><a href="#">Backgrounds</a> - </span>
-                Utilize them to support your character’s backstory or bolster your skills. Most Backgrounds are either informative or role-played.
+                Utilize them to support your character's backstory or bolster your skills. Most Backgrounds are either informative or role-played.
             </p>
         </div>
-        <div class="d-block bg-light text-dark">
-            <p>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
                 <span class="box-header-link"><a href="#">Techniques</a> - </span>
                 Techniques modify how another Talent operates. They are earned in game.
             </p>
         </div>
-        <div class="d-block bg-light text-dark">
-            <p>
+        <div class="d-block border border-dark table-of-contents-box">
+            <p class="contents-text m-0">
                 <span class="box-header-link"><a href="#">Game Mechanics</a> - </span>
                 Game mechanics make up the baseline of gameplay for Age of Claritas.
             </p>

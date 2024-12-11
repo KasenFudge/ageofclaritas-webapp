@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 class="text-center">Kin</h1>
+    <p class="text-center">
+        A Kin is the ancestry of a character. A character's Kin will decide their appearance and 
+        will influence how the character will act. 
+    </p>
+    <h2 class="text-center">Attributes</h2>
+    <p class="text-center">
+        Every Kin has unique Attributes (listed within each Kin's Page). Players may select one to start with and 
+        may learn two more by completing Kin Quests during the course of an event. (Players cannot start with attributes 
+        marked by an *asterisk).
+    </p>
+    {% for kin in kin_list %}
+    <div class="d-flex align-items-center border border-dark table-of-contents-box">
+        <p class="contents-text m-0">
+            <span class="box-header-link">
+                <a href="{% url 'rulebook:kin_detail' kin.name|lower %}">{{ kin.name }}</a> -
+            </span>
+            {{ kin.short_description }}
+        </p>
+    </div>
+    {% endfor %}
+{% endblock %}
