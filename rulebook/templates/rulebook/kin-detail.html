@@ -4,6 +4,13 @@
 {% block content %}
     <h1 class="text-center">{{ kin.name }}</h1>
 
+    <p>
+        <b>Size: </b> {{ kin.size }}
+    </p>
+    <p>
+        <b>Description: </b> {{ kin.description|safe }}
+    </p>
+
     <div id="kinCarousel" class="carousel slide border border-dark" data-bs-ride="carousel">
         <!-- Indicators/Dots 
         <div class="carousel-indicators">
@@ -35,13 +42,6 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-
-    <p>
-        <b>Size: </b> {{ kin.size }}
-    </p>
-    <p>
-        <b>Description: </b> {{ kin.Description|safe }}
-    </p>
 
     <h1 class="text-center">Attributes</h1>
         {% for attribute in kin.attribute_set.all %}

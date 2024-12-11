@@ -15,6 +15,21 @@ html, body {
     flex: 1; /* Take up the remaining space for footer */
 }
 
+.navbar-logo {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+}
+
+.navbar-title {
+    height: 50px;
+    width: auto;
+}
+
+.navbar-brand:hover {
+    text-decoration: none;
+}
+
 h1 {
     padding-top: 55px;
 }

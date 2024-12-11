@@ -166,7 +166,7 @@ class KinDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        kin_name = self.kwargs.get('classname').capitalize()
+        kin_name = self.kwargs.get('kin_name').capitalize()
         kin = get_object_or_404(self.get_queryset(), name=kin_name)
 
         context['title'] = kin.name

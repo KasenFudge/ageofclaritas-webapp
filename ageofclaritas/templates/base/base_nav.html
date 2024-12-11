@@ -2,7 +2,10 @@
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'accounts:index' %}">Age of Claritas</a>
+    <a class="navbar-brand me-4" href="{% url 'accounts:index' %}">
+      <img class="navbar-logo" src="{% static 'images/AgeOfClaritasLogo.png' %}" alt="Age of Claritas Logo">
+      <img class="navbar-title" src="{% static 'images/AgeOfClaritasTitle.png' %}" alt="Age of Claritas Title"> 
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
