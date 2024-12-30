@@ -10,9 +10,12 @@ html, body {
 }
 
 .content {
+    flex: 1; /* Take up the remaining space for footer */
+}
+
+.display-text {
     margin-left: 50px;
     margin-right: 50px;
-    flex: 1; /* Take up the remaining space for footer */
 }
 
 .navbar-logo {
@@ -45,7 +48,7 @@ a:hover {
     text-decoration: underline;
 }
 
-img {
+.page-image {
     /* Set Max Width Property for specific images for sizing */
     width: 100%;
     height: auto;

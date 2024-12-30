@@ -28,7 +28,7 @@ class ClassesView(TemplateView):
 
 class ClassDetailView(ListView):
     model = Class
-    template_name = "rulebook/class-detail.html"
+    template_name = "rulebook/class_detail.html"
     context_object_name = "class_data"
 
     allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior']
@@ -96,7 +96,7 @@ class ClassDetailView(ListView):
 
 class WizardDetailView(ListView):
     model = Class
-    template_name = "rulebook/wizard-detail.html"
+    template_name = "rulebook/wizard_detail.html"
     context_object_name = "wizard_data"
 
 
@@ -156,7 +156,7 @@ class KinView(ListView):
 
 class KinDetailView(DetailView):
     model = Kin
-    template_name = "rulebook/kin-detail.html"
+    template_name = "rulebook/kin_detail.html"
     context_object_name = "kin"
 
     def get_object(self):

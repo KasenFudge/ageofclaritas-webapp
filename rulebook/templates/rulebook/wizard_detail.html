@@ -3,14 +3,14 @@
 
 {% block content %}
     <div class="display-text">
-        <h1>Wizard - Magic</h1>
-        <p>
+        <h1 class="text-center">Wizard - Magic</h1>
+        <p class="text-center">
             Magic has its own unique mechanics and rules. Each Wizard can use one elemental magic and one manifold magic. 
             Tier 1 and 2 Spells are purchased like abilities, which can be used a limited amount of times. 
             Tier 3 spells are purchased like skills, which can be used once per rank owned, per quest. Tier 1 and 2 magic 
             refreshes at the end of every encounter (unlike abilities).
         </p>
-        <p>
+        <p class="text-center">
             Much like Abilities, a player must work their way up to higher tiers of magic:
             <ul>
                 <li>
@@ -23,8 +23,8 @@
                 </li>
             </ul>
         </p>
-        <p>
-            Tomes are an equippable “weapon” that typically enhance a player’s magic of a specific type:
+        <p class="text-center">
+            Tomes are an equippable “weapon” that typically enhance a player's magic of a specific type:
             <ul>
                 <li>
                     A Tier 1 tome allows the player to cast R1, Tier 1 Spells of that type infinitely.
@@ -39,12 +39,14 @@
                 </li>
             </ul>
         </p>
-        
-        <img src="{% static 'images/WizardDetailImage.jpg' %}">
 
-        <h1>Elemental</h1>
+        <div class="col-12 d-flex justify-content-center align-items-center"></div>
+            <img src="{% static 'images/WizardDetailImage.jpg' %}" class="page-image" style="max-height: 70vh;">
+        </div>
+
+        <h1 class="text-center">Elemental</h1>
         {% for elemental, talents in elementals %}
-            <h2 id="{{ elemental.name }}">{{ elemental.name }}</h2>
+            <h2 class="text-center" id="{{ elemental.name }}">{{ elemental.name }}</h2>
             {% if talents.tier_1 %}
                 <h3 class="text-center">Tier 1</h3>
                 {% for talent in talents.tier_1 %}
@@ -68,9 +70,9 @@
             {% endif %}
         {% endfor %}
 
-        <h1>Manifold</h1>
+        <h1 class="text-center">Manifold</h1>
         {% for manifold, talents in manifolds %}
-            <h2 id="{{ manifold.name }}">{{ manifold.name }}</h2>
+            <h2 class="text-center" id="{{ manifold.name }}">{{ manifold.name }}</h2>
             {% if manifold.name == "Neuromancy" %}
                 <p class="text-center">
                     Every time a Neuromancy spell is purchased, it increases the player's Mental Fortitude by 1. 
