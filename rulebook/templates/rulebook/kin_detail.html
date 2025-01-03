@@ -2,33 +2,22 @@
 {% load static %}
 
 {% block content %}
-    <div class="display-text">
-        <h1 class="text-center">{{ kin.name }}</h1>
+    <h1 class="text-center">{{ kin.name }}</h1>
 
-        <p>
-            <b>Size: </b> {{ kin.size }}
-        </p>
-        <p>
-            <b>Description: </b> {{ kin.description|safe }}
-        </p>
-
-        <div id="kinCarousel" class="carousel slide border border-dark" data-bs-ride="carousel">
-            <!-- Indicators/Dots 
-            <div class="carousel-indicators">
-                {% for image in kin.kin_image_set.all %}
-                    <button type="button" data-bs-target="#kinCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-                            class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}"
-                            aria-label="Slide {{ forloop.counter }}"></button>
-                {% endfor %}
-            </div>
-            -->
-        
+    <p>
+        <b>Size: </b> {{ kin.size }}
+    </p>
+    <p>
+        <b>Description: </b> {{ kin.description|safe }}
+    </p>
+    
+    <div class="container-fluid">
+        <div id="kinCarousel" class="carousel slide border border-dark" data-bs-ride="carousel">    
             <!-- Carousel Items -->
             <div class="carousel-inner">
                 {% for image in kin.kin_image_set.all %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <img src="{{ image.image.url }}" class="d-block mx-auto w-50" alt="Image for {{ kin.name }}"
-                        style="object-fit: contain;">
+                        <img src="{{ image.image.url }}" class="d-block mx-auto img-fluid" alt="Image for {{ kin.name }}">
                     </div>
                 {% endfor %}
             </div>
@@ -42,17 +31,27 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
+    
+            <!-- Indicators/Dots -->
+            <div class="carousel-indicators">
+                {% for image in kin.kin_image_set.all %}
+                <button type="button" data-bs-target="#kinCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                class="{% if forloop.first %}active{% endif %} carousel-indicator-dark" aria-current="{% if forloop.first %}true{% endif %}"
+                aria-label="Slide {{ forloop.counter }}"></button>
+                {% endfor %}
+            </div>
         </div>
-
-        <h1 class="text-center">Attributes</h1>
-        {% for attribute in kin.attribute_set.all %}
-        <p>
-            <b>{% if not attribute.can_start_with %}*{% endif %}{{ attribute.name }}</b>
-            <ul>
-                <li>{{ attribute.description|safe }}</li>
-            </ul>
-            
-        </p>
-        {% endfor %}
     </div>
+
+    <h1 class="text-center">Attributes</h1>
+    {% for attribute in kin.attribute_set.all %}
+    <p class="talent-name">
+        <b>{% if not attribute.can_start_with %}*{% endif %}{{ attribute.name }}</b>
+        <ul>
+            <li>{{ attribute.description|safe }}</li>
+        </ul>
+        
+    </p>
+    {% endfor %}
+
 {% endblock %}

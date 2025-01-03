@@ -12,5 +12,7 @@ urlpatterns = [
     path("backgrounds/", views.BackgroundsView.as_view(), name="backgrounds"),
     path("modifiers/", views.ModifiersView.as_view(), name="modifiers"),
     path("techniques/", views.TechniquesView.as_view(), name="techniques"),
+    path("character-creation", views.CharacterCreationView.as_view(), name="character_creation"),
     path("definitions/", views.DefinitionsView.as_view(), name="definitions"),
+    path("skills-and-abilities/", views.SkillsAndAbilitiesView.as_view(), name="skills_and_abilities"),
 ]

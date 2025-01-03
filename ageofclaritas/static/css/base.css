@@ -9,15 +9,6 @@ html, body {
     flex-direction: column;
 }
 
-.content {
-    flex: 1; /* Take up the remaining space for footer */
-}
-
-.display-text {
-    margin-left: 50px;
-    margin-right: 50px;
-}
-
 .navbar-logo {
     height: 50px;
     width: auto;
@@ -33,13 +24,8 @@ html, body {
     text-decoration: none;
 }
 
-h1 {
-    padding-top: 55px;
-}
-
 a {
     font-weight: bold;
-    color: black;
     text-decoration: none;
 }
 
@@ -48,13 +34,54 @@ a:hover {
     text-decoration: underline;
 }
 
-.page-image {
-    /* Set Max Width Property for specific images for sizing */
-    width: 100%;
-    height: auto;
-    border: 2px;
-    border-color: black;
+.anchor-container {
+    position: relative;
 }
+  
+.anchor {
+    position: absolute;
+    top: -65px; /* given the fixed header is 50px tall, and you want 15px padding */
+    left: 0px;
+}
+
+h1 {
+    margin-top: 15px;
+}
+
+h2, h3 {
+    margin-top: 10px;
+}
+
+p, ul {
+    margin-bottom: 0px;
+}
+
+table, tr, td {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 5px
+}
+
+.page-image {
+    /* Set Max Width Property for specific images for sizing differently */
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    padding: 2px;
+    margin: 20px 0px;
+    border: 2px solid black;
+}
+
+.talent-name {
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.sidebar
 
 .box-header-link {
     font-size: 2rem;
@@ -69,25 +96,93 @@ a:hover {
     padding-right: 15px;
 }
 
+/* Kin Carousel Stuff */
+.carousel-control-prev,
+.carousel-control-next {
+    width: auto; /* Removes the default full-side width */
+    height: 40px; /* Restrict height to fit the icon */
+    padding: 20px 0px; /* Add some padding around the icons for easier clicking */
+    background: none; /* Remove background from the button area */
+    border: none; /* Ensure there’s no border */
+    display: flex; /* Center the icon inside */
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    z-index: 1; /* Keep above other elements */
+    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5)); /* Add a shadow for visibility */
+}
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-    border-radius: 50%; /* Round buttons */
-    width: 40px;
+    width: 40px; /* Set desired size for the icon */
     height: 40px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    border-radius: 50%; /* Circular */
+    transition: background-color 0.3s ease;
 }
 
 .carousel-control-prev-icon:hover,
 .carousel-control-next-icon:hover {
     background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
+    transform: scale(1.1); /* Slightly larger on hover */
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+    filter: drop-shadow(4px 4px 7px rgba(0, 0, 0, 0.6));
 }
 
-.carousel-control-prev,
+.carousel-control-prev {
+    left: 20px; /* Position the control closer to the left edge */
+}
+
 .carousel-control-next {
-    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5)); /* Add a shadow for visibility */
+    right: 20px; /* Position the control closer to the right edge */
+}
+
+.carousel-indicator-dark {
+    background-color: rgba(100, 100, 100, 0.5) !important;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-indicator-dark:hover {
+    background-color: rgba(35, 35, 35, 0.5) !important;
+    transform: scale(1.1);
+    transition: background-color 0.3s ease;
+}
+
+.carousel-indicator-dark.active {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    transform: scale(1.1);
+}
+
+.carousel-control-prev-icon:focus, 
+.carousel-control-next-icon:focus,
+.carousel-indicator-dark:focus {
+    outline: 2px solid rgba(0, 0, 0, 0.8);
+    outline-offset: 2px;
 }
 
 #kinCarousel {
-    margin-left: 200px;
-    margin-right: 200px;
+    margin: 20px auto; /* Centered horizontally */
+    max-width: 75%;
+    height: auto;
 }
+
+.carousel-inner .carousel-item img {
+    max-width: 100%;
+    max-height: 70vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    #kinCarousel {
+        margin: 10px 20px; /* Adjust margins for smaller screens */
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 20px;
+        height: 20px; /* Smaller controls for mobile */
+    }
+}
+/* End of KinCarousel Stuff */

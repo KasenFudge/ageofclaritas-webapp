@@ -1,6 +1,6 @@
 {% load static %}
 
-<!-- Remove the container if you want to extend the Footer to full width. -->
+
 <div class="mt-5">
 
     <footer class="bg-dark text-center text-white">
@@ -35,7 +35,7 @@
 
         <!-- Copyright -->
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        © 2024 <a class="text-white" href="{% url 'accounts:index' %}">Age of Claritas</a>
+        © {% now "Y" %} <a class="text-white" href="{% url 'accounts:index' %}">Age of Claritas</a>
         </div>
         <!-- Copyright -->
     </footer>

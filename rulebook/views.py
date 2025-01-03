@@ -31,7 +31,7 @@ class ClassDetailView(ListView):
     template_name = "rulebook/class_detail.html"
     context_object_name = "class_data"
 
-    allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior']
+    allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior', 'Classless',]
 
     def get_queryset(self):
         # Filter classes that have subclasses and are within allowed names
@@ -65,7 +65,7 @@ class ClassDetailView(ListView):
                 base_abilities = [void] + list(base_abilities)
 
         # Fetch subclasses and their talents
-        subclasses_ref = base_class.subclasses.all()
+        subclasses_ref = base_class.subclasses.all().order_by('name')
         subclasses = [
             (subclass, {
                 'skills': subclass.talent_set.filter(talent_type='skill').order_by('name'),
@@ -197,6 +197,24 @@ class TechniquesView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Techniques'
+        return context
+
+class CharacterCreationView(TemplateView):
+    template_name = "rulebook/character_creation.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Character Creation'
+        return context
+
+class SkillsAndAbilitiesView(TemplateView):
+    template_name = "rulebook/skills_and_abilities.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Skills and Abilities'
         return context
 
 class DefinitionsView(TemplateView):

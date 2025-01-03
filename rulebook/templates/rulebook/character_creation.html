@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 class="text-center">Character Creation</h1>
+    <p class="text-center">
+        In Age of Claritas, players assume the role of "Adventurer."" This is an unofficial title granted to those with heroic potential. Both skill and judgment are tested as characters face various trials in unique situations. 
+        This role-playing system presents challenges that are built to support and reward players' individual strengths as well as their ability to work as a team.
+    </p>
+    <h2 class="text-center">Purchasing Skills and Abilities</h2>
+    <p class="text-center">A Skill is a Talent that can be used repeatedly without resting. Instead of purchasing multiple of the same Skill, you can upgrade its rank to increase its usefulness.</p>
+    <p class="text-center">An Ability is an expendable Talent that refreshes after resting. You can purchase multiple of the same Ability to have multiple uses available before resting.</p>
+    <p class="text-center">Refer to the chart below for costs of purchasing a Skill and the order of Ability purchases.</p>
+    
+<!-- Skill Ability Table -->
+    {% include 'rulebook/skill_ability_table.html' %}
+{% endblock %}

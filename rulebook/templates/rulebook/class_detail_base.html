@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Page Information -->
+            <div class="col-12 col-xl-10 p-3">
+                {% block class_info %}
+
+                {% endblock %}
+            </div>
+            <!-- End of Page Information -->
+            <!-- Sidebar -->
+            <div class="col-12 col-xl-2 d-none d-xl-block border-start p-xl-3">
+                <ul>
+                    <li><a href="{% url 'rulebook:class_detail' 'classless' %}">Classless</a></li>
+                    <li><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:class_detail' 'cleric' %}#paladin">Paladin</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'cleric' %}#soothsayer">Soothsayer</a></li>
+                    </ul>
+                    <li><a href="{% url 'rulebook:class_detail' 'noble' %}">Noble</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:class_detail' 'noble' %}#knight">Knight</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'noble' %}#lord">Lord</a></li>
+                    </ul>
+                    <li><a href="{% url 'rulebook:class_detail' 'ranger' %}">Ranger</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:class_detail' 'ranger' %}#marksman">Marksman</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'ranger' %}#stalker">Stalker</a></li>
+                    </ul>
+                    <li><a href="{% url 'rulebook:class_detail' 'rogue' %}">Rogue</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:class_detail' 'rogue' %}#assassin">Assassin</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'rogue' %}#thief">Thief</a></li>
+                    </ul>
+                    <li><a href="{% url 'rulebook:class_detail' 'spellbinder' %}">Spellbinder</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:class_detail' 'spellbinder' %}#harbinger">Harbinger</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'spellbinder' %}#sentinel">Sentinel</a></li>
+                    </ul>
+                    <li><a href="{% url 'rulebook:class_detail' 'warrior' %}">Warrior</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:class_detail' 'warrior' %}#champion">Champion</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'warrior' %}#berserker">Berserker</a></li>
+                        <li><a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles">Warrior Titles</a></li>
+                    </ul>
+                    <li><a href="{% url 'rulebook:wizard_detail' %}">Wizard</a></li>
+                    <ul>
+                        <li><a href="{% url 'rulebook:wizard_detail' %}#hydromancy">Hydromancy</a></li>
+                        <li><a href="{% url 'rulebook:wizard_detail' %}#kairomancy">Kairomancy</a></li>
+                        <li><a href="{% url 'rulebook:wizard_detail' %}#pyromancy">Pyromancy</a></li>
+                        <li><a href="{% url 'rulebook:wizard_detail' %}#avlomancy">Avlomancy</a></li>
+                        <li><a href="{% url 'rulebook:wizard_detail' %}#kinesiomancy">Kinesiomancy</a></li>
+                        <li><a href="{% url 'rulebook:wizard_detail' %}#nueromancy">Neuromancy</a></li>
+                    </ul>
+                </ul>
+            </div>
+            <!-- End of Sidebar-->
+        </div>
+        <!-- End of .row -->
+    </div>
+    <!-- End of .container-fluid -->
+{% endblock %}
