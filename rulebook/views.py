@@ -12,6 +12,7 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Rulebook'
+        context['current_app'] = 'rulebook'
         return context
 
 class ClassesView(TemplateView):
@@ -24,6 +25,7 @@ class ClassesView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Classes'
+        context['current_app'] = 'rulebook'
         return context
 
 class ClassDetailView(ListView):
@@ -83,6 +85,7 @@ class ClassDetailView(ListView):
 
         # Add to context
         context['title'] = base_class.name
+        context['current_app'] = 'rulebook' 
         context['base_class'] = base_class
         context['base_skills'] = base_skills
         context['base_abilities'] = base_abilities
@@ -135,6 +138,7 @@ class WizardDetailView(ListView):
         ]
 
         context['title'] = 'Wizard & Magic'
+        context['current_app'] = 'rulebook' 
         context['elementals'] = elementals
         context['manifolds'] = manifolds
 
@@ -152,6 +156,7 @@ class KinView(ListView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Kin'
+        context['current_app'] = 'rulebook'
         return context
 
 class KinDetailView(DetailView):
@@ -170,6 +175,7 @@ class KinDetailView(DetailView):
         kin = get_object_or_404(self.get_queryset(), name=kin_name)
 
         context['title'] = kin.name
+        context['current_app'] = 'rulebook'
         return context
     
 class BackgroundsView(TemplateView):
@@ -179,6 +185,7 @@ class BackgroundsView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Backgrounds'
+        context['current_app'] = 'rulebook'
         return context
 
 class ModifiersView(TemplateView):
@@ -188,6 +195,7 @@ class ModifiersView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Modifiers'
+        context['current_app'] = 'rulebook'
         return context
 
 class TechniquesView(TemplateView):
@@ -197,6 +205,7 @@ class TechniquesView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Techniques'
+        context['current_app'] = 'rulebook'
         return context
 
 class CharacterCreationView(TemplateView):
@@ -206,6 +215,7 @@ class CharacterCreationView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Character Creation'
+        context['current_app'] = 'rulebook'
         return context
 
 class SkillsAndAbilitiesView(TemplateView):
@@ -215,6 +225,7 @@ class SkillsAndAbilitiesView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Skills and Abilities'
+        context['current_app'] = 'rulebook'
         return context
 
 class DefinitionsView(TemplateView):
@@ -224,4 +235,5 @@ class DefinitionsView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Definitions'
+        context['current_app'] = 'rulebook'
         return context

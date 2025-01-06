@@ -4,14 +4,151 @@
 {% block content %}
     <h1 class="text-center">Character Creation</h1>
     <p class="text-center">
-        In Age of Claritas, players assume the role of "Adventurer."" This is an unofficial title granted to those with heroic potential. Both skill and judgment are tested as characters face various trials in unique situations. 
+        In Age of Claritas, players assume the role of "Adventurer." This is an unofficial title granted to those with heroic potential. 
+        Both skill and judgment are tested as characters face various trials in unique situations. 
         This role-playing system presents challenges that are built to support and reward players' individual strengths as well as their ability to work as a team.
     </p>
-    <h2 class="text-center">Purchasing Skills and Abilities</h2>
-    <p class="text-center">A Skill is a Talent that can be used repeatedly without resting. Instead of purchasing multiple of the same Skill, you can upgrade its rank to increase its usefulness.</p>
-    <p class="text-center">An Ability is an expendable Talent that refreshes after resting. You can purchase multiple of the same Ability to have multiple uses available before resting.</p>
-    <p class="text-center">Refer to the chart below for costs of purchasing a Skill and the order of Ability purchases.</p>
-    
-<!-- Skill Ability Table -->
-    {% include 'rulebook/skill_ability_table.html' %}
+    <h2 class="text-center">How to Use the Character Creation Guide</h2>
+    <p class="text-center">For the best experience, utilize this guide on a tablet or computer.</p>
+    <ol>
+        <li>
+            Make a copy of the <a href="https://docs.google.com/document/d/1E5zoR2A1v8prJreC5J-ATIp97lMksiOl4dGM-1642dU/edit?usp=sharing">Online Character Sheet Template</a> or 
+            <a href="{% static 'docs/AoC Character Sheet Template.docx' %}" download>Download a Word Document</a> version.
+        </li>
+        <li>Keep this page open, work alongside it, and fill in each field unless prompted not to.</li>
+        <li>
+            Use the popup links on the page for quick access to relevant information for each field.
+            <ul>
+                <li>If you would rather not view this information in a popup link, you can navigate through the "Rulebook" menu and select the desired page.</li>
+            </ul>
+        </li>
+        <li>Complete all fields.</li>
+        <li>Once finished, <a href="mailto:info@ageofclaritas.com" title="Character Sheet Email Link" data-popup-processed="true">submit it</a> via the email link and print a copy to bring with you to the event.</li>
+        <li>Congratulations! You just made a brand new character in the world of Claritas. We are excited to meet them!</li>
+    </ol>
+
+    <div class="character-creation-table border border-black p-4">
+        <h1 class="text-center">Character Creation Guide</h1>
+        <table class="table p-1">
+            <tr>
+                <th style="width:85%">Player Name:</th>
+                <th style="width:15%">Age:</th>
+            </tr>
+            <tr>
+                <td>Your name goes here.</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th style="width:85%">Character Name:</th>
+                <th style="width:15%">Age:</th>
+            </tr>
+            <tr>
+                <td>Select a name for your character. Pick a Kin first, as it may help you decide.</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th style="width:60%"><a href="#">HP:</a></th>
+                <th style="width:20%"><a href="#">XP:</a></th>
+                <th style="width:20%"><a href="#">Copper:</a></th>
+            </tr>
+            <tr>
+                <td>Start with 3 HP. More HP may be acquired.</td>
+                <td>Buy talents with XP.</td>
+                <td>100 copper.</td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th><a href="{% url 'rulebook:kin' %}" onclick="openMiniWindow(event, this.href)">Kin:</a></th>
+            </tr>
+            <tr>
+                <td>Your Kin primarily determines how your character will look and behave.</td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th style="width:50%"><a href="{% url 'rulebook:classes' %}" onclick="openMiniWindow(event, this.href)">Class:</a></th>
+                <th style="width:50%"></th>
+            </tr>
+            <tr>
+                <td>Select a base Class.</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th><a href="{% url 'rulebook:modifiers' %}" onclick="openMiniWindow(event, this.href)">Modifier:</a></th>
+            </tr>
+            <tr>
+                <td>Players typically do not start with a Modifier.</td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th><a href="{% url 'rulebook:backgrounds' %}" onclick="openMiniWindow(event, this.href)">Backgrounds:</a></th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>Choose two backgrounds for your character.</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th style="width:33.33%"><a href="{% url 'rulebook:backgrounds' %}" onclick="openMiniWindow(event, this.href)">Attributes:</a></th>
+                <th style="width:33.33%"></th>
+                <th style="width:33.33%"></th>
+            </tr>
+            <tr>
+                <td>This will be decided by your Kin.</td>
+                <td>Choose one you can start with.</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th><a href="{% url 'rulebook:modifiers' %}" onclick="openMiniWindow(event, this.href)">Techniques:</a></th>
+            </tr>
+            <tr>
+                <td>Techniques are earned in game. Most classes start with none, but Warriors start with a <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" onclick="openMiniWindow(event, this.href)">Title</a>.</td>
+            </tr>
+        </table>
+
+        <table class="table p-1">
+            <tr>
+                <th style="width:50%"><a href="{% url 'rulebook:skills_and_abilities' %}" onclick="openMiniWindow(event, this.href)">Skills:</a></th>
+                <th style="width:50%"><a href="{% url 'rulebook:skills_and_abilities' %}" onclick="openMiniWindow(event, this.href)">Abilities:</a></th>
+            </tr>
+            <tr>
+                <td>Choose 1 free <a href="#" onclick="openMiniWindow(event, this.href)">Weapon Dexterity</a>.</td>
+                <td>Select <a href="{% url 'rulebook:wizard_detail' %}" onclick="openMiniWindow(event, this.href)">Magic Spells</a> if you are a Wizard.</td>
+            </tr>
+            <tr>
+                <td>With 15 XP, select up to 3 R1 Skills and Abilities.</td>
+                <td>Wizards get 1 R1 spell in 1 School of Magic.</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="{% static '/js/miniwindow.js' %}"></script>
 {% endblock %}

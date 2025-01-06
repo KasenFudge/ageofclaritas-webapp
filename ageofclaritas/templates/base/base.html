@@ -2,39 +2,31 @@
 
 <!doctype html>
 <html lang="en" data-bs-theme="light">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Age of Claritas - {{ title }}</title>
-    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
 
-    <!-- Bootstrap 5.3-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Include Font Awesome via CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS pages -->
-    <link href="{% static '/css/base.css' %}" rel="stylesheet">
-  </head>
-  <body>
-    <div class="wrapper">
+    {% block header_block %}
+        {% include 'base/base_head.html' %}
+    {% endblock %}
 
-      <!-- Navbar -->
-      {% include 'base_nav.html' %}
-      <!-- End of Navbar -->
+    <body>
+        <div class="wrapper">
 
-      <!-- Page Content -->
-      <div class="content mx-3">
-        {% block content %}
-      
-        {% endblock %}
-      </div>
-      <!-- End of Page Content -->
+        <!-- Navbar -->
+        {% include 'base_nav.html' %}
+        <!-- End of Navbar -->
 
-      <!-- Footer -->
-      {% include 'base_footer.html' %}
-      <!-- End of Footer -->
+        <!-- Page Content -->
+        <div class="content">
+            {% block content %}
 
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
+            {% endblock %}
+        </div>
+        <!-- End of Page Content -->
+
+        <!-- Footer -->
+        {% include 'base_footer.html' %}
+        <!-- End of Footer -->
+
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
 </html>
