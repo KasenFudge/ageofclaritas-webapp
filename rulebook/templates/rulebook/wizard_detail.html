@@ -42,33 +42,33 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 d-flex justify-content-center align-items-center">
-                <img src="{% static 'images/WizardDetailImage.jpg' %}" class="page-image" style="max-width: 130vh;">
+                <img src="{% static 'images/WizardDetailImage.jpg' %}" class="page-image">
             </div>
         </div>
     </div>
     
-    <h1 class="text-center">Elemental</h1>
+    <h1 class="text-center class-header">Elemental</h1>
     {% for elemental, talents in elementals %}
         <div class="anchor-container">
-            <h2 class="text-center">{{ elemental.name }}</h2>
+            <h2 class="text-center class-header">{{ elemental.name }}</h2>
             <a class="anchor" id="{{ elemental.name.lower }}"></a>
         </div>
         {% if talents.tier_1 %}
-            <h3 class="text-center">Tier 1</h3>
+            <h3 class="text-center class-header">Tier 1</h3>
             {% for talent in talents.tier_1 %}
                 <b class="talent-name">{{ talent.name }}</b>
                 {{ talent.description|safe }}
             {% endfor %}
         {% endif %}
         {% if talents.tier_2 %}
-            <h3 class="text-center">Tier 2</h3>
+            <h3 class="text-center class-header">Tier 2</h3>
             {% for talent in talents.tier_2 %}
                 <b class="talent-name">{{ talent.name }}</b>
                 {{ talent.description|safe }}
             {% endfor %}
         {% endif %}
         {% if talents.tier_3 %}
-            <h3 class="text-center">Tier 3</h3>
+            <h3 class="text-center class-header">Tier 3</h3>
             {% for talent in talents.tier_3 %}
                 <b class="talent-name">{{ talent.name }}</b>
                 {{ talent.description|safe }}
@@ -76,10 +76,10 @@
         {% endif %}
     {% endfor %}
 
-    <h1 class="text-center">Manifold</h1>
+    <h1 class="text-center class-header">Manifold</h1>
     {% for manifold, talents in manifolds %}
         <div class="anchor-container">
-            <h2 class="text-center">{{ manifold.name }}</h2>
+            <h2 class="text-center class-header">{{ manifold.name }}</h2>
             <a class="anchor" id="{{ manifold.name.lower }}"></a>
         </div>
         {% if manifold.name == "Neuromancy" %}
@@ -88,13 +88,13 @@
                 Mental Fortitude is required to use all Tier 2 and 3 neuromantic spells and is refreshed every encounter.
             </p>
             {% if talents.tier_1 %}
-                <h3 class="text-center">Tier 1</h3>
+                <h3 class="text-center class-header">Tier 1</h3>
                 {% for talent in talents.tier_1 %}
                     {{ talent.description|safe }}
                 {% endfor %}
             {% endif %}
             {% if talents.tier_2 %}
-                <h3 class="text-center">Tier 2</h3>
+                <h3 class="text-center class-header">Tier 2</h3>
                 <p class="text-center">
                 <p class="text-center">
                     All spells in this tier cost mental fortitude to use. Mental Fortitude cost is 
@@ -113,7 +113,7 @@
                 {% endfor %}
             {% endif %}
             {% if talents.tier_3 %}
-                <h3 class="text-center">Tier 3</h3>
+                <h3 class="text-center class-header">Tier 3</h3>
                 <p class="text-center">
                     All spells in this tier cost Mental Fortitude to use.
                 </p>
@@ -123,21 +123,21 @@
             {% endif %}
         {% else %}
             {% if talents.tier_1 %}
-                <h3 class="text-center">Tier 1</h3>
+                <h3 class="text-center class-header">Tier 1</h3>
                 {% for talent in talents.tier_1 %}
                     <b class="talent-name">{{ talent.name }}</b>
                     {{ talent.description|safe }}
                 {% endfor %}
             {% endif %}
             {% if talents.tier_2 %}
-                <h3 class="text-center">Tier 2</h3>
+                <h3 class="text-center class-header">Tier 2</h3>
                 {% for talent in talents.tier_2 %}
                     <b class="talent-name">{{ talent.name }}</b>
                     {{ talent.description|safe }}
                 {% endfor %}
             {% endif %}
             {% if talents.tier_3 %}
-                <h3 class="text-center">Tier 3</h3>
+                <h3 class="text-center class-header">Tier 3</h3>
                 {% for talent in talents.tier_3 %}
                     <b class="talent-name">{{ talent.name }}</b>
                     {{ talent.description|safe }}

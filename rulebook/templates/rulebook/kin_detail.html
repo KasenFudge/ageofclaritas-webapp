@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <h1 class="text-center">{{ kin.name }}</h1>
+    <h1 class="text-center kin-header">{{ kin.name }}</h1>
 
     <p>
         <b>Size: </b> {{ kin.size }}
@@ -43,9 +43,9 @@
         </div>
     </div>
 
-    <h1 class="text-center">Attributes</h1>
+    <h1 class="text-center kin-header">Attributes</h1>
     {% for attribute in kin.attribute_set.all %}
-    <p class="talent-name">
+    <p class="attribute-name">
         <b>{% if not attribute.can_start_with %}*{% endif %}{{ attribute.name }}</b>
         <ul>
             <li>{{ attribute.description|safe }}</li>

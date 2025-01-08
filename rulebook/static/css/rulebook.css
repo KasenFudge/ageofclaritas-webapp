@@ -5,7 +5,7 @@ table, tr, td {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 5px
+    margin-top: 0px
 }
 
 .page-image {
@@ -19,131 +19,231 @@ table {
     border: 2px solid black;
 }
 
-.talent-name {
+.class-header,
+.kin-header {
+    padding-top: 15px;
+    padding-bottom: 0px;
+}
+
+h1.class-header,
+h1.kin-header {
+    padding-top: 25px;
+}
+
+h2.class-header,
+h2.kin-header {
+    padding-top: 20px;
+}
+
+.talent-name,
+.attribute-name {
     display: inline-block;
     margin-top: 15px;
 }
 
 /* Rulebook Index CSS */
-.box-header-link {
-    font-size: 2rem;
-}
+    .box-header-link {
+        font-size: 2rem;
+    }
 
-.table-of-contents-box {
-    margin-top: 20px;
-}
+    .table-of-contents-box {
+        margin-top: 20px;
+    }
 
-.contents-text {
-    padding-left: 15px;
-    padding-right: 15px;
-}
+    .contents-text {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
 /* End of Rulebook Index CSS */
 
 /* Kin Carousel CSS */
-.carousel-control-prev,
-.carousel-control-next {
-    width: auto; /* Removes the default full-side width */
-    height: 40px; /* Restrict height to fit the icon */
-    padding: 20px 0px; /* Add some padding around the icons for easier clicking */
-    background: none; /* Remove background from the button area */
-    border: none; /* Ensure there’s no border */
-    display: flex; /* Center the icon inside */
-    justify-content: center;
-    align-items: center;
-    top: 50%;
-    z-index: 1; /* Keep above other elements */
-    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5)); /* Add a shadow for visibility */
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    width: 40px; /* Set desired size for the icon */
-    height: 40px;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-    border-radius: 50%; /* Circular */
-    transition: background-color 0.3s ease;
-}
-
-.carousel-control-prev-icon:hover,
-.carousel-control-next-icon:hover {
-    background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
-    transform: scale(1.1); /* Slightly larger on hover */
-    transition: background-color 0.3s ease; /* Smooth hover transition */
-    filter: drop-shadow(4px 4px 7px rgba(0, 0, 0, 0.6));
-}
-
-.carousel-control-prev {
-    left: 20px; /* Position the control closer to the left edge */
-}
-
-.carousel-control-next {
-    right: 20px; /* Position the control closer to the right edge */
-}
-
-.carousel-indicator-dark {
-    background-color: rgba(100, 100, 100, 0.5) !important;
-    transition: background-color 0.3s ease;
-}
-
-.carousel-indicator-dark:hover {
-    background-color: rgba(35, 35, 35, 0.5) !important;
-    transform: scale(1.1);
-    transition: background-color 0.3s ease;
-}
-
-.carousel-indicator-dark.active {
-    background-color: rgba(0, 0, 0, 0.8) !important;
-    transform: scale(1.1);
-}
-
-.carousel-control-prev-icon:focus, 
-.carousel-control-next-icon:focus,
-.carousel-indicator-dark:focus {
-    outline: 2px solid rgba(0, 0, 0, 0.8);
-    outline-offset: 2px;
-}
-
-#kinCarousel {
-    margin: 20px auto; /* Centered horizontally */
-    max-width: 75%;
-    height: auto;
-}
-
-.carousel-inner .carousel-item img {
-    max-width: 100%;
-    max-height: 70vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-}
-
-@media (max-width: 768px) {
-    #kinCarousel {
-        margin: 10px 20px; /* Adjust margins for smaller screens */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: auto; /* Removes the default full-side width */
+        height: 40px; /* Restrict height to fit the icon */
+        padding: 20px 0px; /* Add some padding around the icons for easier clicking */
+        background: none; /* Remove background from the button area */
+        border: none; /* Ensure there’s no border */
+        display: flex; /* Center the icon inside */
+        justify-content: center;
+        align-items: center;
+        top: 50%;
+        z-index: 1; /* Keep above other elements */
+        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5)); /* Add a shadow for visibility */
     }
 
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
-        width: 20px;
-        height: 20px; /* Smaller controls for mobile */
+        width: 40px; /* Set desired size for the icon */
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        border-radius: 50%; /* Circular */
+        transition: background-color 0.3s ease;
     }
-}
+
+    .carousel-control-prev-icon:hover,
+    .carousel-control-next-icon:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
+        transform: scale(1.1); /* Slightly larger on hover */
+        transition: background-color 0.3s ease; /* Smooth hover transition */
+        filter: drop-shadow(4px 4px 7px rgba(0, 0, 0, 0.6));
+    }
+
+    .carousel-control-prev {
+        left: 20px; /* Position the control closer to the left edge */
+    }
+
+    .carousel-control-next {
+        right: 20px; /* Position the control closer to the right edge */
+    }
+
+    .carousel-indicator-dark {
+        background-color: rgba(100, 100, 100, 0.5) !important;
+        transition: background-color 0.3s ease;
+    }
+
+    .carousel-indicator-dark:hover {
+        background-color: rgba(35, 35, 35, 0.5) !important;
+        transform: scale(1.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .carousel-indicator-dark.active {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        transform: scale(1.1);
+    }
+
+    .carousel-control-prev-icon:focus, 
+    .carousel-control-next-icon:focus,
+    .carousel-indicator-dark:focus {
+        outline: 2px solid rgba(0, 0, 0, 0.8);
+        outline-offset: 2px;
+    }
+
+    #kinCarousel {
+        margin: 20px auto; /* Centered horizontally */
+        max-width: 75%;
+        height: auto;
+    }
+
+    .carousel-inner .carousel-item img {
+        max-width: 100%;
+        max-height: 70vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+
+    @media (max-width: 768px) {
+        #kinCarousel {
+            margin: 10px 20px; /* Adjust margins for smaller screens */
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 20px;
+            height: 20px; /* Smaller controls for mobile */
+        }
+    }
 /* End of Kin Carousel CSS */
 
 /* Character Creation CSS */
-.character-creation-table h1 {
-    margin-top: 0px;
-    margin-bottom: 10px;
-}
+    .character-creation-table h1 {
+        margin-top: 0px;
+        margin-bottom: 10px;
+    }
 
-.character-creation-table table, 
-.character-creation-table tr {
-    border: none;
-}
+    .character-creation-table table, 
+    .character-creation-table tr {
+        border: none;
+    }
 /* End Of Character Creation CSS */
 
 /* Skills and Abilities CSS */
-.skill-table tr,
-.skill-table td {
-    border: none;
-}
+    .costs-table, .order-table {
+        padding: 0px;
+        margin: -1px;
+    }
+    
+    /* Costs Table CSS */      
+        .costs-table table {
+            margin: 0;
+        }
+
+        .costs-table tr,
+        .costs-table td {
+            border: none;
+        }
+    /* End of Costs Table CSS */
+
+    /* Orders Table CSS */
+        .skill-ability-table {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+        
+        .ability-row {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .skill-block,
+        .ability-block {
+            border: 1px solid #000;
+            margin: -1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* Move to .purchase-first, .already-owned, etc. */
+            background-color: white;
+            font-weight: bold;
+        }
+
+        .skill-block {
+            width: 50px;
+            height: 50px;
+            margin: 20px 0px;
+        }
+
+        .ability-block {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .hidden {
+            border: none;
+            background-color: transparent;
+        }
+        
+        .arrow {
+            font-size: 20pt; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px;
+        }
+        
+        .skill-order-label {
+            margin: 20px 50px 20px 10px;
+        }
+        
+        .ability-order-label {
+            display: inline;
+            margin: 20px 50px 20px 10px;
+        }
+
+    /* End of Orders Table CSS */
+/* End of Skills and Abilities CSS */
+

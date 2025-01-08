@@ -2,10 +2,18 @@
 {% load static %}
 
 {% block class_info %}
-    <h1 id="{{ base_class.name.lower }}" class="text-center">{{ base_class.name }}</h1>
+    <h1 id="{{ base_class.name.lower }}" class="text-center class-header">{{ base_class.name }}</h1>
+    {% if base_class.name == "Ranger" %}
+        <p class="text-center class-header">
+            *All throwing weapons deal 1 less damage if used with a talent. Unless otherwise clarified, Ranger, Marksmen, 
+            and Stalker skills and abilities must be used with ranged weapons.
+        </p>
+    {% elif base_class.name == "Spellbinder" %}
+        <p class="text-center class-header">Unless clarified otherwise, talents can be cast with a weapon hit or spell packet.</p>
+    {% endif %}
 
     {% if base_skills %}
-        <h2 class="text-center">Skills</h2>
+        <h2 class="text-center class-header">Skills</h2>
         {% for skill in base_skills %}
             <b class="talent-name">{{ skill.name }}</b>
             {{ skill.description|safe }}
@@ -13,7 +21,7 @@
     {% endif %}
 
     {% if base_abilities %}
-        <h2 class="text-center">Abilities</h2>
+        <h2 class="text-center class-header">Abilities</h2>
         {% for ability in base_abilities %}
             <b class="talent-name">{{ ability.name }}</b>
             {{ ability.description|safe }}
@@ -22,11 +30,17 @@
 
     {% for subclass, talents in subclasses %}
         <div class="anchor-container">
-            <h1 class="text-center">{{ subclass.name }}</h1>
+            <h1 class="text-center class-header">{{ subclass.name }}</h1>
             <a class="anchor" id="{{ subclass.name.lower }}"></a>
         </div>
+        {% if subclass.name == "Soothsayer" %}
+            <p class="text-center class-header">*The player cannot target themselves with Soothsayer targeted talents</p>
+        {% elif subclass.name == "Lord" %}
+            <p class="text-center class-header">*The player cannot target themselves with Lord targeted talents</p>
+        {% endif %}
+
         {% if talents.skills %}
-            <h2 class="text-center">Skills</h2>
+            <h2 class="text-center class-header">Skills</h2>
             {% for skill in talents.skills %}
                 <b class="talent-name">{{ skill.name }}</b>
                 {{ skill.description|safe }}
@@ -34,7 +48,7 @@
         {% endif %}
 
         {% if talents.abilities %}
-            <h2 class="text-center">Abilities</h2>
+            <h2 class="text-center class-header">Abilities</h2>
             {% for ability in talents.abilities %}
                 <b class="talent-name">{{ ability.name }}</b>
                 {{ ability.description|safe }}
@@ -44,7 +58,7 @@
 
     {% if base_class.name == "Warrior" %}
         <div class="anchor-container">
-            <h1 class="text-center">Warrior Titles</h1>
+            <h1 class="text-center class-header">Warrior Titles</h1>
             <a class="anchor" id="warrior-titles"></a>
         </div>
         <p>
@@ -53,22 +67,22 @@
             R1s are free, R2s and R3s are 5 XP. The warrior must accomplish a task to earn each rank. Warriors start with 1 active slot and gets
             another active when they join the guild and another active when they join the faction.
         </p>
-        <h2 class="text-center">Weapon Titles</h2>
+        <h2 class="text-center class-header">Weapon Titles</h2>
         {% for title in weapon_titles %}
             <b class="talent-name">{{ title.name }}</b>
             {{ title.description|safe }}
         {% endfor %}
-        <h2 class="text-center">Armor Titles</h2>
+        <h2 class="text-center class-header">Armor Titles</h2>
         {% for title in armor_titles %}
             <b  class="talent-name">{{ title.name }}</b>
             {{ title.description|safe }}
         {% endfor %}
-        <h2 class="text-center">Support Titles</h2>
+        <h2 class="text-center class-header">Support Titles</h2>
         {% for title in support_titles %}
             <b class="talent-name">{{ title.name }}</b>
             {{ title.description|safe }}
         {% endfor %}
-        <h2 class="text-center">Other Titles</h2>
+        <h2 class="text-center class-header">Other Titles</h2>
         {% for title in other_titles %}
             <b class="talent-name">{{ title.name }}</b>
             {{ title.description|safe }}

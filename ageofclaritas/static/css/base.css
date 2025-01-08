@@ -2,17 +2,19 @@
 html, body {
     height: 100%;
     margin: 0;
+    
 }
 
 .wrapper {
-    min-height: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 .content {
     margin-left: 7vw;
-    margin-right: 7vw
+    margin-right: 7vw;
+    flex: 1; /* Forces Footer to the bottom of page even if there's little content */
 }
 
 .navbar-logo {
@@ -32,12 +34,11 @@ html, body {
 
 a {
     font-weight: bold;
-    text-decoration: none;
+    color: black;
 }
 
 a:hover {
     color: blue;
-    text-decoration: underline;
 }
 
 .anchor-container {
@@ -46,18 +47,16 @@ a:hover {
   
 .anchor {
     position: absolute;
-    top: -65px; /* given the fixed header is 50px tall, and you want 15px padding */
+    top: -100px;
     left: 0px;
 }
 
-h1 {
-    margin-top: 15px;
+/* For Spacing Stuff because default behaviour is bad */
+p, ul, .table {
+    margin: 0px;
 }
 
-h2, h3 {
-    margin-top: 10px;
-}
-
-p, ul {
-    margin-bottom: 0px;
+/* Make Page Headers more visually distinct from sticky Navbar */
+.page-header {
+    padding-top: 10px;
 }
