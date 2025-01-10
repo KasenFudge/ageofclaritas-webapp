@@ -8,21 +8,10 @@ table {
     margin-top: 0px
 }
 
-.page-image {
-    /* Set Max Width Property for specific images for sizing differently */
-    max-width: 100%;
-    max-height: 90vh;
-    width: auto;
-    height: auto;
-    padding: 2px;
-    margin: 20px 0px;
-    border: 2px solid black;
-}
-
 .class-header,
 .kin-header {
     padding-top: 15px;
-    padding-bottom: 0px;
+    padding-bottom: 15px;
 }
 
 h1.class-header,
@@ -160,9 +149,12 @@ h2.kin-header {
 /* End Of Character Creation CSS */
 
 /* Skills and Abilities CSS */
-    .costs-table, .order-table {
+
+    /* Icky Bootstrap Grid has Padding and neat Background Color */
+    .costs-table,
+    .orders-table {
         padding: 0px;
-        margin: -1px;
+        background-color: #f4f4f4;
     }
     
     /* Costs Table CSS */      
@@ -174,30 +166,39 @@ h2.kin-header {
         .costs-table td {
             border: none;
         }
+
+        .costs-table th,
+        .costs-table td {
+            padding: 8px;
+        }
+
+        .costs-table h5 {
+            font-weight: bold;
+        }
     /* End of Costs Table CSS */
 
-    /* Orders Table CSS */
-        .skill-ability-table {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-        
+    /* Orders Table CSS */        
+        /* All Spacing And Orientation stuff of the Blocks */
+
+        /* 
+        Pyramid's center content vertically to better line up with other pyramids
+        */
         .pyramid {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 10px;
         }
         
+        /* 
+        Ability Rows handle Horizontal Centering to make the Pyramid Structure in 
+        the pyramid flex container
+        */
         .ability-row {
             display: flex;
             justify-content: center;
         }
         
+        /* General Style for the Blocs */
         .skill-block,
         .ability-block {
             border: 1px solid #000;
@@ -205,45 +206,132 @@ h2.kin-header {
             display: flex;
             justify-content: center;
             align-items: center;
-
-            /* Move to .purchase-first, .already-owned, etc. */
-            background-color: white;
-            font-weight: bold;
         }
 
+        /* y-margin for spacing (top & bottom) */
+        .pyramid,
         .skill-block {
-            width: 50px;
-            height: 50px;
-            margin: 20px 0px;
+            margin: 15px 0px;
         }
 
+        /*
+        Skill blocks get bigger as we go to emphasize more of an upgrade
+        */
+        .skill-block.purchase-first {
+            width: 60px;
+            height: 60px;
+        }
+
+        .skill-block.purchase-second {
+            width: 65px;
+            height: 65px;
+        }
+
+        .skill-block.purchase-third {
+            width: 70px;
+            height: 70px;
+        }
+
+        /*
+        Ability blocks smaller to emphasize more of a lesser, expendable resource
+        */
         .ability-block {
             width: 40px;
             height: 40px;
         }
-        
+
+        /* Size and Spacing for the Arrows, handle distance between Blocks Here */
+        .arrow {
+            font-size: 16pt; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 25px;
+        }
+
+        /* The Labels by the Blocks, keep them a little apart */
+        .skill-order-label,
+        .ability-order-label {
+            margin: 20px 40px 20px 0px;
+            font-weight: bold;
+        }
+
+
+        /* Block Colors and Style */
+        /* Still want blocks in Rows 2 & 3 for earlier pyramids for orientation */
         .hidden {
             border: none;
             background-color: transparent;
         }
-        
-        .arrow {
-            font-size: 20pt; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 15px;
-        }
-        
-        .skill-order-label {
-            margin: 20px 50px 20px 10px;
-        }
-        
-        .ability-order-label {
-            display: inline;
-            margin: 20px 50px 20px 10px;
+
+        .already-owned,
+        .purchase-first,
+        .purchase-second,
+        .purchase-third {
+            font-weight: bold !important;
         }
 
-    /* End of Orders Table CSS */
+        .already-owned {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        .purchase-first {
+            color: white;
+            background: linear-gradient(to bottom, #00bfff, #0073ff);
+            border: 1px solid #0056b3;
+        }
+        
+        .purchase-second {
+            color: white;
+            background: linear-gradient(to bottom, #0073ff, #0000ff);
+            border: 1px solid #003f80;
+        }
+        
+        .purchase-third {
+            color: white;
+            background: linear-gradient(to bottom, #0000ff, #00008b);
+            border: 1px solid #00005f;
+        }
+        
+        
+        /* The Purchase Key Styling, Mainly Spacing */
+        .talent-purchase-key h5 {
+            margin-top: 10px;
+            margin-bottom: 0px;
+            font-weight: bold;
+        }
+        
+        .talent-purchase-key table {
+            margin: 15px 10%;
+            width: auto; /* Override the Default of 100% Width set earlier */
+        }
+
+        .talent-purchase-key td {
+            padding: 10px 20px;
+        }
+        /* End of Orders Table CSS */
+
+    /* Responsive Borders */
+    .talent-purchase-key {
+        border-bottom: 1px solid black;
+    }
+
+    .costs-table {
+        border-bottom: none !important;
+    }
+
+    @media (min-width: 1200px) {
+
+        .costs-table {
+            border-right: none !important;
+            border-bottom: 1px solid black !important;
+        }
+
+        .talent-purchase-key {
+            border-bottom: none;
+            border-right: 1px solid black;
+        }
+    }
 /* End of Skills and Abilities CSS */
 

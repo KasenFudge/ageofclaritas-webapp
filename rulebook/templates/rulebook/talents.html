@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 class="text-center page-header">Talents</h1>
+    <p class="text-center">
+        Talents encompass the things a character knows and can do. There are some Talents that a character begins the game with, such as Backgrounds. 
+        Others are earned through gameplay or purchased with XP, such as Techniques or Abilities. Listed below are each type of Talent and a description of them.
+    </p>
+    {% include 'rulebook/skills_and_abilities.html' %}
+    {% include 'rulebook/attributes.html' %}
+    {% include 'rulebook/techniques.html' %}
+    {% include 'rulebook/modifiers.html' %}
+    {% include 'rulebook/backgrounds.html' %}
+{% endblock %}

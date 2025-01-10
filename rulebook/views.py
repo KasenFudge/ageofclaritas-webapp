@@ -177,36 +177,6 @@ class KinDetailView(DetailView):
         context['title'] = kin.name
         context['current_app'] = 'rulebook'
         return context
-    
-class BackgroundsView(TemplateView):
-    template_name = "rulebook/backgrounds.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['title'] = 'Backgrounds'
-        context['current_app'] = 'rulebook'
-        return context
-
-class ModifiersView(TemplateView):
-    template_name = "rulebook/modifiers.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['title'] = 'Modifiers'
-        context['current_app'] = 'rulebook'
-        return context
-
-class TechniquesView(TemplateView):
-    template_name = "rulebook/techniques.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['title'] = 'Techniques'
-        context['current_app'] = 'rulebook'
-        return context
 
 class CharacterCreationView(TemplateView):
     template_name = "rulebook/character_creation.html"
@@ -218,13 +188,13 @@ class CharacterCreationView(TemplateView):
         context['current_app'] = 'rulebook'
         return context
 
-class SkillsAndAbilitiesView(TemplateView):
-    template_name = "rulebook/skills_and_abilities.html"
+class TalentsView(TemplateView):
+    template_name = "rulebook/talents.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Skills and Abilities'
+        context['title'] = 'Talents'
         context['current_app'] = 'rulebook'
         return context
 

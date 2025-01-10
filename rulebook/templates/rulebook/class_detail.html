@@ -3,11 +3,47 @@
 
 {% block class_info %}
     <h1 id="{{ base_class.name.lower }}" class="text-center class-header">{{ base_class.name }}</h1>
-    {% if base_class.name == "Ranger" %}
-        <p class="text-center class-header">
+    
+    {% if base_class.name == "Noble" %}
+    
+        <h3 class="text-center section-header">Ludus</h3>
+        <p class="text-center">
+            Ludus is a side game for nobles building a town that is focused on resource growth and management. With each event a player 
+            attends, their town will produce resources. These resources can be used to produce items, earn money, or mobilize the noble's 
+            armed forces. Resources can also be invested back into various projects to make them more efficient or effective. There are 
+            three main areas: production, economy, and military. The Noble can invest directly into the area or invest in a project in one 
+            of those areas.
+        </p>
+
+        <b class="talent-name">Production</b>
+        <p></p>
+
+        <b class="talent-name">Economy</b>
+        <p></p>
+
+        <b class="talent-name">Military</b>
+        <p></p>
+
+        <b class="talent-name">Projects</b>
+        <p></p>
+    {% elif base_class.name == "Ranger" %}
+        <p class="text-center">
             *All throwing weapons deal 1 less damage if used with a talent. Unless otherwise clarified, Ranger, Marksmen, 
             and Stalker skills and abilities must be used with ranged weapons.
         </p>
+
+        <h3 class="text-center" id="ranger-arrows">Arrows</h3>
+        <p class="text-center">
+            Arrows are automatically retrieved after an encounter unless otherwise specified. 
+            Rangers can make free wood arrows at rest, replenishing their stock. Any non-rangers who use a bow and arrows will have a quiver as well; however, 
+            all arrows will be shoddily crafted and add no damage to their shots.
+        </p>
+        <b class="talent-name">Ranger Arrow Types:</b>
+        <ul>
+            <li><b>Not in the Guild</b> - Arrows are made out of wood and add 1 base damage to their shots.</li>
+            <li><b>In the Guild</b> - Arrows are made of bronze and add 2 base damage to their shots.</li>
+            <li><b>In either of the Factions</b> - Arrows are made of steel and add 3 base damage to their shots.</li>
+        </ul>
     {% elif base_class.name == "Spellbinder" %}
         <p class="text-center class-header">Unless clarified otherwise, talents can be cast with a weapon hit or spell packet.</p>
     {% endif %}

@@ -4,7 +4,7 @@
 {% block content %}
     <h1 class="text-center page-header">Classes</h1>
     <p class="text-center">
-        A character's Class determines the <a href="{% url 'rulebook:skills_and_abilities' %}">Skills and Abilities</a> they have access to and influences their playstyle. 
+        A character's Class determines the <a href="{% url 'rulebook:talents' %}#skills-and-abilities">Skills and Abilities</a> they have access to and influences their playstyle. 
         Click on a Class or Faction to view their Class-specific Talents on a separate page.
     </p>
     <p class="text-center">
@@ -13,13 +13,14 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12 d-flex justify-content-center align-items-center">
+            <div class="col-3"></div>
+            <div class="col-6 d-flex justify-content-center align-items-center">
                 <img src="{% static 'images/4guysHouseOctavious.jpg' %}" class="page-image">
             </div>
         </div>
     </div>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></h1>
     <p class="text-center">
         Clerics have control of Interplanary powers, which they use to heal and protect themselves and others. They can further 
         support their team by crafting elixirs to aid them in various situations. As interplanary powers are a form of magic, 
@@ -28,7 +29,7 @@
         supportive <a href="{% url 'rulebook:class_detail' 'cleric' %}#soothsayer">Soothsayers</a>.
     </p>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:class_detail' 'noble' %}">Noble</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'noble' %}">Noble</a></h1>
     <p class="text-center">
         Nobles are negotiators, leaders, and tacticians. Far from the lofty, arrogant, braggart stereotype, these Nobles usually 
         have pockets and minds that are deeper than they let on. In-game, Nobles have a small town to manage that gives them a 
@@ -38,7 +39,7 @@
         by directing the fight as a <a href="{% url 'rulebook:class_detail' 'noble' %}#lord">Lord</a>.
     </p>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:class_detail' 'ranger' %}">Ranger</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'ranger' %}">Ranger</a></h1>
     <p class="text-center">
         Rangers excel at everything from guarding nobles to stopping hostile warbands in their tracks. These versatile survivors 
         tend to specialize in the field of archery, and all Rangers use a bow or some other type of ranged weapon. Skilled in 
@@ -47,7 +48,7 @@
         or war <a href="{% url 'rulebook:class_detail' 'ranger' %}#marksman">Marksman</a>.
     </p>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:class_detail' 'rogue' %}">Rogue</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'rogue' %}">Rogue</a></h1>
     <p class="text-center">
         A surprisingly wide variety of people train in this mysterious, stealthy discipline. The less honorable among them have the 
         ability to master the darker side of combat, employing poisons and stealthy armor-piercing stabs. Some Rogues with a 
@@ -58,7 +59,7 @@
         <a href="{% url 'rulebook:class_detail' 'rogue' %}#thief">Thieves</a>.
     </p>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:class_detail' 'spellbinder' %}">Spellbinder</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'spellbinder' %}">Spellbinder</a></h1>
     <p class="text-center">
         Spellbinders are fighters that use power from the void. They mainly use this power to counter magic; they specialize in 
         fighting Wizards by nullifying or reflecting their spells, teleporting to the source of magic, etc. Spellbinders can 
@@ -69,7 +70,7 @@
         to dispose of enemies as quickly as possible. 
     </p>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:class_detail' 'warrior' %}">Warrior</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'warrior' %}">Warrior</a></h1>
     <p class="text-center">
         Warriors typically train to high proficiency in their weapon(s) of choice and specialize in plain weapons fighting. This 
         allows them to deal and withstand relatively high damage, even more so depending on their specialization. By utilizing 
@@ -80,7 +81,7 @@
         enemies or <a href="{% url 'rulebook:class_detail' 'warrior' %}#champion">Champions</a> who prefer dueling one on one.
     </p>
 
-    <h1 class="text-center"><a href="{% url 'rulebook:wizard_detail' %}">Wizard</a></h1>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:wizard_detail' %}">Wizard</a></h1>
     <p class="text-center">
         Wizards study magic with scientific discipline. They are the authority on the arcane. Wizards train to learn two of six 
         possible magic types. Magic is split into two categories: elemental and manifold. Elemental magics include control over 
@@ -94,4 +95,5 @@
         Each Wizard is innately able to use one magic from each category. They can also create scrolls and enchant gems with a 
         myriad of effects. Wizards cannot use any metal weapons or wear metal armor.
     </p>
+    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'classless' %}">Classless Talents</a></h1>
 {% endblock %}

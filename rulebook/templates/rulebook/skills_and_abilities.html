@@ -1,331 +1,138 @@
-{% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-    <h1 class="text-center">Purchasing Skills and Abilities</h1>
-    <p class="text-center">A Skill is a Talent that can be used repeatedly without resting. Instead of purchasing multiple of the same Skill, you can upgrade its rank to increase its usefulness.</p>
-    <p class="text-center">An Ability is an expendable Talent that refreshes after resting. You can purchase multiple of the same Ability to have multiple uses available before resting.</p>
-    <p class="text-center">Refer to the chart below for costs of purchasing a Skill and the order of Ability purchases.</p>
+<div class="anchor-container">
+    <h2 class="text-center section-header">Skills and Abilities</h2>
+    <a class="anchor" id="skills-and-abiliites"></a>
+</div>
+<p>
+    A Player's <a href="{% url 'rulebook:classes' %}">Class</a> determines the skills and abilities they have access to in most cases. Every player has access to 
+    <a href="{% url 'rulebook:class_detail' 'classless' %}">Classlsss Talents</a> in addition to those offered by their class.
+</p>
+<p>A Skill is a Talent that can be used repeatedly without resting. Instead of purchasing multiple of the same Skill, you can upgrade its rank to increase its usefulness.</p>
+<p>An Ability is an expendable Talent that refreshes after resting. You can purchase multiple of the same Ability to have multiple uses available before resting.</p>
+<p>Refer to the chart below for costs of purchasing a Skill and the order of Ability purchases. An associated in-game achievement is usually a prerequisite for purchasing a Rank 3 Talent.</p>
 
-    <div class="container-fluid mt-3">
-        <div class="row d-flex align-items-stretch">
-            <div class="col-xl-2 col-12 border border-black d-flex flex-column costs-table">
-                <table class="table p-3 flex-grow-1">
-                    <tr>
-                        <th>Costs:</th>
-                    </tr>
-                    <tr>
-                        <td><b>Rank I Skills</b> - 5XP</td>
-                    </tr>
-                    <tr>
-                        <td><b>Rank II Skills</b> - 10XP</td>
-                    </tr>
-                    <tr>
-                        <td><b>Rank III Skills</b> - 15XP</td>
-                    </tr>
-                    <tr class="border-top border-black">
-                        <td><b>Rank I Abilities</b> - 5XP</td>
-                    </tr>
-                    <tr>
-                        <td><b>Rank II Abilities</b> - 5XP</td>
-                    </tr>
-                    <tr>
-                        <td><b>Rank III Abilities</b> - 5XP</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col-xl-10 col-12 d-flex flex-column order-table">
-                <div class="skill-ability-table border border-black flex-grow-1">
+<div class="container-fluid my-3">
+    <div class="row d-flex align-items-stretch">
+        <div class="col-xl-2 col-12 border border-black d-flex flex-column flex-grow-1 costs-table">
+            <table class="border-0 p-3">
+                <tr>
+                    <th><h5>Costs:</h5></th>
+                </tr>
+                <tr>
+                    <td class="border-top border-black"><b>Rank I Skills</b> - 5XP</td>
+                </tr>
+                <tr>
+                    <td><b>Rank II Skills</b> - 10XP</td>
+                </tr>
+                <tr>
+                    <td><b>Rank III Skills</b> - 15XP</td>
+                </tr>
+                <tr class="border-top border-black">
+                    <td><b>Rank I Abilities</b> - 5XP</td>
+                </tr>
+                <tr>
+                    <td><b>Rank II Abilities</b> - 5XP</td>
+                </tr>
+                <tr>
+                    <td><b>Rank III Abilities</b> - 5XP</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-xl-10 col-12 border border-black d-flex flex-column flex-grow-1 orders-table">
+            <div class="row g-0">
+                <div class="col-xl-4 col-12 d-flex flex-column justify-content-center align-items-center talent-purchase-key">
+                    <h5>Purchase Order Key:</h5>
+                    <table class="text-center">
+                        <tr>
+                            <td class="already-owned">Already Owned</td>
+                            <td class="purchase-first">Purchase First</td>
+                        </tr>
+                        <tr>
+                            <td class="purchase-second">Purchase Second</td>
+                            <td class="purchase-third">Purchase Third</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-xl-8 col-12 d-flex flex-row flex-wrap justify-content-center align-items-center">
                     <h5 class="skill-order-label">Skill Purchase Order:</h5>
-                    <div class="skill-block">R1</div>
-                    <div class="arrow">→</div>
-                    <div class="skill-block">R2</div>
-                    <div class="arrow">→</div>
-                    <div class="skill-block">R3</div>
+                    <div class="skill-block purchase-first">R1</div>
+                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    <div class="skill-block purchase-second">R2</div>
+                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    <div class="skill-block purchase-third">R3</div>
                 </div>
-                <div class="skill-ability-table border border-top-0 border-black flex-grow-1">
-                    <div class="ability-order-label">
-                        <h5>Ability Purchase Order:</h5>
-                        <table class="table text-center">
-                            <tr>
-                                <td>Already Bought:</td>
-                            </tr>
-                            <tr>
-                                <td>Purchase First:</td>
-                            </tr>
-                            <tr>
-                                <td>Purchase Second:</td>
-                            </tr>
-                            <tr>
-                                <td>Purchase Third:</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="pyramid">
-                        <div class="ability-row">
-                            <div class="ability-block hidden"></div>
+            </div>
+            <div class="row g-0">
+                <div class="col-12 border-top border-black d-flex flex-row flex-wrap justify-content-center align-items-center">
+                    <h5 class="ability-order-label">Ability Purchase Order:</h5>
+                    <div class="d-flex flex-row flex-wrap justify-content-center align-items-center">
+                        <div class="pyramid">
+                            <div class="ability-row">
+                                <div class="ability-block hidden"></div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block hidden"></div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block purchase-first">R1</div>
+                            </div>
                         </div>
-                        <div class="ability-row">
-                            <div class="ability-block hidden"></div>
+                    
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    
+                        <div class="pyramid">
+                            <div class="ability-row">
+                                <div class="ability-block hidden"></div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block purchase-second">R2</div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block already-owned">R1</div>
+                                <div class="ability-block purchase-first">R1</div>
+                            </div>
                         </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R1</div>
+                    
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    
+                        <div class="pyramid">
+                            <div class="ability-row">
+                                <div class="ability-block purchase-third">R3</div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block already-owned">R2</div>
+                                <div class="ability-block purchase-second">R2</div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block already-owned">R1</div>
+                                <div class="ability-block already-owned">R1</div>
+                                <div class="ability-block purchase-first">R1</div>
+                            </div>
                         </div>
-                    </div>
-                
-                    <div class="arrow">→</div>
-                
-                    <div class="pyramid">
-                        <div class="ability-row">
-                            <div class="ability-block hidden"></div>
-                        </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R2</div>
-                        </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R1</div>
-                            <div class="ability-block">R1</div>
-                        </div>
-                    </div>
-                
-                    <div class="arrow">→</div>
-                
-                    <div class="pyramid">
-                        <div class="ability-row">
-                            <div class="ability-block">R3</div>
-                        </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R2</div>
-                            <div class="ability-block">R2</div>
-                        </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R1</div>
-                            <div class="ability-block">R1</div>
-                            <div class="ability-block">R1</div>
-                        </div>
-                    </div>
-                
-                    <div class="arrow">→</div>
-                
-                    <div class="pyramid">
-                        <div class="ability-row">
-                            <div class="ability-block">R3</div>
-                            <div class="ability-block">R3</div>
-                        </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R2</div>
-                            <div class="ability-block">R2</div>
-                            <div class="ability-block">R2</div>
-                        </div>
-                        <div class="ability-row">
-                            <div class="ability-block">R1</div>
-                            <div class="ability-block">R1</div>
-                            <div class="ability-block">R1</div>
-                            <div class="ability-block">R1</div>
+                    
+                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    
+                        <div class="pyramid">
+                            <div class="ability-row">
+                                <div class="ability-block already-owned">R3</div>
+                                <div class="ability-block purchase-third">R3</div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block already-owned">R2</div>
+                                <div class="ability-block already-owned">R2</div>
+                                <div class="ability-block purchase-second">R2</div>
+                            </div>
+                            <div class="ability-row">
+                                <div class="ability-block already-owned">R1</div>
+                                <div class="ability-block already-owned">R1</div>
+                                <div class="ability-block already-owned">R1</div>
+                                <div class="ability-block purchase-first">R1</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>        
-    </div>
-    
-{% endblock %}
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pyramid Structure</title>
-  <style>
-  	.skill-ability-table {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  background-color: #f4f4f4;
-}
-
-.pyramid {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 10px;
-}
-
-.ability-row {
-  display: flex;
-  justify-content: center;
-}
-
-.block {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #000;
-  margin: -1px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  font-weight: bold;
-}
-
-.hidden {
-	border: none;
-    background-color: transparent;
-}
-
-.arrow {
-  font-size: 20pt; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 15px;
-}
-
-.skill-order-label {
-	margin: 50px
-}
-
-.ability-order-label {
-	display: inline;
-    margin: 0px 50px 0px 10px;
-}
-
-  </style>
-</head>
-<body>
-<div class="container">
-	<h5 class="skill-order-label">Skill Purchase Order:</h5>
-	<div class="block">R1</div>
-    <div class="arrow">→</div>
-    <div class="block">R2</div>
-    <div class="arrow">→</div>
-    <div class="block">R3</div>
+        </div>
+    </div>        
 </div>
-<hr>
-<div class="container">
-	<div class="ability-order-label">
-		<h5>Ability Purchase Order:</h5>
-        <p>Already Bought:</p>
-        <p>Purchase First:</p>
-        <p>Purchase Second:</p>
-        <p>Purchase Third:</p>
-     </div>
-     
-  	<div class="pyramid">
-    	<div class="ability-row">
-      		<div class="block hidden"></div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block hidden"></div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R1</div>
-    	</div>
-  	</div>
-
-  	<div class="arrow">→</div>
-
-  	<div class="pyramid">
-    	<div class="ability-row">
-      		<div class="block hidden"></div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R2</div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R1</div>
-      		<div class="block">R1</div>
-    	</div>
-  	</div>
-
- 	<div class="arrow">→</div>
-
-  	<div class="pyramid">
-    	<div class="ability-row">
-      		<div class="block">R3</div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R2</div>
-      		<div class="block">R2</div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R1</div>
-      		<div class="block">R1</div>
-      		<div class="block">R1</div>
-    	</div>
-  	</div>
-
-  	<div class="arrow">→</div>
-
-  	<div class="pyramid">
-    	<div class="ability-row">
-      		<div class="block">R3</div>
-      		<div class="block">R3</div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R2</div>
-      		<div class="block">R2</div>
-      		<div class="block">R2</div>
-    	</div>
-    	<div class="ability-row">
-      		<div class="block">R1</div>
-      		<div class="block">R1</div>
-      		<div class="block">R1</div>
-			<div class="block">R1</div>
-		</div>
-	</div>
-</div>
-</body>
-</html>
-
-<!-- 
-<p><strong>
-    <span style="font-size:18px">
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    </span>
-    <span style="color:rgba(0,24,237,1);">R3</span>
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <span style="color:rgba(212,212,212,1);">R3</span>
-    &nbsp; &nbsp; &nbsp;
-    <span style="color:rgba(0,24,237,1);">R3</span>
-</strong></p>
-<p><strong>
-<span style="font-size:18px;">
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <span style="color:rgba(0,119,179,1);">R2</span>
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <span style="color:rgba(212,212,212,1);">R2</span> &nbsp; &nbsp; &nbsp;<span style="color:rgba(0,119,179,1);">R2</span>
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <span style="color:rgba(212,212,212,1);">R2&nbsp; &nbsp; &nbsp;R2</span>
-    &nbsp; &nbsp; &nbsp;<span style="color:rgba(0,119,179,1);">R2</span>
-</span>
-</strong></p>
-<p><span style="font-size: 18">
-<strong>
-    <span style="color:rgba(59,229,255,1);">R1</span>&nbsp; &nbsp;
-</strong>→
-<strong>
-    &nbsp; &nbsp; <span style="color:rgba(212,212,212,1);">R1</span>&nbsp; &nbsp; &nbsp;
-    <span style="color:rgba(59,229,255,1);">R1</span>&nbsp; &nbsp; 
-</strong>→
-<strong>
-    &nbsp; &nbsp; <span style="color:rgba(212,212,212,1);">R1&nbsp; &nbsp; &nbsp;R1</span>
-    &nbsp; &nbsp; &nbsp;<span style="color:rgba(59,229,255,1);">R1</span>&nbsp; &nbsp; 
-</strong>→
-<strong>
-    &nbsp; &nbsp; <span style="color:rgba(212,212,212,1);">R1&nbsp; &nbsp; &nbsp;R1&nbsp; &nbsp; &nbsp;R1</span>
-    &nbsp; &nbsp; &nbsp;<span style="color:rgba(59,229,255,1);">R1</span>
-</strong>
-</span></p>
-
-<p class="wb-stl-custom10"><strong><span style="font-size:18px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:rgba(0,24,237,1);">R3</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:rgba(212,212,212,1);">R3</span>&nbsp; &nbsp; &nbsp;<span style="color:rgba(0,24,237,1);">R3</span></span></strong></p>
-
-<p class="wb-stl-custom10"><strong><span style="font-size:18px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:rgba(0,119,179,1);">R2</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:rgba(212,212,212,1);">R2</span>&nbsp; &nbsp; &nbsp;<span style="color:rgba(0,119,179,1);">R2</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:rgba(212,212,212,1);">R2&nbsp; &nbsp; &nbsp;R2</span>&nbsp; &nbsp; &nbsp;<span style="color:rgba(0,119,179,1);">R2</span></span></strong></p>
-
-<p class="wb-stl-custom10"><strong><span style="font-size:18px;"><span style="color:rgba(59,229,255,1);">R1</span>&nbsp; &nbsp; </span></strong><span style="font-size:18px;">→</span><strong><span style="font-size:18px;">&nbsp; &nbsp; <span style="color:rgba(212,212,212,1);">R1</span>&nbsp; &nbsp; &nbsp;<span style="color:rgba(59,229,255,1);">R1</span>&nbsp; &nbsp; </span></strong><span style="font-size:18px;">→</span><strong><span style="font-size:18px;">&nbsp; &nbsp; <span style="color:rgba(212,212,212,1);">R1&nbsp; &nbsp; &nbsp;R1</span>&nbsp; &nbsp; &nbsp;<span style="color:rgba(59,229,255,1);">R1</span>&nbsp; &nbsp; </span></strong><span style="font-size:18px;">→</span><strong><span style="font-size:18px;">&nbsp; &nbsp; <span style="color:rgba(212,212,212,1);">R1&nbsp; &nbsp; &nbsp;R1&nbsp; &nbsp; &nbsp;R1</span>&nbsp; &nbsp; &nbsp;<span style="color:rgba(59,229,255,1);">R1</span></span></strong></p>
--->

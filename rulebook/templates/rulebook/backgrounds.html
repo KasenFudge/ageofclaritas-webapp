@@ -1,22 +1,23 @@
-{% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-    <h1 class="text-center page-header">Backgrounds</h1>
-    <p class="text-center">
-        Backgrounds aren't associated with a specific Class or Kin. Utilize them to support your character's backstory or bolster your skills. 
-        Most Backgrounds are either informative or role-played. Each character starts with two Backgrounds.
-    </p>
-    <p class="text-center">
-        The more specific a background is, the more detailed the information your character will have access to within it. (i.e. if you choose geography, you'll know about general places. 
-        If you choose a city, you'll know about store locations, districts, and local politics, etc.)
-    </p>
+<div class="anchor-container">
+    <h2 class="text-center section-header">Backgrounds</h2>
+    <a class="anchor" id="backgrounds"></a>
+</div>
+<p>
+    Backgrounds aren't associated with a specific Class or Kin. Utilize them to support your character's backstory or bolster your skills. 
+    Most Backgrounds are either informative or role-played. Each character starts with two Backgrounds.
+</p>
+<p>
+    The more specific a background is, the more detailed the information your character will have access to within it. (i.e. if you choose geography, you'll know about general places. 
+    If you choose a city, you'll know about store locations, districts, and local politics, etc.)
+</p>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-center align-items-center">
-                <img src="{% static 'images/BackgroundsImage.jpg' %}" class="page-image">
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 d-flex justify-content-center align-items-center">
+            <img src="{% static 'images/Backgrounds.jpg' %}" class="page-image">
         </div>
     </div>
-{% endblock %}
+</div>

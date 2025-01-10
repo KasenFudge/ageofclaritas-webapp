@@ -1,19 +1,20 @@
-{% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-    <h1 class="text-center page-header">Techniques</h1>
+<div class="anchor-container">
+    <h2 class="text-center section-header">Techniques</h2>
+    <a class="anchor" id="techniques"></a>
+</div>
 
-    <p class="text-center">
-        Techniques are a type of Talent that modify how another Talent (typically an Ability) operates. They are earned in-game and have a wide array of effects. 
-        Techniques are earned by joining guilds, factions, and orders, as well as by completing quests. On rare occasions, special NPCs can teach a player a Technique.
-    </p>
-    
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-center align-items-center">
-                <img src="{% static 'images/TechniquesImage.jpg' %}" class="page-image">
-            </div>
+<p>
+    Techniques are a type of Talent that modify how another Talent (typically an Ability) operates. They are earned in-game and have a wide array of effects. 
+    Techniques are earned by joining guilds, factions, and orders, as well as by completing quests. On rare occasions, special NPCs can teach a player a Technique.
+</p>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 d-flex justify-content-center align-items-center">
+            <img src="{% static 'images/Techniques.jpg' %}" class="page-image">
         </div>
     </div>
-{% endblock %}
+</div>
