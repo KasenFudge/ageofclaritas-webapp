@@ -2,6 +2,28 @@
 {% load static %}
 
 {% block content %}
+    <!-- Button to toggle Sidebar -->
+    <button class="btn btn-warning sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel" data-bs-theme="dark">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarLabel">Class Navigation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav>
+                <ul>
+                    {% for kin_nav in kin_list %}
+                        <li><a href="{% url 'rulebook:kin_detail' kin_nav.name|lower %}">{{ kin_nav.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
     <h1 class="text-center kin-header">{{ kin.name }}</h1>
 
     <p>
@@ -43,7 +65,7 @@
         </div>
     </div>
 
-    <h1 class="text-center kin-header">Attributes</h1>
+    <h2 class="text-center">Attributes</h1>
     {% for attribute in kin.attribute_set.all %}
     <p class="attribute-name">
         <b>{% if not attribute.can_start_with %}*{% endif %}{{ attribute.name }}</b>

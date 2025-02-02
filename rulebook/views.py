@@ -173,9 +173,11 @@ class KinDetailView(DetailView):
 
         kin_name = self.kwargs.get('kin_name').capitalize()
         kin = get_object_or_404(self.get_queryset(), name=kin_name)
+        kin_list = self.get_queryset().order_by('name')
 
         context['title'] = kin.name
         context['current_app'] = 'rulebook'
+        context['kin_list'] = kin_list
         return context
 
 class CharacterCreationView(TemplateView):

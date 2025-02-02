@@ -2,17 +2,19 @@
 {% load static %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Page Information -->
-            <div class="col-12 col-xl-10 p-3">
-                {% block class_info %}
+    <!-- Button to toggle Sidebar -->
+    <button class="btn btn-warning sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+    </button>
 
-                {% endblock %}
-            </div>
-            <!-- End of Page Information -->
-            <!-- Sidebar -->
-            <div class="col-12 col-xl-2 d-none d-xl-block border-start p-xl-3">
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel" data-bs-theme="dark">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarLabel">Class Navigation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav>
                 <ul>
                     <li><a href="{% url 'rulebook:class_detail' 'classless' %}">Classless</a></li>
                     <li><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></li>
@@ -56,10 +58,13 @@
                         <li><a href="{% url 'rulebook:wizard_detail' %}#nueromancy">Neuromancy</a></li>
                     </ul>
                 </ul>
-            </div>
-            <!-- End of Sidebar-->
+            </nav>
         </div>
-        <!-- End of .row -->
     </div>
-    <!-- End of .container-fluid -->
+
+    <!-- Page Information -->
+    {% block class_info %}
+
+    {% endblock %}
+    <!-- End of Page Information -->
 {% endblock %}

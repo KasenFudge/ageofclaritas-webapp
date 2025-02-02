@@ -1,3 +1,15 @@
+/* Navigation Sidebars */
+.sidebar-toggle {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.offcanvas-body a {
+    color: #007bff;
+}
+
 table, tr, td {
     border: 1px solid black;
 }
