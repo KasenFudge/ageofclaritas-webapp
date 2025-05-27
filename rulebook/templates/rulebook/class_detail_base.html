@@ -2,65 +2,8 @@
 {% load static %}
 
 {% block content %}
-    <!-- Button to toggle Sidebar -->
-    <button class="btn btn-warning sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
-        <i class="bi bi-layout-sidebar-inset-reverse"></i>
-    </button>
-
     <!-- Sidebar -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel" data-bs-theme="dark">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="sidebarLabel">Class Navigation</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <nav>
-                <ul>
-                    <li><a href="{% url 'rulebook:class_detail' 'classless' %}">Classless</a></li>
-                    <li><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:class_detail' 'cleric' %}#paladin">Paladin</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'cleric' %}#soothsayer">Soothsayer</a></li>
-                    </ul>
-                    <li><a href="{% url 'rulebook:class_detail' 'noble' %}">Noble</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:class_detail' 'noble' %}#knight">Knight</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'noble' %}#lord">Lord</a></li>
-                    </ul>
-                    <li><a href="{% url 'rulebook:class_detail' 'ranger' %}">Ranger</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:class_detail' 'ranger' %}#marksman">Marksman</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'ranger' %}#stalker">Stalker</a></li>
-                    </ul>
-                    <li><a href="{% url 'rulebook:class_detail' 'rogue' %}">Rogue</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:class_detail' 'rogue' %}#assassin">Assassin</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'rogue' %}#thief">Thief</a></li>
-                    </ul>
-                    <li><a href="{% url 'rulebook:class_detail' 'spellbinder' %}">Spellbinder</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:class_detail' 'spellbinder' %}#harbinger">Harbinger</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'spellbinder' %}#sentinel">Sentinel</a></li>
-                    </ul>
-                    <li><a href="{% url 'rulebook:class_detail' 'warrior' %}">Warrior</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:class_detail' 'warrior' %}#champion">Champion</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'warrior' %}#berserker">Berserker</a></li>
-                        <li><a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles">Warrior Titles</a></li>
-                    </ul>
-                    <li><a href="{% url 'rulebook:wizard_detail' %}">Wizard</a></li>
-                    <ul>
-                        <li><a href="{% url 'rulebook:wizard_detail' %}#hydromancy">Hydromancy</a></li>
-                        <li><a href="{% url 'rulebook:wizard_detail' %}#kairomancy">Kairomancy</a></li>
-                        <li><a href="{% url 'rulebook:wizard_detail' %}#pyromancy">Pyromancy</a></li>
-                        <li><a href="{% url 'rulebook:wizard_detail' %}#avlomancy">Avlomancy</a></li>
-                        <li><a href="{% url 'rulebook:wizard_detail' %}#kinesiomancy">Kinesiomancy</a></li>
-                        <li><a href="{% url 'rulebook:wizard_detail' %}#nueromancy">Neuromancy</a></li>
-                    </ul>
-                </ul>
-            </nav>
-        </div>
-    </div>
+    {% include 'rulebook/class_sidebar.html' %}
 
     <!-- Page Information -->
     {% block class_info %}

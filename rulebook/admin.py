@@ -15,7 +15,14 @@ class TalentInline(SummernoteModelAdminMixin, admin.TabularInline):
             return 0  # No extra forms on editing existing objects
 
 class ClassAdmin(SummernoteModelAdmin):
-    summernote_fields = ("description",)
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        base_class_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior', 'Commoner']
+
+        if db_field.name == "base_class":
+            kwargs["queryset"] = Class.objects.filter(name__in=base_class_names)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+    summernote_fields = ("special_rules",)
     inlines = [TalentInline]
 
 admin.site.register(Class, ClassAdmin)

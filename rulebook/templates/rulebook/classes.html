@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block content %}
+    <!-- Sidebar -->
+    {% include 'rulebook/class_sidebar.html' %}
+
     <h1 class="text-center page-header">Classes</h1>
     <p class="text-center">
         A character's Class determines the <a href="{% url 'rulebook:talents' %}#skills-and-abilities">Skills and Abilities</a> they have access to and influences their playstyle. 

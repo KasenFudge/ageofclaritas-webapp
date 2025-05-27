@@ -46,6 +46,16 @@
         </ul>
     {% elif base_class.name == "Spellbinder" %}
         <p class="text-center class-header">Unless clarified otherwise, talents can be cast with a weapon hit or spell packet.</p>
+    {% elif base_class.name == "Commoner" %}
+        <p class="text-center class-header">
+            *This "class" is not official and was a wonderful April Fools joke by our GMs and largely made by Chase Harvey.
+        </p>
+        <p class="text-center class-header">
+            Commoners are less capable of withstanding mortal wounds, as such they start with 1 HP instead of 3 HP. Commoners do not gain experience but can 
+            instead expend Effort to get their abilities and skills. The player can get 1 Effort per downtime spent on learning a specific talent. 
+            The Effort costs of talents follow the normal XP costs (ie. Abilities cost 5). Effort acquired for 1 talent cannot be used for a different one. 
+            Commoners do not start with a weapon dexterity, armor or weapons. Commoners start with 10 Iron.
+        </p>
     {% endif %}
 
     {% if base_skills %}
@@ -64,28 +74,28 @@
         {% endfor %}
     {% endif %}
 
-    {% for subclass, talents in subclasses %}
+    {% for item in factions %}
         <div class="anchor-container">
-            <h1 class="text-center class-header">{{ subclass.name }}</h1>
-            <a class="anchor" id="{{ subclass.name.lower }}"></a>
+            <h1 class="text-center class-header">{{ item.faction.name }}</h1>
+            <a class="anchor" id="{{ item.faction.name|lower }}"></a>
         </div>
-        {% if subclass.name == "Soothsayer" %}
+        {% if item.faction.name == "Soothsayer" %}
             <p class="text-center class-header">*The player cannot target themselves with Soothsayer targeted talents</p>
-        {% elif subclass.name == "Lord" %}
+        {% elif item.faction.name == "Lord" %}
             <p class="text-center class-header">*The player cannot target themselves with Lord targeted talents</p>
         {% endif %}
 
-        {% if talents.skills %}
+        {% if item.skills %}
             <h2 class="text-center class-header">Skills</h2>
-            {% for skill in talents.skills %}
+            {% for skill in item.skills %}
                 <b class="talent-name">{{ skill.name }}</b>
                 {{ skill.description|safe }}
             {% endfor %}
         {% endif %}
 
-        {% if talents.abilities %}
+        {% if item.abilities %}
             <h2 class="text-center class-header">Abilities</h2>
-            {% for ability in talents.abilities %}
+            {% for ability in item.abilities %}
                 <b class="talent-name">{{ ability.name }}</b>
                 {{ ability.description|safe }}
             {% endfor %}
@@ -118,8 +128,8 @@
             <b class="talent-name">{{ title.name }}</b>
             {{ title.description|safe }}
         {% endfor %}
-        <h2 class="text-center class-header">Other Titles</h2>
-        {% for title in other_titles %}
+        <h2 class="text-center class-header">Miscellaneous Titles</h2>
+        {% for title in misc_titles %}
             <b class="talent-name">{{ title.name }}</b>
             {{ title.description|safe }}
         {% endfor %}

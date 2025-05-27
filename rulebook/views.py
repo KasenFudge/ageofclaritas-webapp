@@ -4,6 +4,10 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from .models import Class, Kin
 
+# Macro to set the current app
+def SetCurrentApp(context):
+    context['current_app'] = 'rulebook'
+
 # Create your views here.
 class IndexView(TemplateView):
     template_name = "rulebook/index.html"
@@ -12,7 +16,7 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Rulebook'
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         return context
 
 class ClassesView(TemplateView):
@@ -25,7 +29,7 @@ class ClassesView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Classes'
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         return context
 
 class ClassDetailView(ListView):
@@ -33,13 +37,15 @@ class ClassDetailView(ListView):
     template_name = "rulebook/class_detail.html"
     context_object_name = "class_data"
 
-    allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior', 'Classless',]
+    allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior', 'Classless', 'Commoner']
 
     def get_queryset(self):
-        # Filter classes that have subclasses and are within allowed names
-        return Class.objects.prefetch_related('talent_set', 'subclasses', 'subclasses__talent_set').filter(
-            name__in=self.allowed_names
-        ).distinct()
+        # Filter classes that are within allowed_names and their factions (if any)
+        return Class.objects.prefetch_related(
+            'talent_set',
+            'factions',
+            'factions__talent_set'
+            ).filter(name__in=self.allowed_names).distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,34 +72,35 @@ class ClassDetailView(ListView):
                 # Add it to the front
                 base_abilities = [void] + list(base_abilities)
 
-        # Fetch subclasses and their talents
-        subclasses_ref = base_class.subclasses.all().order_by('name')
-        subclasses = [
-            (subclass, {
-                'skills': subclass.talent_set.filter(talent_type='skill').order_by('name'),
-                'abilities': subclass.talent_set.filter(talent_type='ability').order_by('name'),
-            })
-            for subclass in subclasses_ref
+        # Fetch factions and their talents
+        factions_ref = base_class.factions.all().order_by('name')
+        factions = [
+            {
+                'faction': faction,
+                'skills': faction.talent_set.filter(talent_type='skill').order_by('name'),
+                'abilities': faction.talent_set.filter(talent_type='ability').order_by('name'),
+            }
+            for faction in factions_ref
         ]
 
         # Fetch Warrior titles (Only for Warriors, empty elsewhere)
         weapon_titles = base_class.talent_set.filter(talent_type='weapon').order_by('name')
         armor_titles = base_class.talent_set.filter(talent_type='armor').order_by('name')
         support_titles = base_class.talent_set.filter(talent_type='support').order_by('name')
-        other_titles = base_class.talent_set.filter(talent_type='other').order_by('name')
+        misc_titles = base_class.talent_set.filter(talent_type='misc').order_by('name')
         
 
         # Add to context
         context['title'] = base_class.name
-        context['current_app'] = 'rulebook' 
+        SetCurrentApp(context) 
         context['base_class'] = base_class
         context['base_skills'] = base_skills
         context['base_abilities'] = base_abilities
-        context['subclasses'] = subclasses
+        context['factions'] = factions
         context['weapon_titles'] = weapon_titles
         context['armor_titles'] = armor_titles
         context['support_titles'] = support_titles
-        context['other_titles'] = other_titles
+        context['misc_titles'] = misc_titles
 
         return context
 
@@ -138,7 +145,7 @@ class WizardDetailView(ListView):
         ]
 
         context['title'] = 'Wizard & Magic'
-        context['current_app'] = 'rulebook' 
+        SetCurrentApp(context) 
         context['elementals'] = elementals
         context['manifolds'] = manifolds
 
@@ -156,7 +163,7 @@ class KinView(ListView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Kin'
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         return context
 
 class KinDetailView(DetailView):
@@ -176,7 +183,7 @@ class KinDetailView(DetailView):
         kin_list = self.get_queryset().order_by('name')
 
         context['title'] = kin.name
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         context['kin_list'] = kin_list
         return context
 
@@ -187,7 +194,7 @@ class CharacterCreationView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Character Creation'
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         return context
 
 class TalentsView(TemplateView):
@@ -197,7 +204,7 @@ class TalentsView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Talents'
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         return context
 
 class DefinitionsView(TemplateView):
@@ -207,5 +214,5 @@ class DefinitionsView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         context['title'] = 'Definitions'
-        context['current_app'] = 'rulebook'
+        SetCurrentApp(context)
         return context
