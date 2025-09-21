@@ -1,8 +1,8 @@
-from django.db.models import F
+from django.db.models import Prefetch, Case, When, IntegerField
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
-from .models import Class, Kin
+from .models import Class, ClassType, Talent, TalentType, Kin
 
 # Macro to set the current app
 def SetCurrentApp(context):
@@ -15,140 +15,121 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Rulebook'
         SetCurrentApp(context)
+        context['title'] = 'Rulebook'
         return context
 
 class ClassesView(TemplateView):
     template_name = "rulebook/classes.html"
-
-    # def get_queryset(self):
-    #    return Class.objects.order_by("name")
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Classes'
         SetCurrentApp(context)
+        context['title'] = 'Classes'
         return context
 
-class ClassDetailView(ListView):
+class ClassDetailView(DetailView):
     model = Class
     template_name = "rulebook/class_detail.html"
-    context_object_name = "class_data"
+    context_object_name = "base_class"
+    slug_field = "name"
+    slug_url_kwarg = "classname"
 
-    allowed_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior', 'Classless', 'Commoner']
+    def get_object(self, queryset=None):
+        slug = self.kwargs[self.slug_url_kwarg]
 
-    def get_queryset(self):
-        # Filter classes that are within allowed_names and their factions (if any)
-        return Class.objects.prefetch_related(
-            'talent_set',
-            'factions',
-            'factions__talent_set'
-            ).filter(name__in=self.allowed_names).distinct()
+        # Get every Talent
+        talents_qs = Talent.objects.annotate(
+            priority=Case(
+                When(name="Void", then=0),
+                default=1,
+                output_field=IntegerField(),
+            )
+        ).order_by("priority", "name")
+
+        # Get every Faction for the base class (excluding itself) and its associated talents
+        factions_qs = (
+            Class.objects
+                .filter(class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD])
+                .order_by("name")
+                .prefetch_related(Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"))
+        )
+
+        # Finally get the base class and its associated talents and factions
+        qs = (
+            Class.objects
+                .filter(class_type=ClassType.BASE_CLASS)
+                .prefetch_related(
+                    Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"),
+                    Prefetch("factions", queryset=factions_qs, to_attr="pref_factions"),
+                )
+        )
+        
+        # Return getting the object or fail for non Base Class classes.
+        return get_object_or_404(qs, name__iexact=slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        base_class = self.object
 
-        # Get the name parameter from the URL
-        class_name = self.kwargs.get('classname').capitalize()
+        # Give context ClassType and TalentType for comparison
+        context["ClassType"] = ClassType
+        context["TalentType"] = TalentType
 
-        # Validate the name against the allowed list
-        if class_name not in self.allowed_names:
-            raise Http404(f"The class '{class_name}' does not exist.")
+        # Helper to grab talents by type
+        def _grab_talent_type(kind, talent_set):
+            return [t for t in talent_set if t.talent_type == kind]
 
-        # Fetch the base class
-        base_class = get_object_or_404(self.get_queryset(), name=class_name)
-        base_skills = base_class.talent_set.filter(talent_type='skill').order_by('name')
-        base_abilities = base_class.talent_set.filter(talent_type='ability').order_by('name')
+        # Base Class Talent Set
+        talents = base_class.pref_talents
+        context['base_skills'] = _grab_talent_type(TalentType.SKILL, talents)
+        context['base_abilities'] = _grab_talent_type(TalentType.ABILITY, talents)
 
-        # Force Void Ability to be first for Spellbinder
-        if base_class.name == 'Spellbinder':
-            void = base_abilities.filter(name="Void").first()
+        # Factions
+        all_factions = base_class.pref_factions
+        factions = [f for f in all_factions if f.class_type == ClassType.FACTION]
+        elementals = [f for f in all_factions if f.class_type == ClassType.ELEMENTAL]
+        manifolds = [f for f in all_factions if f.class_type == ClassType.MANIFOLD]
 
-            if void:
-                # Remove the ability from the list
-                base_abilities = base_abilities.exclude(id=void.id)
-                # Add it to the front
-                base_abilities = [void] + list(base_abilities)
-
-        # Fetch factions and their talents
-        factions_ref = base_class.factions.all().order_by('name')
-        factions = [
+        context['factions'] = [
             {
                 'faction': faction,
-                'skills': faction.talent_set.filter(talent_type='skill').order_by('name'),
-                'abilities': faction.talent_set.filter(talent_type='ability').order_by('name'),
-            }
-            for faction in factions_ref
+                'skills': _grab_talent_type(TalentType.SKILL, faction.pref_talents),
+                'abilities': _grab_talent_type(TalentType.ABILITY, faction.pref_talents),
+            } 
+            for faction in factions
         ]
 
-        # Fetch Warrior titles (Only for Warriors, empty elsewhere)
-        weapon_titles = base_class.talent_set.filter(talent_type='weapon').order_by('name')
-        armor_titles = base_class.talent_set.filter(talent_type='armor').order_by('name')
-        support_titles = base_class.talent_set.filter(talent_type='support').order_by('name')
-        misc_titles = base_class.talent_set.filter(talent_type='misc').order_by('name')
-        
+        context['elementals'] = [
+            {
+                'faction': faction,
+                'tier_1': _grab_talent_type(TalentType.TIER_1, faction.pref_talents),
+                'tier_2': _grab_talent_type(TalentType.TIER_2, faction.pref_talents),
+                'tier_3': _grab_talent_type(TalentType.TIER_3, faction.pref_talents),
+            }
+            for faction in elementals
+        ]
+
+        context['manifolds'] = [
+            {
+                'faction': faction,
+                'tier_1': _grab_talent_type(TalentType.TIER_1, faction.pref_talents),
+                'tier_2': _grab_talent_type(TalentType.TIER_2, faction.pref_talents),
+                'tier_3': _grab_talent_type(TalentType.TIER_3, faction.pref_talents),
+            }
+            for faction in manifolds
+        ]
+
+        # Warrior Titles
+        context['weapon_titles'] = _grab_talent_type(TalentType.WEAPON_WARRIOR_TITLE, talents)
+        context['armor_titles'] = _grab_talent_type(TalentType.ARMOR_WARRIOR_TITLE, talents)
+        context['support_titles'] = _grab_talent_type(TalentType.SUPPORT_WARRIOR_TITLE, talents)
+        context['misc_titles'] = _grab_talent_type(TalentType.MISC_WARRIOR_TITLE, talents)
 
         # Add to context
+        SetCurrentApp(context)
         context['title'] = base_class.name
-        SetCurrentApp(context) 
-        context['base_class'] = base_class
-        context['base_skills'] = base_skills
-        context['base_abilities'] = base_abilities
-        context['factions'] = factions
-        context['weapon_titles'] = weapon_titles
-        context['armor_titles'] = armor_titles
-        context['support_titles'] = support_titles
-        context['misc_titles'] = misc_titles
-
-        return context
-
-class WizardDetailView(ListView):
-    model = Class
-    template_name = "rulebook/wizard_detail.html"
-    context_object_name = "wizard_data"
-
-
-    elemental_names = ['Hydromancy', 'Kairomancy', 'Pyromancy']
-    manifold_names = ['Kinesiomancy', 'Avlomancy', 'Neuromancy']
-
-    def get_queryset(self):
-        # Get all wizard schools for context processing
-        elemental_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.elemental_names)
-        manifold_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.manifold_names)
-        return elemental_classes | manifold_classes  # Combine the querysets for overall context
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Retrieve elemental and manifold classes
-        elemental_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.elemental_names).order_by('name')
-        manifold_classes = Class.objects.prefetch_related('talent_set').filter(name__in=self.manifold_names).order_by('name')
-
-        elementals = [
-            (elemental, {
-                'tier_1': elemental.talent_set.filter(talent_type='tier_1').order_by('name'),
-                'tier_2': elemental.talent_set.filter(talent_type='tier_2').order_by('name'),
-                'tier_3': elemental.talent_set.filter(talent_type='tier_3').order_by('name'),
-            })
-            for elemental in elemental_classes
-        ]
-
-        manifolds = [
-            (manifold, {
-                'tier_1': manifold.talent_set.filter(talent_type='tier_1').order_by('name'),
-                'tier_2': manifold.talent_set.filter(talent_type='tier_2').order_by('name'),
-                'tier_3': manifold.talent_set.filter(talent_type='tier_3').order_by('name'),
-            })
-            for manifold in manifold_classes
-        ]
-
-        context['title'] = 'Wizard & Magic'
-        SetCurrentApp(context) 
-        context['elementals'] = elementals
-        context['manifolds'] = manifolds
-
         return context
 
 class KinView(ListView):
@@ -162,8 +143,8 @@ class KinView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Kin'
         SetCurrentApp(context)
+        context['title'] = 'Kin'
         return context
 
 class KinDetailView(DetailView):
@@ -182,8 +163,9 @@ class KinDetailView(DetailView):
         kin = get_object_or_404(self.get_queryset(), name=kin_name)
         kin_list = self.get_queryset().order_by('name')
 
-        context['title'] = kin.name
+
         SetCurrentApp(context)
+        context['title'] = kin.name
         context['kin_list'] = kin_list
         return context
 

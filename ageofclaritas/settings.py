@@ -48,10 +48,15 @@ INSTALLED_APPS = [
     'django_summernote',
     
     'ageofclaritas',
+
     #Account and General Portion of the website
     'accounts.apps.AccountsConfig',
+    
     #Rulebook Portion of the website
     'rulebook.apps.RulebookConfig',
+
+    #Events and Surveys Portion of the website
+    'events.apps.EventsConfig'
 ]
 
 MIDDLEWARE = [

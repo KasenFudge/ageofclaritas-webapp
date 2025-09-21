@@ -2,60 +2,12 @@
 {% load static %}
 
 {% block class_info %}
-    <h1 id="{{ base_class.name.lower }}" class="text-center class-header">{{ base_class.name }}</h1>
+    <h1 id="{{ base_class.name|lower }}" class="text-center class-header">{{ base_class.name }}</h1>
     
-    {% if base_class.name == "Noble" %}
-    
-        <h3 class="text-center section-header">Ludus</h3>
-        <p class="text-center">
-            Ludus is a side game for nobles building a town that is focused on resource growth and management. With each event a player 
-            attends, their town will produce resources. These resources can be used to produce items, earn money, or mobilize the noble's 
-            armed forces. Resources can also be invested back into various projects to make them more efficient or effective. There are 
-            three main areas: production, economy, and military. The Noble can invest directly into the area or invest in a project in one 
-            of those areas.
-        </p>
-
-        <b class="talent-name">Production</b>
-        <p></p>
-
-        <b class="talent-name">Economy</b>
-        <p></p>
-
-        <b class="talent-name">Military</b>
-        <p></p>
-
-        <b class="talent-name">Projects</b>
-        <p></p>
-    {% elif base_class.name == "Ranger" %}
-        <p class="text-center">
-            *All throwing weapons deal 1 less damage if used with a talent. Unless otherwise clarified, Ranger, Marksmen, 
-            and Stalker skills and abilities must be used with ranged weapons.
-        </p>
-
-        <h3 class="text-center" id="ranger-arrows">Arrows</h3>
-        <p class="text-center">
-            Arrows are automatically retrieved after an encounter unless otherwise specified. 
-            Rangers can make free wood arrows at rest, replenishing their stock. Any non-rangers who use a bow and arrows will have a quiver as well; however, 
-            all arrows will be shoddily crafted and add no damage to their shots.
-        </p>
-        <b class="talent-name">Ranger Arrow Types:</b>
-        <ul>
-            <li><b>Not in the Guild</b> - Arrows are made out of wood and add 1 base damage to their shots.</li>
-            <li><b>In the Guild</b> - Arrows are made of bronze and add 2 base damage to their shots.</li>
-            <li><b>In either of the Factions</b> - Arrows are made of steel and add 3 base damage to their shots.</li>
-        </ul>
-    {% elif base_class.name == "Spellbinder" %}
-        <p class="text-center class-header">Unless clarified otherwise, talents can be cast with a weapon hit or spell packet.</p>
-    {% elif base_class.name == "Commoner" %}
-        <p class="text-center class-header">
-            *This "class" is not official and was a wonderful April Fools joke by our GMs and largely made by Chase Harvey.
-        </p>
-        <p class="text-center class-header">
-            Commoners are less capable of withstanding mortal wounds, as such they start with 1 HP instead of 3 HP. Commoners do not gain experience but can 
-            instead expend Effort to get their abilities and skills. The player can get 1 Effort per downtime spent on learning a specific talent. 
-            The Effort costs of talents follow the normal XP costs (ie. Abilities cost 5). Effort acquired for 1 talent cannot be used for a different one. 
-            Commoners do not start with a weapon dexterity, armor or weapons. Commoners start with 10 Iron.
-        </p>
+    {% if base_class.has_special_rules %}
+        <div class="special_rules">
+            {{ base_class.special_rules|safe }}
+        </div>
     {% endif %}
 
     {% if base_skills %}
@@ -74,35 +26,106 @@
         {% endfor %}
     {% endif %}
 
-    {% for item in factions %}
+    {% for faction in factions %}
         <div class="anchor-container">
-            <h1 class="text-center class-header">{{ item.faction.name }}</h1>
-            <a class="anchor" id="{{ item.faction.name|lower }}"></a>
+            <h1 class="text-center class-header">{{ faction.faction.name }}</h1>
+            <a class="anchor" id="{{ faction.faction.name|lower }}"></a>
         </div>
-        {% if item.faction.name == "Soothsayer" %}
-            <p class="text-center class-header">*The player cannot target themselves with Soothsayer targeted talents</p>
-        {% elif item.faction.name == "Lord" %}
-            <p class="text-center class-header">*The player cannot target themselves with Lord targeted talents</p>
+        {% if faction.faction.has_special_rules %}
+            <div class="special_rules">
+                {{ faction.faction.special_rules|safe }}
+            </div>
         {% endif %}
 
-        {% if item.skills %}
+        {% if faction.skills %}
             <h2 class="text-center class-header">Skills</h2>
-            {% for skill in item.skills %}
+            {% for skill in faction.skills %}
                 <b class="talent-name">{{ skill.name }}</b>
                 {{ skill.description|safe }}
             {% endfor %}
         {% endif %}
 
-        {% if item.abilities %}
+        {% if faction.abilities %}
             <h2 class="text-center class-header">Abilities</h2>
-            {% for ability in item.abilities %}
+            {% for ability in faction.abilities %}
                 <b class="talent-name">{{ ability.name }}</b>
                 {{ ability.description|safe }}
             {% endfor %}
         {% endif %}
     {% endfor %}
+    
+    {% if elementals %}
+        <h1 class="text-center class-header">Elemental</h1>
+        {% for elemental in elementals %}
+            <div class="anchor-container">
+                <h2 class="text-center class-header">{{ elemental.faction.name }}</h2>
+                <a class="anchor" id="{{ elemental.faction.name|lower }}"></a>
+            </div>
+            {% if elemental.faction.has_special_rules %}
+                <div class="special_rules">
+                    {{ elemental.faction.special_rules|safe }}
+                </div>
+            {% endif %}
+            {% if elemental.tier_1 %}
+                <h3 class="text-center class-header">Tier 1</h3>
+                {% for talent in elemental.tier_1 %}
+                    <b class="talent-name">{{ talent.name }}</b>
+                    {{ talent.description|safe }}
+                {% endfor %}
+            {% endif %}
+            {% if elemental.tier_2 %}
+                <h3 class="text-center class-header">Tier 2</h3>
+                {% for talent in elemental.tier_2 %}
+                    <b class="talent-name">{{ talent.name }}</b>
+                    {{ talent.description|safe }}
+                {% endfor %}
+            {% endif %}
+            {% if elemental.tier_3 %}
+                <h3 class="text-center class-header">Tier 3</h3>
+                {% for talent in elemental.tier_3 %}
+                    <b class="talent-name">{{ talent.name }}</b>
+                    {{ talent.description|safe }}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if manifolds %}
+        <h1 class="text-center class-header">Manifold</h1>
+        {% for manifold in manifolds %}
+            <div class="anchor-container">
+                <h2 class="text-center class-header">{{ manifold.faction.name }}</h2>
+                <a class="anchor" id="{{ manifold.faction.name|lower }}"></a>
+            </div>
+            {% if manifold.faction.has_special_rules %}
+                <div class="special_rules">
+                    {{ manifold.faction.special_rules|safe }}
+                </div>
+            {% endif %}
+            {% if manifold.tier_1 %}
+            <h3 class="text-center class-header">Tier 1</h3>
+            {% for talent in manifold.tier_1 %}
+                <b class="talent-name">{{ talent.name }}</b>
+                {{ talent.description|safe }}
+            {% endfor %}
+            {% endif %}
+            {% if manifold.tier_2 %}
+                <h3 class="text-center class-header">Tier 2</h3>
+                {% for talent in manifold.tier_2 %}
+                    <b class="talent-name">{{ talent.name }}</b>
+                    {{ talent.description|safe }}
+                {% endfor %}
+            {% endif %}
+            {% if manifold.tier_3 %}
+                <h3 class="text-center class-header">Tier 3</h3>
+                {% for talent in manifold.tier_3 %}
+                    <b class="talent-name">{{ talent.name }}</b>
+                    {{ talent.description|safe }}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 
-    {% if base_class.name == "Warrior" %}
+    {% if weapon_titles or armor_titles or support_titles or misc_titles %}
         <div class="anchor-container">
             <h1 class="text-center class-header">Warrior Titles</h1>
             <a class="anchor" id="warrior-titles"></a>

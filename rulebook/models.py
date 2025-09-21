@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib import admin
-from enum import Enum
 
 # Create your models here.
 
@@ -15,11 +14,22 @@ class TalentType(models.TextChoices):
     TIER_2 = 'tier_2', 'Tier 2'
     TIER_3 = 'tier_3', 'Tier 3'
 
+class ClassType(models.TextChoices):
+    BASE_CLASS = 'base', 'Base Class'
+    FACTION = 'faction', 'Faction'
+    ELEMENTAL = 'elemental', 'Elemental'
+    MANIFOLD = 'manifold', 'Manifold'
+
 class Class(models.Model):
-    name = models.CharField()
-    base_class = models.ForeignKey("self", on_delete=models.CASCADE, related_name="factions", null=True)
+    name = models.CharField(max_length=20, unique=True)
+    guild = models.ForeignKey("self", on_delete=models.CASCADE, related_name="factions", null=True, blank=True)
+    class_type = models.CharField(
+        max_length=15,
+        choices=ClassType.choices,
+        default = ClassType.BASE_CLASS
+    )
     has_special_rules = models.BooleanField(default=False)
-    special_rules = models.CharField(null=True, blank=True, default=None)
+    special_rules = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -29,8 +39,12 @@ class Class(models.Model):
             self.special_rules = None
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = "Class"
+        verbose_name_plural = "Classes"
+
 class Talent(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True, default='')
     is_rankless = models.BooleanField(default=False)
     class_for = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
@@ -44,20 +58,24 @@ class Talent(models.Model):
         return self.name
     
 class Kin(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=20, unique=True)
     short_description = models.TextField(blank=True, default="")
     description = models.TextField(blank=True, default="")
-    size = models.CharField(blank=True, default="")
+    size = models.CharField(max_length=80, blank=True, default="")
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Kin"
+        verbose_name_plural = "Kin"
 
 class Kin_Image(models.Model):
     image = models.ImageField(upload_to="images/Kin/", blank=True)
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
 
 class Attribute(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
     can_start_with = models.BooleanField(default=True)
@@ -65,6 +83,7 @@ class Attribute(models.Model):
     def __str__(self):
         return self.name
     
+# TODO: Might not use this, plan is to incorporate 
 class Definition(models.Model):
     name = models.CharField()
     description = models.TextField()

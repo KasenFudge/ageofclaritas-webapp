@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Class, Talent, Kin, Kin_Image, Attribute, Definition
+from .models import Class, ClassType, Talent, TalentType, Kin, Kin_Image, Attribute, Definition
 from django_summernote.admin import SummernoteModelAdmin, SummernoteModelAdminMixin
 
 # Class Information
@@ -14,24 +14,29 @@ class TalentInline(SummernoteModelAdminMixin, admin.TabularInline):
         else:
             return 0  # No extra forms on editing existing objects
 
+class BaseClassFilter(admin.RelatedFieldListFilter):
+    def field_choices(self, field, request, model_admin):
+        qs = field.remote_field.model.objects.filter(class_type=ClassType.BASE_CLASS).order_by("name")
+        return [(c.pk, str(c)) for c in qs]
+
+@admin.register(Class)
 class ClassAdmin(SummernoteModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        base_class_names = ['Cleric', 'Noble', 'Ranger', 'Rogue', 'Spellbinder', 'Warrior', 'Commoner']
-
-        if db_field.name == "base_class":
-            kwargs["queryset"] = Class.objects.filter(name__in=base_class_names)
+        if db_field.name == "guild":
+            kwargs["queryset"] = Class.objects.filter(class_type=ClassType.BASE_CLASS).order_by('name')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
     summernote_fields = ("special_rules",)
     inlines = [TalentInline]
-
-admin.site.register(Class, ClassAdmin)
+    ordering = ['name',]
+    search_fields = ['name',]
+    list_filter = [('guild', BaseClassFilter)]
 
 # Kin Information
 
 class AttributeInline(SummernoteModelAdminMixin, admin.TabularInline):
     model = Attribute
-    summernote_fields = ("description",)
+    summernote_fields = ('description',)
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
@@ -41,6 +46,7 @@ class AttributeInline(SummernoteModelAdminMixin, admin.TabularInline):
 
 class KinImageInline(admin.TabularInline):
     model = Kin_Image
+    verbose_name_plural = 'Kin Art'
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
@@ -48,15 +54,16 @@ class KinImageInline(admin.TabularInline):
         else:
             return 0  # No extra forms on editing existing objects
 
+@admin.register(Kin)
 class KinAdmin(SummernoteModelAdmin):
-    summernote_fields = ("description",)
+    summernote_fields = ('description',)
     inlines = [AttributeInline, KinImageInline]
-
-admin.site.register(Kin, KinAdmin)
+    ordering = ['name',]
+    search_fields = ['name',]
 
 # Rulebook Definitions
 
+@admin.register(Definition)
 class DefinitionAdmin(SummernoteModelAdmin):
-    summernote_fields = ("name", "description",)
+    summernote_fields = ('name', 'description',)
 
-admin.site.register(Definition, DefinitionAdmin)
