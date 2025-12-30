@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Other Events</h1>
+    {% for event in other_events %}
+        <h2>{{ event.title }}</h2>
+    {% endfor %}
+{% endblock %}

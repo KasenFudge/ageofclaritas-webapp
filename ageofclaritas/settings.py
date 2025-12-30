@@ -49,13 +49,16 @@ INSTALLED_APPS = [
     
     'ageofclaritas',
 
-    #Account and General Portion of the website
+    # Core Pages such as index
+    'core.apps.CoreConfig',
+
+    # Account and General Portion of the website
     'accounts.apps.AccountsConfig',
     
-    #Rulebook Portion of the website
+    # Rulebook Portion of the website
     'rulebook.apps.RulebookConfig',
 
-    #Events and Surveys Portion of the website
+    # Events and Surveys Portion of the website
     'events.apps.EventsConfig'
 ]
 
@@ -163,3 +166,7 @@ MEDIA_ROOT = os.getenv("MEDIA_ROOT")
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'core:index'
+LOGOUT_REDIRECT_URL = 'core:index'

@@ -8,6 +8,10 @@ from .models import Class, ClassType, Talent, TalentType, Kin
 def SetCurrentApp(context):
     context['current_app'] = 'rulebook'
 
+# Macro to set the title of the page
+def SetPageTitle(context, title):
+    context['title'] = title
+
 # Create your views here.
 class IndexView(TemplateView):
     template_name = "rulebook/index.html"
@@ -16,7 +20,8 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         SetCurrentApp(context)
-        context['title'] = 'Rulebook'
+        SetPageTitle(context, "Rulebook")
+
         return context
 
 class ClassesView(TemplateView):
@@ -26,7 +31,8 @@ class ClassesView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         SetCurrentApp(context)
-        context['title'] = 'Classes'
+        SetPageTitle(context, "Classes")
+
         return context
 
 class ClassDetailView(DetailView):
@@ -127,9 +133,10 @@ class ClassDetailView(DetailView):
         context['support_titles'] = _grab_talent_type(TalentType.SUPPORT_WARRIOR_TITLE, talents)
         context['misc_titles'] = _grab_talent_type(TalentType.MISC_WARRIOR_TITLE, talents)
 
-        # Add to context
+        # Overarching Page Information
         SetCurrentApp(context)
-        context['title'] = base_class.name
+        SetPageTitle(context, base_class.name)
+
         return context
 
 class KinView(ListView):
@@ -144,7 +151,8 @@ class KinView(ListView):
         context = super().get_context_data(**kwargs)
 
         SetCurrentApp(context)
-        context['title'] = 'Kin'
+        SetPageTitle(context, "Kin")
+
         return context
 
 class KinDetailView(DetailView):
@@ -153,8 +161,8 @@ class KinDetailView(DetailView):
     context_object_name = "kin"
 
     def get_object(self):
-        kin_name = self.kwargs.get("kin_name").capitalize()
-        return Kin.objects.prefetch_related("attribute_set", "kin_image_set").get(name__iexact=kin_name)
+        kin_name = self.kwargs.get('kin_name').capitalize()
+        return Kin.objects.prefetch_related('attribute_set', 'kin_image_set').get(name__iexact=kin_name)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -163,10 +171,11 @@ class KinDetailView(DetailView):
         kin = get_object_or_404(self.get_queryset(), name=kin_name)
         kin_list = self.get_queryset().order_by('name')
 
-
         SetCurrentApp(context)
-        context['title'] = kin.name
+        SetPageTitle(context, kin.name)
+
         context['kin_list'] = kin_list
+
         return context
 
 class CharacterCreationView(TemplateView):
@@ -175,8 +184,9 @@ class CharacterCreationView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Character Creation'
         SetCurrentApp(context)
+        SetPageTitle(context, "Character Creation")
+
         return context
 
 class TalentsView(TemplateView):
@@ -185,8 +195,9 @@ class TalentsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Talents'
         SetCurrentApp(context)
+        SetPageTitle(context, "Talents")
+
         return context
 
 class DefinitionsView(TemplateView):
@@ -195,6 +206,7 @@ class DefinitionsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['title'] = 'Definitions'
         SetCurrentApp(context)
+        SetPageTitle(context, "Definitions")
+
         return context

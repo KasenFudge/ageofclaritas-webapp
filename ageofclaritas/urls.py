@@ -22,8 +22,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
-    path('', include('accounts.urls')),
+    path('', include('core.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('accounts.urls')),
     path('rulebook/', include('rulebook.urls')),
+    path('events/', include('events.urls'))
 ]
 
 # Serve media files during development
