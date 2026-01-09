@@ -1,13 +1,45 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import date
 
 # Create your models here.
 class Profile(models.Model):
+    # Relation to the Django User class to use Django built in User functionality
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    birthday = models.DateField(null=True, blank=True)
-    is_new_player = models.BooleanField(default=True)
+    
+    # Information on the users birthday for calculating age.
+    date_of_birth = models.DateField()
+    
+    # Users age as of a given date, calculated when called.
+    @property
+    def age_on(self, on_date: date) -> int | None:
+        if not self.date_of_birth:
+            return None
+        
+        dob = self.date_of_birth
+        years = on_date.year - dob.year
+        if (on_date.month, on_date.day) < (dob.month, dob.day): # Subtract 1 if birthday hasn't happened yet this year
+            years -= 1
+        return years
+    
+    @property
+    def age(self) -> int | None:
+        return self.age_on(timezone.localdate())
+    
+    # Minor status, calculated when called based off of the users age.
+    @property
+    def is_minor(self) -> bool | None:
+        if not self.age:
+            return None
+        age = self.age
+        if age >= 18:
+            return False
+        else:
+            return True
+    
+    # A registered parent account that can sign up younger players for events. Parent account must be an adult.
     parent_account = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='child_accounts')
-    is_minor = models.BooleanField(default=False)
 
     def has_signed_active_waiver(self):
         waiver = Waiver.objects.filter(is_active=True).first()
@@ -46,3 +78,4 @@ class WaiverSignature(models.Model):
 
     class Meta:
         unique_together = ('user', 'waiver')
+

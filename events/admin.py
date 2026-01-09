@@ -15,6 +15,7 @@ class EventAttendeeInline(admin.StackedInline):
     model = EventAttendee
     extra = 0
     fields = ['checked_in']
+    readonly_fields = ['arrival_time']
 
     def has_add_permission(self, request, obj=None):
         return False

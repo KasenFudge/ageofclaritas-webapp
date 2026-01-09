@@ -6,15 +6,13 @@ from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 
-from accounts.models import Profile
-import os
-
 # Create your models here.
 
 # --- Events ---
 class EventType(models.TextChoices):
     SENIOR = "senior", "Senior"
     JUNIOR = "junior", "Junior"
+    FEAST = "feast", "Feast"
     OTHER = "other", "Other"
 
 # --- Event Time Macros ---
@@ -70,7 +68,7 @@ class Event(models.Model):
     attendees = models.ManyToManyField(
         'accounts.Profile',
         through='EventAttendee',
-        related_name='events_attended'
+        related_name="events"
     )
 
     #TODO: Add a Default Image
@@ -90,16 +88,45 @@ class Event(models.Model):
     class Meta:
         ordering = ['-start_time',]
 
+class PaymentStatus(models.TextChoices):
+    PENDING = "pending", "Pending"
+    COMPLETE = "complete", "Complete"
+    REFUNDED = "refunded", "Refunded"
+
 class EventAttendee(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    # Event and User Details
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="registrations")
+    profile = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE, related_name="registrations")
+
+    # Check for arrival at the event
     checked_in = models.BooleanField(default=False)
 
+    # Time the user will arrive at the event.
+    arrival_time = models.TimeField()
+
+    base_price_cents = models.PositiveIntegerField(help_text="Base price before discounts, in cents")
+    final_price_cents = models.PositiveIntegerField(help_text="Final price charged, in cents")
+    discounts = models.JSONField(default=list, blank=True, help_text="Applied discounts snapshot")
+    additional_items = models.JSONField(default=list, blank=True, help_text="Additional items charged snapshot")
+
+    # Payment Information
+    payment_status = models.CharField(
+        max_length=10,
+        choices=PaymentStatus.choices,
+        default=PaymentStatus.PENDING
+    )
+    amount_cents = models.IntegerField()
+
     def __str__(self):
-        return self.user.user.get_full_name()
+        return self.profile.user.get_full_name()
 
     class Meta:
-        unique_together = ('event', 'user')
+        constraints = [
+            models.UniqueConstraint(
+                fields=["event", "profile"],
+                name="unique_registration",
+            )
+        ]
 
 # --- Pictures/Media for Events ---
 
@@ -219,7 +246,7 @@ class Choice(models.Model):
 
 class Response(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name="submissions")
-    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True,
+    user = models.ForeignKey('accounts.Profile', on_delete=models.SET_NULL, null=True, blank=True,
                              related_name="survey_submissions")
     submitted_at = models.DateTimeField(auto_now_add=True)
 

@@ -1,9 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView, DetailView, ListView
+from django.http import request
+from django.views.generic import DetailView, ListView, CreateView
 from datetime import datetime
 from django.utils import timezone
+from django.shortcuts import get_object_or_404, redirect
+from django.core.exceptions import PermissionDenied
 
-from .models import Event, EventType
+from .models import Event, EventType, EventAttendee
+from .forms import EventRegistrationForm
+from events.services.pricing import quote_price
 
 # Macro to set the current app
 def SetCurrentApp(context):
@@ -65,5 +70,80 @@ class EventDetailView(DetailView):
 
         return context
     
-class EventRegistrationView(LoginRequiredMixin, FormView):
+class EventRegistrationView(LoginRequiredMixin, CreateView):
+    model = EventAttendee
+    form_class = EventRegistrationForm
     template_name = "events/event_registration.html"
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, slug=kwargs["slug"])
+
+        profile = request.user.profile
+        if not profile.date_of_birth:
+            raise PermissionDenied("Birthdate required to register.")
+        event_date = self.event.start_time.date()
+        
+        # TODO: This may need to be updated to allow accounts with child accounts to register their children.
+        if self.event.event_type == EventType.JUNIOR and profile.age_on(event_date) >= 18:
+            if profile.age_on(event_date) < 8:
+                raise PermissionDenied("Children must be 8 or older to register.")
+            else:
+                raise PermissionDenied("Junior events are only for participants under 18.")
+        if self.event.event_type == EventType.SENIOR and profile.age_on(event_date) < 18:
+            raise PermissionDenied("Senior events are only for participants 18+.")
+
+        return super().dispatch(request, *args, **kwargs)
+    
+    # For FormView
+    # def get_context_data(self, **kwargs):
+    #      return super().get_context_data(**kwargs)
+    
+    # For CreateView
+    def get_form_kwargs(self):
+         kwargs = super().get_form_kwargs()
+         kwargs["event"] = self.event
+         kwargs["user"] = self.request.user
+         return kwargs
+
+    def form_valid(self, form):
+        profile = self.request.user.profile
+
+        # Stops duplicate registrations:
+        if EventAttendee.objects.filter(event=self.event, profile=profile).exists():
+            messages.info(self.request, "You are already registered for this event.")
+            return redirect("accounts:upcoming_events")
+
+        # Collect form data:
+        arrival_time = form.cleaned_data["arrival_time"]
+        student_discount = form.cleaned_data["student_discount"]
+        weapon_rental = form.cleaned_data["weapon_rental"]
+        payment_method = form.cleaned_data["payment_method"]
+
+        # Get the time at registration:
+        registration_time = timezone.now()
+
+        # Compute price quote:
+        quote = quote_price(
+            event=self.event,
+            profile=profile,
+            registration_time=registration_time,
+            arrival_time=arrival_time,
+            student_discount=student_discount,
+            weapon_rental=weapon_rental
+        )
+
+        # Create the attendee record:
+        attendee = form.save(commit=False)
+        attendee.event = self.event
+        attendee.profile = profile
+
+        # Store pricing information:
+        attendee.base_price_cents = quote.base_cents
+        attendee.final_price_cents = quote.final_cents
+        attendee.discounts = quote.discounts
+        attendee.additional_items = quote.additional_items
+
+        if payment_method == "online":
+            return redirect("accounts:payment_start", attendee_id=attendee.id) # Stand in redirect, adjust when making payment pages
+        
+        return redirect("accounts:upcoming_events")
