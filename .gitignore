@@ -299,11 +299,5 @@ FakesAssemblies/
 
 .vscode
 
-hackabot/discord_js/*.json
-hackabot/discord_js/*.txt
-hackabot/discord_js/authDict.json
-hackabot/discord_js/muteList.json
-*.pem
-
-poetry.toml
+# The virtual environment
 /.venv/

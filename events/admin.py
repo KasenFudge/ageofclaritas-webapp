@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import(
-    Event, EventAttendee, EventMedia,
+    Event, EventAttendee, EventPriceTier, EventMedia,
     Survey, Question, SurveyQuestion, Choice,
     Response, Answer
 )
@@ -11,15 +11,25 @@ from .models import(
 # Register your models here.
 
 # --- Event Creation ---
+class PriceTierInline(admin.StackedInline):
+    model = EventPriceTier
+    # Creates 0 instances of this inline on opening the Event Editor
+    extra = 0
+    # Classes this Inline inherits: 
+    # "collapse": UX will be collapsible
+    classes = ["collapse",]
+
+    verbose_name_plural = "Price Tiers: Only include if special pricing rules exist."
+
+    fields = ['label', 'min_age', 'max_age', 'price_cents']
+
 class EventAttendeeInline(admin.StackedInline):
     model = EventAttendee
+    # Creates 0 instances of this inline on opening the Event Editor
     extra = 0
-    fields = ['checked_in']
+
+    fields = ['profile', 'checked_in']
     readonly_fields = ['arrival_time']
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
 
 class EventMediaInline(admin.StackedInline):
     model = EventMedia
@@ -34,13 +44,16 @@ class EventAdmin(admin.ModelAdmin):
             "fields": ['title', 'event_type', 'registration_available', 'event_image'],
         }),
         ("Event Date/Time", {
-            "fields": ['start_time', 'end_time', 'downtime_due',],
+            "fields": ['start_time', 'end_time', 'downtime_due'],
+        }),
+        ("Event Price", {
+            "fields": ['base_price_cents'],
         }),
         ("General Picture Information", {
             "fields": ['photographer'],
         })
     )
-    inlines = [EventAttendeeInline, EventMediaInline]
+    inlines = [PriceTierInline, EventAttendeeInline, EventMediaInline]
     list_filter = ['event_type', 'start_time',]
     search_fields = ['title',]
 

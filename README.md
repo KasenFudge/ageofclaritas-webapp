@@ -2,7 +2,7 @@
 For environment files, which are not included in the GitHub Repo, you'll need to make a .env folder.
 I then recommend putting the following in it.\n
 Note that anything that looks empty, like "//" or "xxxxxxxxxxx" needs to be filled in on your end.
-## /.env/.env.app-ageofclaritas
+## ./.env
 This is an example of the environment file for the age of claritas application
 ```
 SECRET_KEY=//
@@ -24,15 +24,12 @@ OAUTH_HTTPS='http'
 LOG_ROOT=H:/data/aoc-django/
 STATIC_ROOT=H:/data/static-django/
 
-EMAIL_API_KEY=//
+EMAIL_API_KEY=xxxxxxxxxxx
 EMAIL_SENDER_DOMAIN=mg.ageofclaritas.tech
 EMAIL_FROM_EMAIL=noreply@ageofclaritas.tech
 EMAIL_FROM_NAME=Age of Claritas
 EMAIL_SERVER_EMAIL=team@ageofclaritas.tech
-```
-## /.env/.env.docker/
-This is an example of the environment file for the docker containers
-```
+
 #database
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=aocdb
@@ -44,7 +41,6 @@ DB_PORT=5432
 DB_PORT_EXT=5435
 
 #django/docker paths
-AOC_WEB_APP_ROOT=/home/ageofclaritas/apps/ageofclaritas-webapp # What is this path supposed to point to
 MEDIA_ROOT=/home/ageofclaritas/webdata/media
 STATIC_ROOT=/home/ageofclaritas/webdata/static
 LOG_ROOT=/home/ageofclaritas/logs/
@@ -53,12 +49,6 @@ LOG_ROOT=/home/ageofclaritas/logs/
 SECRET_KEY=xxxxxxxxxxx
 DEBUG=True
 ALLOWED_HOSTS='["127.0.0.1", "localhost", "45.55.63.12", "ageofclaritas.tech"]'
-
-#email
-EMAIL_API_KEY=xxxxxxxxxxx
-EMAIL_SENDER_DOMAIN=mg.ageofclaritas.tech
-EMAIL_FROM_EMAIL=noreply@ageofclaritas.tech
-EMAIL_SERVER_EMAIL=team@ageofclaritas.tech
 
 #docker
 PYTHON_VERSION=3.12.6

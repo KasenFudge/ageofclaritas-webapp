@@ -56,6 +56,13 @@ class Event(models.Model):
         choices = EventType.choices,
         default = EventType.OTHER
     )
+    base_price_cents = models.IntegerField(
+        help_text=(
+            "Base price of a ticket for the event before discounts in cents.\n"
+            "I.E. 5000 would be equivalent to $50.\n"
+            "Serves as a fallback if price tiers are provided that is used if a user does not fall into any age bracket."
+            )
+    )
 
     registration_available = models.BooleanField(default=True, help_text="Disables registration buttons if unchecked while allowing information for events to be shared.")
 
@@ -88,6 +95,14 @@ class Event(models.Model):
     class Meta:
         ordering = ['-start_time',]
 
+# --- Overload for Event Pricing based on User's age that overrides base_price_cents ---
+class EventPriceTier(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="price_tiers")
+    label = models.CharField(max_length=30)
+    min_age = models.PositiveSmallIntegerField(help_text="Lower Age Requirement for this tier.")
+    max_age = models.PositiveSmallIntegerField(help_text="Upper Age Requirement for this tier.")
+    price_cents = models.PositiveIntegerField(help_text="Base price of a ticket for the provided age range in cents. Overrides the Event's Base Price.")
+
 class PaymentStatus(models.TextChoices):
     PENDING = "pending", "Pending"
     COMPLETE = "complete", "Complete"
@@ -115,7 +130,6 @@ class EventAttendee(models.Model):
         choices=PaymentStatus.choices,
         default=PaymentStatus.PENDING
     )
-    amount_cents = models.IntegerField()
 
     def __str__(self):
         return self.profile.user.get_full_name()

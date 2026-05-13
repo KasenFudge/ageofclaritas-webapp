@@ -10,28 +10,35 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import os
-import json
+import os, json
 from pathlib import Path
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 
-if Path(".env/.env.app-ageofclaritas").exists():
-    load_dotenv(find_dotenv(".env/.env.app-ageofclaritas"))
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load the .env file:
+load_dotenv(BASE_DIR / '.env', override=True)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-LOG_ROOT = os.getenv('LOG_ROOT')
-os.makedirs(os.path.dirname(LOG_ROOT), exist_ok=True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv("DEBUG") == 'True' else False
 
-ALLOWED_HOSTS = json.loads(os.getenv('ALLOWED_HOSTS'))
+# This allows Django to know if a request was over HTTPS or HTTP through the Nginx proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False # Nginx handles this
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
+    "https://kasenfudge.me",       # Add the main domain
+    "https://www.kasenfudge.me",   # Add the www version
+    "https://cis598.kasenfudge.me" # Keep the subdomain
+]
+
+ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
 
 
 # Application definition
@@ -47,6 +54,7 @@ INSTALLED_APPS = [
     # Package that allows rich text editing on character fields
     'django_summernote',
     
+    # The Primary Django App
     'ageofclaritas',
 
     # Core Pages such as index
@@ -59,7 +67,10 @@ INSTALLED_APPS = [
     'rulebook.apps.RulebookConfig',
 
     # Events and Surveys Portion of the website
-    'events.apps.EventsConfig'
+    'events.apps.EventsConfig',
+
+    # Payments through Stripe
+    'payments.apps.PaymentsConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +81,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'ageofclaritas.urls'
@@ -79,8 +92,11 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, "ageofclaritas/templates/base"),
-
-            os.path.join(BASE_DIR, "rulebook/templates")
+            os.path.join(BASE_DIR, "rulebook/templates"),
+            os.path.join(BASE_DIR, "core/templates"),
+            os.path.join(BASE_DIR, "accounts/templates"),
+            os.path.join(BASE_DIR, "events/templates"),
+            os.path.join(BASE_DIR, "payments/templates"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -102,12 +118,12 @@ WSGI_APPLICATION = 'ageofclaritas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv("DB_ENGINE"),
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT")
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        'HOST': os.getenv("POSTGRES_HOST"),
+        'PORT': os.getenv("POSTGRES_PORT")
     }
 }
 
@@ -155,16 +171,16 @@ STATICFILES_FINDERS = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.getenv('STATIC_ROOT')
 
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' #bug here for .ico files
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.getenv("MEDIA_ROOT")
 
+# Simplified static file serving. (Used if Nginx decides it hates the idea of serving static files)
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' #bug here for .ico files
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'

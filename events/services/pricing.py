@@ -13,18 +13,32 @@ class PriceQuote:
     additional_items: list[dict]
     final_cents: int
 
+def attendee_price(event, profile):
+    # Calculate user's age on event start date
+    age = profile.age_on(event.start_time.date())
+
+    # Find applicable price tier based on user age (if any)
+    tier = (event.price_tiers
+            .filter(min_age__lte=age, max_age__gte=age)
+            .order_by('min_age')
+            .first()
+    )
+
+    # Return the price of the user's tier if found or the event base price otherwise.
+    return tier.price_cents if tier else event.base_price_cents
+
+# Creates a PriceQuote object for the user and applies discounts/additional items.
 def quote_price(*, event, profile, registration_time, arrival_time, student_discount, weapon_rental) -> PriceQuote:
     # Initialize defaults for price information:
-    base = 0
     discounts: list[dict] = []
     additional_items: list[dict] = []
 
-    # Collect the event start date from event.start_time for computing discounts:
-    event_date = event.start_time.date()
+    # Calculate Base Price for price information (see user_price function)
+    base = attendee_price(event, profile)
 
     # Early Bird Cutoff: A week prior to the event start date at midnight
     early_bird_cutoff = timezone.make_aware(
-        timezone.datetime.combine(event_date - timedelta(weeks=1), time(0, 0)),
+        timezone.datetime.combine(event.start_time.date() - timedelta(weeks=1), time(0, 0)),
         timezone.get_current_timezone()
     )
     # Make sure registration time is aware:
@@ -33,7 +47,7 @@ def quote_price(*, event, profile, registration_time, arrival_time, student_disc
 
     # Late Arrival Cutoff: At 3pm the day the event startes (I.E. Saturday at 3pm)
     late_arrival_cutoff = timezone.make_aware(
-        timezone.datetime.combine(event_date, time(15, 0)),
+        timezone.datetime.combine(event.start_time.date, time(15, 0)),
         timezone.get_current_timezone()
     )
     # Make sure arrival time is aware:
@@ -51,14 +65,8 @@ def quote_price(*, event, profile, registration_time, arrival_time, student_disc
     )
     is_first_event = not has_attended_main_event
     
+    # Compute Discounts/Additional Items for Junior Events
     if event.event_type == EventType.JUNIOR:
-        # Calculate the base price (differs by age for Juniors)
-        if profile.age_on(event_date) < 14:
-            base = 9500
-        else:
-            base = 6500
-
-        # Compute all valid discounts
         # Early Bird: Registered a week prior to the event for a $10 discount
         if registration_time < early_bird_cutoff:
             discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Registered a week prior to the Event"})
@@ -76,11 +84,8 @@ def quote_price(*, event, profile, registration_time, arrival_time, student_disc
         if weapon_rental and not is_first_event:
             additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon rental"})
 
+    # Compute Discounts/Additional Items for Senior Events
     elif event.event_type == EventType.SENIOR:
-        base = 5000
-
-        # Compute all valid discounts
-
         # Early Bird: Registered a week prior to the event for a $10 discount
         if registration_time < early_bird_cutoff:
             discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Registered a week prior to the Event"})
@@ -101,9 +106,6 @@ def quote_price(*, event, profile, registration_time, arrival_time, student_disc
         # Weapon Rental: Applies a $20 charge if user requested weapon
         if weapon_rental and not is_first_event:
             additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon rental"})
-
-    elif event.event_type == EventType.FEAST:
-        base = 3500
 
     # Compute final price and return a new PriceQuote object
     discount_total = sum(d["amount_cents"] for d in discounts)
