@@ -70,7 +70,7 @@ volumes:
   aoc_static:
   aoc_media:
   # TEMPORARY WHILE RUNNING CIS598 STUFF
-  cis598_static:
+  spring-2026-kasenfudge_cis598_data:
     external: true
 
 networks:

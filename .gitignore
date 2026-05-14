@@ -301,3 +301,6 @@ FakesAssemblies/
 
 # The virtual environment
 /.venv/
+
+# Certbot / Let's Encrypt sensitive data
+certbot/
