@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5 d-flex justify-content-center">
+    <div class="card shadow border-light p-4 p-md-5" style="max-width: 500px; width: 100%; border-radius: 12px;">
+        
+        <div class="text-center mb-4">
+            <h1 class="h3 fw-bold text-dark">Event Registration</h1>
+            <p class="text-muted mt-1 small">Confirming details for <strong>{{ event.title }}</strong></p>
+        </div>
+
+        <!-- Bootstrap Alerts for Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" class="needs-validation">
+            {% csrf_token %}
+            
+            <!-- Django Form Output Styled with Bootstrap Injection -->
+            <div class="bg-light p-4 rounded-3 border border-light mb-4 bootstrap-form-wrapper">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
+                Confirm & Calculate Pricing
+            </button>
+        </form>
+        
+        <div class="text-center mt-4">
+            <p class="text-muted small mb-0" style="font-size: 0.75rem;">
+                <i class="bi bi-shield-lock me-1"></i> Age category filters and matrices run securely on submission.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Gracefully themes standard Django default form fields to crisp Bootstrap styling */
+    .bootstrap-form-wrapper p { margin-bottom: 1rem; }
+    .bootstrap-form-wrapper p:last-child { margin-bottom: 0; }
+    .bootstrap-form-wrapper label { display: block; font-weight: 600; font-size: 0.875rem; color: #495057; margin-bottom: 0.375rem; }
+    .bootstrap-form-wrapper input[type="text"], 
+    .bootstrap-form-wrapper select, 
+    .bootstrap-form-wrapper input[type="time"] { 
+        display: block; width: 100%; padding: 0.375rem 0.75rem; font-size: 1rem; font-weight: 400; line-height: 1.5; color: #212529; background-color: #fff; border: 1px solid #ced4da; border-radius: 0.375rem; transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .bootstrap-form-wrapper input[type="text"]:focus, 
+    .bootstrap-form-wrapper select:focus, 
+    .bootstrap-form-wrapper input[type="time"]:focus {
+        border-color: #86b7fe; outline: 0; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    }
+    .bootstrap-form-wrapper input[type="checkbox"] {
+        width: 1rem; height: 1rem; margin-right: 0.5rem; vertical-align: middle;
+    }
+</style>
+{% endblock %}

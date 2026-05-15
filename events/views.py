@@ -47,6 +47,7 @@ class IndexView(ListView):
 
         context["senior_events"] = events.filter(event_type=EventType.SENIOR)
         context["junior_events"] = events.filter(event_type=EventType.JUNIOR)
+        context["feast_events"] = events.filter(event_type=EventType.FEAST)
         context["other_events"] = events.filter(event_type=EventType.OTHER)
 
         SetCurrentApp(context)
@@ -84,15 +85,16 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
             raise PermissionDenied("Birthdate required to register.")
         event_date = self.event.start_time.date()
         
+        user_age = user.age_on(event_date)
         # TODO: This may need to be updated to allow accounts with child accounts to register their children.
         if self.event.event_type == EventType.JUNIOR:
-            if user.age_on(event_date) < 8:
+            if user_age < 8:
                 raise PermissionDenied("Children must be 8 or older to register.")
         
-            if user.age_on(event_date) >= 18:
+            if user_age >= 18:
                 raise PermissionDenied("Junior events are only for participants under 18.")
         
-        if self.event.event_type == EventType.SENIOR and user.age_on(event_date) < 18:
+        if self.event.event_type == EventType.SENIOR and user_age < 18:
             raise PermissionDenied("Senior events are only for participants 18+.")
 
         return super().dispatch(request, *args, **kwargs)
