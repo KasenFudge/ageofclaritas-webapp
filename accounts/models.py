@@ -22,7 +22,6 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['email', 'date_of_birth']
     
     # Users age as of a given date, calculated when called.
-    @property
     def age_on(self, on_date: date) -> int | None:
         if not self.date_of_birth:
             return None
