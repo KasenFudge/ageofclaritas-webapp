@@ -1,6 +1,7 @@
 from django.db import models
 from django.templatetags.static import static
 from django.utils import timezone
+from django.conf import settings
 from datetime import datetime, time, timedelta
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
@@ -73,7 +74,7 @@ class Event(models.Model):
 
     # Who is registered for the event.
     attendees = models.ManyToManyField(
-        'accounts.Profile',
+        settings.AUTH_USER_MODEL,
         through='EventAttendee',
         related_name="events"
     )
@@ -110,8 +111,16 @@ class PaymentStatus(models.TextChoices):
 
 class EventAttendee(models.Model):
     # Event and User Details
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="registrations")
-    profile = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE, related_name="registrations")
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name="registrations"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="registrations"
+    )
 
     # Check for arrival at the event
     checked_in = models.BooleanField(default=False)
@@ -132,12 +141,12 @@ class EventAttendee(models.Model):
     )
 
     def __str__(self):
-        return self.profile.user.get_full_name()
+        return self.user.get_full_name()
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["event", "profile"],
+                fields=["event", settings.AUTH_USER_MODEL],
                 name="unique_registration",
             )
         ]
@@ -220,8 +229,17 @@ class Question(models.Model):
 
 
 class SurveyQuestion(models.Model):
-    survey = models.ForeignKey(Survey, on_delete=models.SET_NULL, related_name="survey_questions", null=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="survey_links")
+    survey = models.ForeignKey(
+        Survey,
+        on_delete=models.SET_NULL,
+        related_name="survey_questions",
+        null=True
+    )
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="survey_links"
+    )
     position = models.PositiveIntegerField(
         default=0,
         help_text="Lower numbers appear first."
@@ -239,7 +257,11 @@ class SurveyQuestion(models.Model):
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="choices")
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="choices"
+    )
     label = models.CharField(max_length=100)
     position = models.PositiveIntegerField(
         default=0,
@@ -259,9 +281,20 @@ class Choice(models.Model):
 # --- Survey Responses & Answers ---
 
 class Response(models.Model):
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name="submissions")
-    user = models.ForeignKey('accounts.Profile', on_delete=models.SET_NULL, null=True, blank=True,
-                             related_name="survey_submissions")
+    survey = models.ForeignKey(
+        Survey,
+        on_delete=models.CASCADE,
+        related_name="submissions"
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="survey_submissions"
+    )
+
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -273,17 +306,31 @@ class Response(models.Model):
 
 
 class Answer(models.Model):
-    response = models.ForeignKey(Response, on_delete=models.CASCADE, related_name="answers")
-    survey_question = models.ForeignKey(SurveyQuestion, on_delete=models.CASCADE, related_name="answers")
+    response = models.ForeignKey(
+        Response,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
+    survey_question = models.ForeignKey(
+        SurveyQuestion,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
 
     # Convenience denormalization: base question (kept in sync)
-    question = models.ForeignKey(Question, on_delete=models.PROTECT, editable=False)
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.PROTECT,
+        editable=False
+    )
 
     # TEXT Answers
     text_response = models.TextField(null=True, blank=True)
 
     selected_choices = models.ManyToManyField(                     
-        Choice, blank=True, related_name="answers"
+        Choice,
+        blank=True,
+        related_name="answers"
     )
 
     class Meta:

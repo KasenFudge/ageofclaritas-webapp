@@ -78,18 +78,18 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, slug=kwargs["slug"])
 
-        profile = request.user.profile
-        if not profile.date_of_birth:
+        user = request.user
+        if not user.date_of_birth:
             raise PermissionDenied("Birthdate required to register.")
         event_date = self.event.start_time.date()
         
         # TODO: This may need to be updated to allow accounts with child accounts to register their children.
-        if self.event.event_type == EventType.JUNIOR and profile.age_on(event_date) >= 18:
-            if profile.age_on(event_date) < 8:
+        if self.event.event_type == EventType.JUNIOR and user.age_on(event_date) >= 18:
+            if user.age_on(event_date) < 8:
                 raise PermissionDenied("Children must be 8 or older to register.")
             else:
                 raise PermissionDenied("Junior events are only for participants under 18.")
-        if self.event.event_type == EventType.SENIOR and profile.age_on(event_date) < 18:
+        if self.event.event_type == EventType.SENIOR and user.age_on(event_date) < 18:
             raise PermissionDenied("Senior events are only for participants 18+.")
 
         return super().dispatch(request, *args, **kwargs)
@@ -106,10 +106,10 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
          return kwargs
 
     def form_valid(self, form):
-        profile = self.request.user.profile
+        user = self.request.user
 
         # Stops duplicate registrations:
-        if EventAttendee.objects.filter(event=self.event, profile=profile).exists():
+        if EventAttendee.objects.filter(event=self.event, user=user).exists():
             messages.info(self.request, "You are already registered for this event.")
             return redirect("accounts:upcoming_events")
 
@@ -125,7 +125,7 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
         # Compute price quote:
         quote = quote_price(
             event=self.event,
-            profile=profile,
+            user=user,
             registration_time=registration_time,
             arrival_time=arrival_time,
             student_discount=student_discount,
@@ -135,7 +135,7 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
         # Create the attendee record:
         attendee = form.save(commit=False)
         attendee.event = self.event
-        attendee.profile = profile
+        attendee.user = user
 
         # Store pricing information:
         attendee.base_price_cents = quote.base_cents

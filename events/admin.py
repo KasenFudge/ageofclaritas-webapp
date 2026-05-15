@@ -28,7 +28,7 @@ class EventAttendeeInline(admin.StackedInline):
     # Creates 0 instances of this inline on opening the Event Editor
     extra = 0
 
-    fields = ['profile', 'checked_in']
+    fields = ['user', 'checked_in']
     readonly_fields = ['arrival_time']
 
 class EventMediaInline(admin.StackedInline):

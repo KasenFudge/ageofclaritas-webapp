@@ -40,9 +40,10 @@ CSRF_TRUSTED_ORIGINS = [
 
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
 
+# Use the CustomUser Model instead of Django default:
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

@@ -5,53 +5,23 @@ Note that anything that looks empty, like "//" or "xxxxxxxxxxx" needs to be fill
 ## ./.env
 This is an example of the environment file for the age of claritas application
 ```
-SECRET_KEY=//
-DEBUG=True
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=aocdb
-DB_USER=aocdb_admin
-DB_PASSWORD=//
-DB_HOST=127.0.0.1
-DB_PORT=5432
-ALLOWED_HOSTS='["127.0.0.1", "localhost", "45.55.63.12", "ageofclaritas.tech"]'
-MEDIA_ROOT=G:/data/aoc-django/
+# SECURITY (Used by Django)
+SECRET_KEY='xxxxxxxxxxx'
+DEBUG=False
 
-MLH_CLIENT_ID=//
-MLH_SECRET_KEY=//
+# ROOTS (Used in constructing paths to store data)
+STATIC_ROOT=/var/www/static/aoc
+MEDIA_ROOT=/var/www/media/aoc
 
-OAUTH_SITE_ID=5
-OAUTH_HTTPS='http'
-LOG_ROOT=H:/data/aoc-django/
-STATIC_ROOT=H:/data/static-django/
+# DATABASE (Used by BOTH Postgres and Django)
+POSTGRES_DB=aoc_db
+POSTGRES_USER=aocdb_admin
+POSTGRES_PASSWORD=J7:G5?FsCe7h5m4
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
 
-EMAIL_API_KEY=xxxxxxxxxxx
-EMAIL_SENDER_DOMAIN=mg.ageofclaritas.tech
-EMAIL_FROM_EMAIL=noreply@ageofclaritas.tech
-EMAIL_FROM_NAME=Age of Claritas
-EMAIL_SERVER_EMAIL=team@ageofclaritas.tech
-
-#database
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=aocdb
-DB_USER=aocdb_admin
-DB_PASSWORD=xxxxxxxxxxx
-DB_SUPER_PASSWORD=xxxxxxxxxxx
-DB_HOST=db
-DB_PORT=5432
-DB_PORT_EXT=5435
-
-#django/docker paths
-MEDIA_ROOT=/home/ageofclaritas/webdata/media
-STATIC_ROOT=/home/ageofclaritas/webdata/static
-LOG_ROOT=/home/ageofclaritas/logs/
-
-#django
-SECRET_KEY=xxxxxxxxxxx
-DEBUG=True
-ALLOWED_HOSTS='["127.0.0.1", "localhost", "45.55.63.12", "ageofclaritas.tech"]'
-
-#docker
-PYTHON_VERSION=3.12.6
+# Who can Host
+ALLOWED_HOSTS='["kasenfudge.me", "www.kasenfudge.me", "167.99.232.224", "127.0.0.1", "localhost"]'
 ```
 
 ## Using a Virtual Environment

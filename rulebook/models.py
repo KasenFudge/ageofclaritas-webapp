@@ -22,7 +22,13 @@ class ClassType(models.TextChoices):
 
 class Class(models.Model):
     name = models.CharField(max_length=20, unique=True)
-    guild = models.ForeignKey("self", on_delete=models.CASCADE, related_name="factions", null=True, blank=True)
+    guild = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="factions",
+        null=True,
+        blank=True
+    )
     class_type = models.CharField(
         max_length=15,
         choices=ClassType.choices,
@@ -47,7 +53,12 @@ class Talent(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True, default='')
     is_rankless = models.BooleanField(default=False)
-    class_for = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
+    
+    class_for = models.ForeignKey(
+        Class,
+        on_delete=models.CASCADE,
+        null=True
+    )
     talent_type = models.CharField(
         max_length=15,
         choices = TalentType.choices,
@@ -72,12 +83,18 @@ class Kin(models.Model):
 
 class Kin_Image(models.Model):
     image = models.ImageField(upload_to="images/Kin/", blank=True)
-    kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
+    kin_for = models.ForeignKey(
+        Kin,
+        on_delete=models.CASCADE
+    )
 
 class Attribute(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
-    kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE)
+    kin_for = models.ForeignKey(
+        Kin,
+        on_delete=models.CASCADE
+    )
     can_start_with = models.BooleanField(default=True)
 
     def __str__(self):
