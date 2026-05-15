@@ -3,7 +3,15 @@
 
 {% block content %}
 <div class="container my-5">
-    <div class="card shadow border-0 mx-auto" style="max-w: 900px; border-radius: 12px; overflow: hidden;">
+    <div class="card shadow border-0 mx-auto" style="max-width: 900px; border-radius: 12px; overflow: hidden;">
+        
+        <!-- Contextual Event Image Header -->
+        {% if event.event_image %}
+            <div style="width: 100%; max-height: 400px; overflow: hidden;">
+                <img src="{{ event.event_image.url }}" class="img-fluid w-100 h-100 object-fit-cover" alt="{{ event.title }} Banner">
+            </div>
+        {% endif %}
+
         <div class="card-body p-4 p-md-5">
             <a href="{% url 'events:index' %}" class="text-decoration-none text-secondary small fw-semibold d-inline-flex align-items-center mb-4">
                 <i class="bi bi-arrow-left me-1"></i> Back to all events
