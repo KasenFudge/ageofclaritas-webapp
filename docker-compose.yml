@@ -45,7 +45,7 @@ services:
       - ./certbot/www:/var/www/certbot
       - aoc_static:/var/www/static/aoc:ro
       - aoc_media:/var/www/media/aoc:ro
-      - cis598_static:/var/www/static/cis598:ro # CIS static files (TEMPORARY WHILE RUNNING CIS598 STUFF)
+      - spring-2026-kasenfudge_cis598_data:/var/www/static/cis598:ro # CIS static files (TEMPORARY WHILE RUNNING CIS598 STUFF)
     networks:
       - aoc_net
       - web_gateway
