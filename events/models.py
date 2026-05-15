@@ -146,7 +146,7 @@ class EventAttendee(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["event", settings.AUTH_USER_MODEL],
+                fields=["event", "user"],
                 name="unique_registration",
             )
         ]
