@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4 border-b pb-3">
-        <h1 class="display-5 fw-bold text-dark">Upcoming League Events</h1>
+        <h1 class="display-5 fw-bold text-dark">Upcoming Events</h1>
     </div>
 
     <!-- Senior Events Section -->
@@ -62,6 +62,66 @@
             {% empty %}
             <div class="col-12">
                 <p class="text-muted font-italic">No junior events scheduled for this block.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Feast Events Section -->
+    <section class="mb-5">
+        <h2 class="h3 fw-bold text-warning mb-4 d-flex align-items-center">
+            <span class="bg-warning text-warning rounded me-2" style="width: 6px; height: 24px; display: inline-block;"></span> 
+            Feast & Social Events <span class="text-muted fs-6 ms-2">(All Ages Welcome)</span>
+        </h2>
+        <div class="row g-4">
+            {% for event in feast_events %}
+            <div class="col-12 col-md-4">
+                <div class="card h-100 shadow-sm hover-shadow border-light transition">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h3 class="card-title h5 fw-bold text-dark mb-1">{{ event.title }}</h3>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-calendar-event me-1"></i>{{ event.start_time|date:"F d, Y @ g:i A" }}
+                            </p>
+                            <p class="card-text text-secondary text-truncate-3">{{ event.description|default:"No description provided." }}</p>
+                        </div>
+                        <a href="{% url 'events:event_detail' event.slug %}" class="btn btn-dark w-100 mt-4 fw-medium">View Event Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted font-italic">No feast events scheduled for this block.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Other Events Section -->
+    <section class="mb-5">
+        <h2 class="h3 fw-bold text-secondary mb-4 d-flex align-items-center">
+            <span class="bg-secondary text-secondary rounded me-2" style="width: 6px; height: 24px; display: inline-block;"></span> 
+            Other Gatherings
+        </h2>
+        <div class="row g-4">
+            {% for event in other_events %}
+            <div class="col-12 col-md-4">
+                <div class="card h-100 shadow-sm hover-shadow border-light transition">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h3 class="card-title h5 fw-bold text-dark mb-1">{{ event.title }}</h3>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-calendar-event me-1"></i>{{ event.start_time|date:"F d, Y @ g:i A" }}
+                            </p>
+                            <p class="card-text text-secondary text-truncate-3">{{ event.description|default:"No description provided." }}</p>
+                        </div>
+                        <a href="{% url 'events:event_detail' event.slug %}" class="btn btn-dark w-100 mt-4 fw-medium">View Event Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted font-italic">No additional events scheduled for this block.</p>
             </div>
             {% endfor %}
         </div>
