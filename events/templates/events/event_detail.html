@@ -2,5 +2,49 @@
 {% load static %}
 
 {% block content %}
-    <h1>{{ event.title }}</h1>
+<div class="container my-5">
+    <div class="card shadow border-0 mx-auto" style="max-w: 900px; border-radius: 12px; overflow: hidden;">
+        <div class="card-body p-4 p-md-5">
+            <a href="{% url 'events:index' %}" class="text-decoration-none text-secondary small fw-semibold d-inline-flex align-items-center mb-4">
+                <i class="bi bi-arrow-left me-1"></i> Back to all events
+            </a>
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start mb-4">
+                <div>
+                    <h1 class="display-6 fw-bold text-dark mb-2">{{ event.title }}</h1>
+                    <p class="lead text-muted mb-0 fw-normal">
+                        <i class="bi bi-calendar3 me-2"></i>{{ event.start_time|date:"l, F d, Y" }} at {{ event.start_time|date:"g:i A" }}
+                    </p>
+                </div>
+                
+                <div class="mt-3 mt-md-0">
+                    {% if event.event_type == EventType.SENIOR %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 uppercase tracking-wide fw-bold">Senior (18+)</span>
+                    {% elif event.event_type == EventType.JUNIOR %}
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 uppercase tracking-wide fw-bold">Junior (8-17)</span>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 uppercase tracking-wide fw-bold">Standard</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <hr class="text-muted opacity-25 my-4">
+
+            <div class="text-secondary fs-5 lh-lg mb-5">
+                <p>{{ event.description|default:"No event overview has been provided yet." }}</p>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light p-4 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-0">
+            <div class="mb-3 mb-sm-0">
+                <span class="text-muted text-uppercase small fw-bold d-block tracking-wider" style="font-size: 0.75rem;">Location Venue</span>
+                <span class="text-dark fw-medium"><i class="bi bi-geo-alt-fill text-muted me-1"></i>{{ event.location|default:"Main Field / Arena" }}</span>
+            </div>
+            
+            <a href="{% url 'events:event_registration' event.slug %}" class="btn btn-success btn-lg px-4 fw-bold shadow-sm transform transition">
+                Register for Event <i class="bi bi-chevron-right small ms-1"></i>
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

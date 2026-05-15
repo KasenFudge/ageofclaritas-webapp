@@ -5,6 +5,7 @@ from datetime import datetime
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 from .models import Event, EventType, EventAttendee
 from .forms import EventRegistrationForm
@@ -84,11 +85,13 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
         event_date = self.event.start_time.date()
         
         # TODO: This may need to be updated to allow accounts with child accounts to register their children.
-        if self.event.event_type == EventType.JUNIOR and user.age_on(event_date) >= 18:
+        if self.event.event_type == EventType.JUNIOR:
             if user.age_on(event_date) < 8:
                 raise PermissionDenied("Children must be 8 or older to register.")
-            else:
+        
+            if user.age_on(event_date) >= 18:
                 raise PermissionDenied("Junior events are only for participants under 18.")
+        
         if self.event.event_type == EventType.SENIOR and user.age_on(event_date) < 18:
             raise PermissionDenied("Senior events are only for participants 18+.")
 
@@ -142,6 +145,9 @@ class EventRegistrationView(LoginRequiredMixin, CreateView):
         attendee.final_price_cents = quote.final_cents
         attendee.discounts = quote.discounts
         attendee.additional_items = quote.additional_items
+
+        # Write the row to the database
+        attendee.save()
 
         if payment_method == "online":
             return redirect("accounts:payment_start", attendee_id=attendee.id) # Stand in redirect, adjust when making payment pages

@@ -1,3 +1,36 @@
+# Setup on Hosting Service
+
+The application is containerized using Docker. These instructions assume you have Docker and Docker Compose installed on your host (e.g., DigitalOcean Droplet).
+
+## Initial Deployment & Database Setup
+
+If you are setting up the project for the first time or performing a fresh database reset, follow these steps in order:
+
+1. **Build and Start Containers** `docker compose up -d --build`  
+   *This builds the images and starts the services in the background.*
+
+2. **Generate Migrations (App Specific)** `docker compose run --rm webapp python manage.py makemigrations accounts`  
+   *Crucial: We generate 'accounts' first to ensure the CustomUser model is properly initialized before other apps dependency-link to it.*
+
+3. **Generate Remaining Migrations** `docker compose run --rm webapp python manage.py makemigrations`  
+   *This captures changes in the Events, Rulebook, and other applications.*
+
+4. **Apply Database Schema** `docker compose run --rm webapp python manage.py migrate`  
+   *This creates the actual tables in the Postgres container.*
+
+5. **Create Admin Account** `docker compose run --rm webapp python manage.py createsuperuser`  
+   *Note: You will be prompted for a username, email, and Date of Birth (as required by our CustomUser model).*
+
+## Maintenance Commands
+
+### Static Files
+If CSS or images are not appearing correctly after an update, run:
+`docker exec -it aoc_webapp python manage.py collectstatic --noinput`
+
+### Viewing Logs
+To troubleshoot a service (e.g., Nginx or Webapp):
+`docker compose logs -f [service_name]`
+
 # Environment Files
 For environment files, which are not included in the GitHub Repo, you'll need to make a .env folder.
 I then recommend putting the following in it.\n
