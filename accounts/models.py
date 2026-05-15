@@ -18,6 +18,8 @@ class CustomUser(AbstractUser):
         blank=True,
         related_name='child_accounts'
     )
+
+    REQUIRED_FIELDS = ['email', 'date_of_birth']
     
     # Users age as of a given date, calculated when called.
     @property
