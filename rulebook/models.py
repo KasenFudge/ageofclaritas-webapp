@@ -51,7 +51,7 @@ class Class(models.Model):
             self.special_rules = None
         if self.class_type == ClassType.GUILD:
             self.guild = None
-        if self.class_type != ClassType.GUILD and not self.guild:
+        if self.class_type not in [ClassType.GUILD, ClassType.CLASSLESS] and not self.guild:
             raise ValidationError("Factions must be assigned to a Guild")
         
         super().save(*args, **kwargs)

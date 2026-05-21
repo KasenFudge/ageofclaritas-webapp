@@ -4,20 +4,20 @@
     </button>
 </div>
 
-<aside class="col-lg-3 d-none d-lg-block border-end py-4">
+<aside class="col-lg-3 d-none d-lg-block border-end py-4 bg-light">
     <h5 class="text-muted text-uppercase small fw-bold tracking-wider mb-3">Class Navigation</h5>
     <ul class="list-unstyled">
         {% for guild_nav in sidebar_guilds %}
             <li class="mb-3">
-                <a href="{% url 'rulebook:class_detail' classname=guild_nav.slug %}" class="text-white text-decoration-none fw-semibold d-block mb-1 py-1 px-2 rounded {% if guild_nav.id == guild.id %}text-warning bg-dark border border-secondary{% endif %}">
+                <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}" class="text-dark text-decoration-none fw-bold d-block mb-1 py-1 px-2 rounded {% if guild_nav.id == guild.id %}text-primary bg-white border border-primary-subtle shadow-sm{% endif %}">
                     {{ guild_nav.name }}
                 </a>
                 
                 {% if guild_nav.sidebar_factions %}
-                    <ul class="ms-3 small ps-2 text-muted list-unstyled border-start border-secondary">
+                    <ul class="ms-3 small ps-2 list-unstyled border-start border-2 border-light">
                         {% for faction_nav in guild_nav.sidebar_factions %}
                             <li class="my-1">
-                                <a href="{% url 'rulebook:class_detail' classname=guild_nav.slug %}#{{ faction_nav.slug }}" class="text-secondary text-decoration-none d-block py-0.5 px-1 rounded hover-text-warning">
+                                <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" class="text-muted text-decoration-none d-block py-0.5 px-1 rounded hover-text-primary">
                                     {{ faction_nav.name }}
                                 </a>
                             </li>
@@ -25,7 +25,7 @@
                         
                         {% if guild_nav.slug == 'warrior' %}
                             <li class="my-1">
-                                <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="text-secondary text-decoration-none d-block py-0.5 px-1 rounded hover-text-warning">
+                                <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="text-muted text-decoration-none d-block py-0.5 px-1 rounded hover-text-primary">
                                     Warrior Titles
                                 </a>
                             </li>
@@ -36,21 +36,21 @@
         {% endfor %}
     </ul>
     
-    <div class="mt-4 pt-3 border-top border-secondary">
-            {% if classless_record %}
-                <a href="{% url 'rulebook:class_detail' classname=classless_record.slug %}" class="text-info text-decoration-none fw-semibold small {% if classname == classless_record.slug %}text-warning{% endif %}">
-                    <i class="bi bi-shield-split me-1"></i> {{ classless_record.name }} Talents
-                </a>
-            {% else %}
-                <a href="{% url 'rulebook:class_detail' 'classless' %}" class="text-info text-decoration-none fw-semibold small">
-                    <i class="bi bi-shield-split me-1"></i> Classless Talents
-                </a>
-            {% endif %}
+    <div class="mt-4 pt-3 border-top border-2 border-light">
+        {% if classless_record %}
+            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-secondary text-decoration-none fw-semibold small {% if class_slug == classless_record.slug %}text-primary fw-bold{% endif %}">
+                <i class="bi bi-shield-split me-1"></i> {{ classless_record.name }}
+            </a>
+        {% else %}
+            <a href="{% url 'rulebook:class_detail' 'classless' %}" class="text-secondary text-decoration-none fw-semibold small {% if class_slug == 'classless' %}text-primary fw-bold{% endif %}">
+                <i class="bi bi-shield-split me-1"></i> Classless Talents
+            </a>
+        {% endif %}
     </div>
 </aside>
 
-<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="classSidebar" data-bs-theme="dark">
-    <div class="offcanvas-header border-bottom border-secondary">
+<div class="offcanvas offcanvas-start bg-light text-dark" tabindex="-1" id="classSidebar">
+    <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title fw-bold text-primary">Class Navigation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
@@ -58,15 +58,15 @@
         <ul class="list-unstyled">
             {% for guild_nav in sidebar_guilds %}
                 <li class="mb-3">
-                    <a href="{% url 'rulebook:class_detail' classname=guild_nav.slug %}" class="text-white text-decoration-none fw-semibold d-block mb-1 py-1 px-2 rounded {% if guild_nav.id == guild.id %}text-warning bg-dark{% endif %}">
+                    <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}" class="text-dark text-decoration-none fw-bold d-block mb-1 py-1 px-2 rounded {% if guild_nav.id == guild.id %}text-primary bg-white border{% endif %}">
                         {{ guild_nav.name }}
                     </a>
                     
                     {% if guild_nav.sidebar_factions %}
-                        <ul class="ms-3 small ps-2 text-muted list-unstyled border-start border-secondary">
+                        <ul class="ms-3 small ps-2 list-unstyled border-start">
                             {% for faction_nav in guild_nav.sidebar_factions %}
                                 <li class="my-1">
-                                    <a href="{% url 'rulebook:class_detail' classname=guild_nav.slug %}#{{ faction_nav.slug }}" class="text-secondary text-decoration-none d-block py-0.5 px-1">
+                                    <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" class="text-muted text-decoration-none d-block py-0.5 px-1">
                                         {{ faction_nav.name }}
                                     </a>
                                 </li>
@@ -74,7 +74,7 @@
                             
                             {% if guild_nav.slug == 'warrior' %}
                                 <li class="my-1">
-                                    <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="text-secondary text-decoration-none d-block py-0.5 px-1">
+                                    <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="text-muted text-decoration-none d-block py-0.5 px-1">
                                         Warrior Titles
                                     </a>
                                 </li>
@@ -85,13 +85,13 @@
             {% endfor %}
         </ul>
         
-        <div class="mt-4 pt-3 border-top border-secondary">
+        <div class="mt-4 pt-3 border-top">
             {% if classless_record %}
-                <a href="{% url 'rulebook:class_detail' classname=classless_record.slug %}" class="text-info text-decoration-none fw-semibold small {% if classname == classless_record.slug %}text-warning{% endif %}">
-                    <i class="bi bi-shield-split me-1"></i> {{ classless_record.name }} Talents
+                <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-secondary text-decoration-none fw-semibold small {% if classname == classless_record.slug %}text-primary fw-bold{% endif %}">
+                    <i class="bi bi-shield-split me-1"></i> {{ classless_record.name }}
                 </a>
             {% else %}
-                <a href="{% url 'rulebook:class_detail' 'classless' %}" class="text-info text-decoration-none fw-semibold small">
+                <a href="{% url 'rulebook:class_detail' 'classless' %}" class="text-secondary text-decoration-none fw-semibold small">
                     <i class="bi bi-shield-split me-1"></i> Classless Talents
                 </a>
             {% endif %}
