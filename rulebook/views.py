@@ -30,7 +30,7 @@ class ClassesView(ListView):
 
     def get_queryset(self):
         return (
-            Class.objects.filter(class_type = ClassType.GUILD)
+            Class.objects.filter(class_type=ClassType.GUILD)
             .prefetch_related(
                 Prefetch(
                     "factions",
@@ -53,6 +53,7 @@ class ClassesView(ListView):
 
         return context
 
+
 class ClassDetailView(DetailView):
     model = Class
     template_name = "rulebook/class_detail.html"
@@ -74,22 +75,19 @@ class ClassDetailView(DetailView):
 
         qs = (
             Class.objects
-                .filter(class_type=ClassType.GUILD)
+                .filter(class_type__in=[ClassType.GUILD, ClassType.CLASSLESS])
                 .prefetch_related(
                     Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"),
                     Prefetch("factions", queryset=factions_qs, to_attr="pref_factions"),
                 )
         )
         
-        # Return getting the object or fail for non Base Class classes.
-        return get_object_or_404(qs, name__iexact=slug)
+        return get_object_or_404(qs, slug=slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         guild = self.object
 
-        # This grabs the information for the sidebar
-        # Use .only to limit the query to grab what we need.
         context["sidebar_guilds"] = (
             Class.objects.filter(class_type=ClassType.GUILD)
             .order_by("name")
@@ -98,11 +96,11 @@ class ClassDetailView(DetailView):
                     "factions",
                     queryset=Class.objects.filter(
                         class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
-                    ).order_by("name").only("name", "class_type"), # Fast payload select
+                    ).order_by("name").only("name", "slug", "class_type"), 
                     to_attr="sidebar_factions"
                 )
             )
-            .only("name", "class_type")
+            .only("name", "slug", "class_type")
         )
         context["classless_record"] = Class.objects.filter(class_type=ClassType.CLASSLESS).first()
 
@@ -115,13 +113,11 @@ class ClassDetailView(DetailView):
             return [t for t in talent_set if t.talent_type == kind]
 
         # Base Class Talent Set
-        # Use getattr to grab talents that were prefetched safely
         talents = getattr(guild, "pref_talents", [])
         context['guild_skills'] = _grab_talent_type(TalentType.SKILL, talents)
         context['guild_abilities'] = _grab_talent_type(TalentType.ABILITY, talents)
 
         # Factions
-        # Use getattr to grab factions that were prefetched safely
         all_factions = getattr(guild, "pref_factions", [])
         factions = [f for f in all_factions if f.class_type == ClassType.FACTION]
         elementals = [f for f in all_factions if f.class_type == ClassType.ELEMENTAL]
