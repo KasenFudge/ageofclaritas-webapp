@@ -2,12 +2,16 @@
 {% load static %}
 
 {% block content %}
-    <!-- Sidebar -->
-    {% include 'rulebook/class_sidebar.html' %}
+<div class="container-fluid text-dark bg-white">
+    <div class="row">
+        
+        {% include 'rulebook/class_sidebar.html' %}
 
-    <!-- Page Information -->
-    {% block class_info %}
-
-    {% endblock %}
-    <!-- End of Page Information -->
+        <main class="col-12 col-lg-9 py-4 px-md-4">
+            {% block class_info %}
+                {% endblock %}
+        </main>
+        
+    </div>
+</div>
 {% endblock %}
