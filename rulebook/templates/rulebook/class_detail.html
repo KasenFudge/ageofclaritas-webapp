@@ -2,159 +2,247 @@
 {% load static %}
 
 {% block class_info %}
-    <h1 id="{{ base_class.name|lower }}" class="text-center class-header">{{ base_class.name }}</h1>
+    <h1 id="{{ guild.slug }}" class="text-center class-header border-bottom pb-2 mb-4">
+        {{ guild.name }}
+    </h1>
     
-    {% if base_class.has_special_rules %}
-        <div class="special_rules">
-            {{ base_class.special_rules|safe }}
+    {% if guild.has_special_rules %}
+        <div class="special_rules mb-4 p-3 bg-dark-subtle rounded border border-secondary">
+            {{ guild.special_rules|safe }}
         </div>
     {% endif %}
 
-    {% if base_skills %}
-        <h2 class="text-center class-header">Skills</h2>
-        {% for skill in base_skills %}
-            <b class="talent-name">{{ skill.name }}</b>
-            {{ skill.description|safe }}
-        {% endfor %}
+    {% if guild_skills %}
+        <h2 class="class-header mt-4 mb-3 text-primary">Skills</h2>
+        <div class="talent-section mb-4">
+            {% for skill in guild_skills %}
+                <div class="talent-block mb-3">
+                    <b class="talent-name d-block text-light fs-5">{{ skill.name }}</b>
+                    <div class="talent-description ps-2 border-start border-primary-subtle">
+                        {{ skill.description|safe }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
-    {% if base_abilities %}
-        <h2 class="text-center class-header">Abilities</h2>
-        {% for ability in base_abilities %}
-            <b class="talent-name">{{ ability.name }}</b>
-            {{ ability.description|safe }}
-        {% endfor %}
+    {% if guild_abilities %}
+        <h2 class="class-header mt-4 mb-3 text-primary">Abilities</h2>
+        <div class="talent-section mb-4">
+            {% for ability in guild_abilities %}
+                <div class="talent-block mb-3">
+                    <b class="talent-name d-block text-light fs-5">{{ ability.name }}</b>
+                    <div class="talent-description ps-2 border-start border-primary-subtle">
+                        {{ ability.description|safe }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
     {% for faction in factions %}
-        <div class="anchor-container">
-            <h1 class="text-center class-header">{{ faction.faction.name }}</h1>
-            <a class="anchor" id="{{ faction.faction.name|lower }}"></a>
+        <div class="faction-block mt-5 pt-3 border-top border-secondary">
+            <h1 id="{{ faction.faction.slug }}" class="text-center class-header my-4 text-warning">
+                {{ faction.faction.name }}
+            </h1>
+            
+            {% if faction.faction.has_special_rules %}
+                <div class="special_rules mb-4 p-3 bg-dark-subtle rounded border border-warning-subtle">
+                    {{ faction.faction.special_rules|safe }}
+                </div>
+            {% endif %}
+
+            {% if faction.skills %}
+                <h2 class="class-header my-3 text-info">Skills</h2>
+                {% for skill in faction.skills %}
+                    <div class="talent-block mb-3">
+                        <b class="talent-name d-block text-light fs-5">{{ skill.name }}</b>
+                        <div class="talent-description ps-2 border-start border-info-subtle">
+                            {{ skill.description|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if faction.abilities %}
+                <h2 class="class-header my-3 text-info">Abilities</h2>
+                {% for ability in faction.abilities %}
+                    <div class="talent-block mb-3">
+                        <b class="talent-name d-block text-light fs-5">{{ ability.name }}</b>
+                        <div class="talent-description ps-2 border-start border-info-subtle">
+                            {{ ability.description|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
-        {% if faction.faction.has_special_rules %}
-            <div class="special_rules">
-                {{ faction.faction.special_rules|safe }}
-            </div>
-        {% endif %}
-
-        {% if faction.skills %}
-            <h2 class="text-center class-header">Skills</h2>
-            {% for skill in faction.skills %}
-                <b class="talent-name">{{ skill.name }}</b>
-                {{ skill.description|safe }}
-            {% endfor %}
-        {% endif %}
-
-        {% if faction.abilities %}
-            <h2 class="text-center class-header">Abilities</h2>
-            {% for ability in faction.abilities %}
-                <b class="talent-name">{{ ability.name }}</b>
-                {{ ability.description|safe }}
-            {% endfor %}
-        {% endif %}
     {% endfor %}
     
     {% if elementals %}
-        <h1 class="text-center class-header">Elemental</h1>
+        <h1 class="text-center class-header mt-5 pt-4 text-danger border-top border-danger">Elemental</h1>
         {% for elemental in elementals %}
-            <div class="anchor-container">
-                <h2 class="text-center class-header">{{ elemental.faction.name }}</h2>
-                <a class="anchor" id="{{ elemental.faction.name|lower }}"></a>
+            <div class="elemental-block mt-4">
+                <h2 id="{{ elemental.faction.slug }}" class="text-center class-header my-3 text-danger-subtle">
+                    {{ elemental.faction.name }}
+                </h2>
+                
+                {% if elemental.faction.has_special_rules %}
+                    <div class="special_rules mb-4 p-3 bg-dark-subtle rounded border border-danger-subtle">
+                        {{ elemental.faction.special_rules|safe }}
+                    </div>
+                {% endif %}
+
+                {% if elemental.tier_1 %}
+                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider">Tier 1</h3>
+                    {% for talent in elemental.tier_1 %}
+                        <div class="talent-block mb-3">
+                            <b class="talent-name d-block text-light">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-secondary">
+                                {{ talent.description|safe }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if elemental.tier_2 %}
+                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider">Tier 2</h3>
+                    {% for talent in elemental.tier_2 %}
+                        <div class="talent-block mb-3">
+                            <b class="talent-name d-block text-light">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-secondary">
+                                {{ talent.description|safe }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if elemental.tier_3 %}
+                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider">Tier 3</h3>
+                    {% for talent in elemental.tier_3 %}
+                        <div class="talent-block mb-3">
+                            <b class="talent-name d-block text-light">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-secondary">
+                                {{ talent.description|safe }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-            {% if elemental.faction.has_special_rules %}
-                <div class="special_rules">
-                    {{ elemental.faction.special_rules|safe }}
-                </div>
-            {% endif %}
-            {% if elemental.tier_1 %}
-                <h3 class="text-center class-header">Tier 1</h3>
-                {% for talent in elemental.tier_1 %}
-                    <b class="talent-name">{{ talent.name }}</b>
-                    {{ talent.description|safe }}
-                {% endfor %}
-            {% endif %}
-            {% if elemental.tier_2 %}
-                <h3 class="text-center class-header">Tier 2</h3>
-                {% for talent in elemental.tier_2 %}
-                    <b class="talent-name">{{ talent.name }}</b>
-                    {{ talent.description|safe }}
-                {% endfor %}
-            {% endif %}
-            {% if elemental.tier_3 %}
-                <h3 class="text-center class-header">Tier 3</h3>
-                {% for talent in elemental.tier_3 %}
-                    <b class="talent-name">{{ talent.name }}</b>
-                    {{ talent.description|safe }}
-                {% endfor %}
-            {% endif %}
         {% endfor %}
     {% endif %}
+
     {% if manifolds %}
-        <h1 class="text-center class-header">Manifold</h1>
+        <h1 class="text-center class-header mt-5 pt-4 text-info border-top border-info">Manifold</h1>
         {% for manifold in manifolds %}
-            <div class="anchor-container">
-                <h2 class="text-center class-header">{{ manifold.faction.name }}</h2>
-                <a class="anchor" id="{{ manifold.faction.name|lower }}"></a>
+            <div class="manifold-block mt-4">
+                <h2 id="{{ manifold.faction.slug }}" class="text-center class-header my-3 text-info-subtle">
+                    {{ manifold.faction.name }}
+                </h2>
+                
+                {% if manifold.faction.has_special_rules %}
+                    <div class="special_rules mb-4 p-3 bg-dark-subtle rounded border border-info-subtle">
+                        {{ manifold.faction.special_rules|safe }}
+                    </div>
+                {% endif %}
+
+                {% if manifold.tier_1 %}
+                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider">Tier 1</h3>
+                    {% for talent in manifold.tier_1 %}
+                        <div class="talent-block mb-3">
+                            <b class="talent-name d-block text-light">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-secondary">
+                                {{ talent.description|safe }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if manifold.tier_2 %}
+                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider">Tier 2</h3>
+                    {% for talent in manifold.tier_2 %}
+                        <div class="talent-block mb-3">
+                            <b class="talent-name d-block text-light">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-secondary">
+                                {{ talent.description|safe }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if manifold.tier_3 %}
+                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider">Tier 3</h3>
+                    {% for talent in manifold.tier_3 %}
+                        <div class="talent-block mb-3">
+                            <b class="talent-name d-block text-light">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-secondary">
+                                {{ talent.description|safe }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-            {% if manifold.faction.has_special_rules %}
-                <div class="special_rules">
-                    {{ manifold.faction.special_rules|safe }}
-                </div>
-            {% endif %}
-            {% if manifold.tier_1 %}
-            <h3 class="text-center class-header">Tier 1</h3>
-            {% for talent in manifold.tier_1 %}
-                <b class="talent-name">{{ talent.name }}</b>
-                {{ talent.description|safe }}
-            {% endfor %}
-            {% endif %}
-            {% if manifold.tier_2 %}
-                <h3 class="text-center class-header">Tier 2</h3>
-                {% for talent in manifold.tier_2 %}
-                    <b class="talent-name">{{ talent.name }}</b>
-                    {{ talent.description|safe }}
-                {% endfor %}
-            {% endif %}
-            {% if manifold.tier_3 %}
-                <h3 class="text-center class-header">Tier 3</h3>
-                {% for talent in manifold.tier_3 %}
-                    <b class="talent-name">{{ talent.name }}</b>
-                    {{ talent.description|safe }}
-                {% endfor %}
-            {% endif %}
         {% endfor %}
     {% endif %}
 
     {% if weapon_titles or armor_titles or support_titles or misc_titles %}
-        <div class="anchor-container">
-            <h1 class="text-center class-header">Warrior Titles</h1>
-            <a class="anchor" id="warrior-titles"></a>
+        <div class="warrior-titles-section mt-5 pt-4 border-top border-light-subtle">
+            <h1 id="warrior-titles" class="text-center class-header my-4 text-uppercase tracking-wide">
+                Warrior Titles
+            </h1>
+            <div class="lead mb-4 p-3 bg-dark text-light-emphasis rounded border border-secondary shadow-sm fs-6">
+                A warrior can earn up to 5 titles. Each warrior can eventually get 1 major title and can have 2 minor ones active at a time. 
+                The major title can go up to R3 and is mostly permanent. Minor titles can only get to R2 and may be switched out at a rest/in town. 
+                R1s are free, R2s and R3s are 5 XP. The warrior must accomplish a task to earn each rank. Warriors start with 1 active slot and gets
+                another active when they join the guild and another active when they join the faction.
+            </div>
+
+            {% if weapon_titles %}
+                <h2 class="class-header my-3 text-warning-subtle">Weapon Titles</h2>
+                {% for title in weapon_titles %}
+                    <div class="talent-block mb-3">
+                        <b class="talent-name d-block text-light">{{ title.name }}</b>
+                        <div class="talent-description ps-2 border-start border-warning-subtle">
+                            {{ title.description|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if armor_titles %}
+                <h2 class="class-header my-3 text-warning-subtle">Armor Titles</h2>
+                {% for title in armor_titles %}
+                    <div class="talent-block mb-3">
+                        <b class="talent-name d-block text-light">{{ title.name }}</b>
+                        <div class="talent-description ps-2 border-start border-warning-subtle">
+                            {{ title.description|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if support_titles %}
+                <h2 class="class-header my-3 text-warning-subtle">Support Titles</h2>
+                {% for title in support_titles %}
+                    <div class="talent-block mb-3">
+                        <b class="talent-name d-block text-light">{{ title.name }}</b>
+                        <div class="talent-description ps-2 border-start border-warning-subtle">
+                            {{ title.description|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if misc_titles %}
+                <h2 class="class-header my-3 text-warning-subtle">Miscellaneous Titles</h2>
+                {% for title in misc_titles %}
+                    <div class="talent-block mb-3">
+                        <b class="talent-name d-block text-light">{{ title.name }}</b>
+                        <div class="talent-description ps-2 border-start border-warning-subtle">
+                            {{ title.description|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
-        <p>
-            A warrior can earn up to 5 titles. Each warrior can eventually get 1 major title and can have 2 minor ones active at a time. 
-            The major title can go up to R3 and is mostly permanent. Minor titles can only get to R2 and may be switched out at a rest/in town. 
-            R1s are free, R2s and R3s are 5 XP. The warrior must accomplish a task to earn each rank. Warriors start with 1 active slot and gets
-            another active when they join the guild and another active when they join the faction.
-        </p>
-        <h2 class="text-center class-header">Weapon Titles</h2>
-        {% for title in weapon_titles %}
-            <b class="talent-name">{{ title.name }}</b>
-            {{ title.description|safe }}
-        {% endfor %}
-        <h2 class="text-center class-header">Armor Titles</h2>
-        {% for title in armor_titles %}
-            <b  class="talent-name">{{ title.name }}</b>
-            {{ title.description|safe }}
-        {% endfor %}
-        <h2 class="text-center class-header">Support Titles</h2>
-        {% for title in support_titles %}
-            <b class="talent-name">{{ title.name }}</b>
-            {{ title.description|safe }}
-        {% endfor %}
-        <h2 class="text-center class-header">Miscellaneous Titles</h2>
-        {% for title in misc_titles %}
-            <b class="talent-name">{{ title.name }}</b>
-            {{ title.description|safe }}
-        {% endfor %}
     {% endif %}
 {% endblock %}

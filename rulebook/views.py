@@ -24,11 +24,29 @@ class IndexView(TemplateView):
 
         return context
 
-class ClassesView(TemplateView):
+class ClassesView(ListView):
     template_name = "rulebook/classes.html"
+    context_object_name = "guilds"
+
+    def get_queryset(self):
+        return (
+            Class.objects.filter(class_type = ClassType.GUILD)
+            .prefetch_related(
+                Prefetch(
+                    "factions",
+                    queryset=Class.objects.filter(
+                        class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
+                    ).order_by("name"),
+                    to_attr="sidebar_factions"
+                )
+            )
+        )
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context["sidebar_guilds"] = self.object_list
+        context["classless_record"] = Class.objects.filter(class_type=ClassType.CLASSLESS).first()
 
         SetCurrentApp(context)
         SetPageTitle(context, "Classes")
@@ -38,23 +56,15 @@ class ClassesView(TemplateView):
 class ClassDetailView(DetailView):
     model = Class
     template_name = "rulebook/class_detail.html"
-    context_object_name = "base_class"
-    slug_field = "name"
-    slug_url_kwarg = "classname"
+    context_object_name = "guild"
+    slug_field = "slug"
+    slug_url_kwarg = "class_slug"
 
     def get_object(self, queryset=None):
         slug = self.kwargs[self.slug_url_kwarg]
 
-        # Get every Talent
-        talents_qs = Talent.objects.annotate(
-            priority=Case(
-                When(name="Void", then=0),
-                default=1,
-                output_field=IntegerField(),
-            )
-        ).order_by("priority", "name")
+        talents_qs = Talent.objects.all()
 
-        # Get every Faction for the base class (excluding itself) and its associated talents
         factions_qs = (
             Class.objects
                 .filter(class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD])
@@ -62,10 +72,9 @@ class ClassDetailView(DetailView):
                 .prefetch_related(Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"))
         )
 
-        # Finally get the base class and its associated talents and factions
         qs = (
             Class.objects
-                .filter(class_type=ClassType.BASE_CLASS)
+                .filter(class_type=ClassType.GUILD)
                 .prefetch_related(
                     Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"),
                     Prefetch("factions", queryset=factions_qs, to_attr="pref_factions"),
@@ -77,7 +86,25 @@ class ClassDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        base_class = self.object
+        guild = self.object
+
+        # This grabs the information for the sidebar
+        # Use .only to limit the query to grab what we need.
+        context["sidebar_guilds"] = (
+            Class.objects.filter(class_type=ClassType.GUILD)
+            .order_by("name")
+            .prefetch_related(
+                Prefetch(
+                    "factions",
+                    queryset=Class.objects.filter(
+                        class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
+                    ).order_by("name").only("name", "class_type"), # Fast payload select
+                    to_attr="sidebar_factions"
+                )
+            )
+            .only("name", "class_type")
+        )
+        context["classless_record"] = Class.objects.filter(class_type=ClassType.CLASSLESS).first()
 
         # Give context ClassType and TalentType for comparison
         context["ClassType"] = ClassType
@@ -88,12 +115,14 @@ class ClassDetailView(DetailView):
             return [t for t in talent_set if t.talent_type == kind]
 
         # Base Class Talent Set
-        talents = base_class.pref_talents
-        context['base_skills'] = _grab_talent_type(TalentType.SKILL, talents)
-        context['base_abilities'] = _grab_talent_type(TalentType.ABILITY, talents)
+        # Use getattr to grab talents that were prefetched safely
+        talents = getattr(guild, "pref_talents", [])
+        context['guild_skills'] = _grab_talent_type(TalentType.SKILL, talents)
+        context['guild_abilities'] = _grab_talent_type(TalentType.ABILITY, talents)
 
         # Factions
-        all_factions = base_class.pref_factions
+        # Use getattr to grab factions that were prefetched safely
+        all_factions = getattr(guild, "pref_factions", [])
         factions = [f for f in all_factions if f.class_type == ClassType.FACTION]
         elementals = [f for f in all_factions if f.class_type == ClassType.ELEMENTAL]
         manifolds = [f for f in all_factions if f.class_type == ClassType.MANIFOLD]
@@ -135,7 +164,7 @@ class ClassDetailView(DetailView):
 
         # Overarching Page Information
         SetCurrentApp(context)
-        SetPageTitle(context, base_class.name)
+        SetPageTitle(context, guild.name)
 
         return context
 
@@ -145,7 +174,7 @@ class KinView(ListView):
     context_object_name = "kin_list"
 
     def get_queryset(self):
-        return Kin.objects.prefetch_related("attribute_set", "kin_image_set").order_by("name")
+        return Kin.objects.prefetch_related("attributes", "kin_images")
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -159,22 +188,28 @@ class KinDetailView(DetailView):
     model = Kin
     template_name = "rulebook/kin_detail.html"
     context_object_name = "kin"
+    slug_field = "slug"
+    slug_url_kwarg = "kin_slug"
 
-    def get_object(self):
-        kin_name = self.kwargs.get('kin_name').capitalize()
-        return Kin.objects.prefetch_related('attribute_set', 'kin_image_set').get(name__iexact=kin_name)
+    def get_object(self, queryset=None):
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        
+        return get_object_or_404(
+            Kin.objects.prefetch_related('attributes', 'kin_images'), 
+            slug=slug
+        )
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        kin_name = self.kwargs.get('kin_name').capitalize()
-        kin = get_object_or_404(self.get_queryset(), name=kin_name)
-        kin_list = self.get_queryset().order_by('name')
-
+        
+        # Self.object is already the cached target row from get_object()!
+        kin = self.object 
+        
         SetCurrentApp(context)
         SetPageTitle(context, kin.name)
 
-        context['kin_list'] = kin_list
+        # Uses default model metadata sorting rules automatically
+        context['kin_list'] = Kin.objects.all()
 
         return context
 

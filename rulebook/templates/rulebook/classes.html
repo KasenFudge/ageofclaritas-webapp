@@ -2,101 +2,54 @@
 {% load static %}
 
 {% block content %}
-    <!-- Sidebar -->
-    {% include 'rulebook/class_sidebar.html' %}
+<div class="container-fluid" data-bs-theme="dark">
+    <div class="row">
+        {% include 'rulebook/class_sidebar.html' %}
 
-    <h1 class="text-center page-header">Classes</h1>
-    <p class="text-center">
-        A character's Class determines the <a href="{% url 'rulebook:talents' %}#skills-and-abilities">Skills and Abilities</a> they have access to and influences their playstyle. 
-        Click on a Class or Faction to view their Class-specific Talents on a separate page.
-    </p>
-    <p class="text-center">
-        In addition to those offered by a character's class, every character also has access to <a href="{% url 'rulebook:class_detail' 'classless' %}">Classless Talents</a>.
-    </p>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6 d-flex justify-content-center align-items-center">
-                <img src="{% static 'images/4guysHouseOctavious.jpg' %}" class="page-image">
+        <main class="col-12 col-lg-9 py-4 px-md-4">
+            <h1 class="text-center page-header mb-3 display-4 fw-bold text-uppercase tracking-wide">Classes</h1>
+            <div class="row justify-content-center text-center mb-4">
+                <div class="col-xl-10 lead text-light-emphasis">
+                    <p class="mb-2">
+                        A character's Class determines the <a href="{% url 'rulebook:talents' %}#skills-and-abilities" class="text-primary text-decoration-none fw-semibold">Skills and Abilities</a> they have access to and influences their playstyle. 
+                        Click on a Class or Faction to view their Class-specific Talents on a separate page.
+                    </p>
+                    <p class="fs-6">
+                        In addition to those offered by a character's class, every character also has access to <a href="{% url 'rulebook:class_detail' 'classless' %}" class="text-info text-decoration-none fw-semibold">Classless Talents</a>.
+                    </p>
+                </div>
             </div>
-        </div>
+
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 col-md-8 text-center">
+                    <img src="{% static 'images/4guysHouseOctavious.jpg' %}" class="img-fluid rounded border border-secondary shadow-lg" alt="House Octavious Companions">
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {% for guild in guilds %}
+                    <div class="col-12">
+                        <div class="card bg-dark-subtle border-secondary h-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <h2 class="card-title text-center mb-3">
+                                    <a href="{% url 'rulebook:class_detail' classname=guild.slug %}" class="text-warning text-decoration-none fw-bold tracking-wide header-link">
+                                        {{ guild.name }}
+                                    </a>
+                                </h2>
+                                
+                                <div class="card-text text-light-emphasis text-center lh-lg px-lg-3">
+                                    {{ guild.description|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted italic">No classes are configured in the current database index.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
     </div>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'cleric' %}">Cleric</a></h1>
-    <p class="text-center">
-        Clerics have control of Interplanary powers, which they use to heal and protect themselves and others. They can further 
-        support their team by crafting elixirs to aid them in various situations. As interplanary powers are a form of magic, 
-        Clerics can also enchant gems and scrolls. A cleric's role on the battlefield is to heal, revive, or protect their allies. 
-        Clerics have the ability to become tanky <a href="{% url 'rulebook:class_detail' 'cleric' %}#paladin">Paladins</a> or 
-        supportive <a href="{% url 'rulebook:class_detail' 'cleric' %}#soothsayer">Soothsayers</a>.
-    </p>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'noble' %}">Noble</a></h1>
-    <p class="text-center">
-        Nobles are negotiators, leaders, and tacticians. Far from the lofty, arrogant, braggart stereotype, these Nobles usually 
-        have pockets and minds that are deeper than they let on. In-game, Nobles have a small town to manage that gives them a 
-        \variety of resources to utilize. While useful in a battle, much of a Noble's power comes from their connections with 
-        powerful people. During combat, they control the flow of battle, supporting their allies with their tactical awareness. 
-        This is accomplished either on the front lines as a <a href="{% url 'rulebook:class_detail' 'noble' %}#knight">Knight</a> or 
-        by directing the fight as a <a href="{% url 'rulebook:class_detail' 'noble' %}#lord">Lord</a>.
-    </p>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'ranger' %}">Ranger</a></h1>
-    <p class="text-center">
-        Rangers excel at everything from guarding nobles to stopping hostile warbands in their tracks. These versatile survivors 
-        tend to specialize in the field of archery, and all Rangers use a bow or some other type of ranged weapon. Skilled in 
-        hunting, tracking, and securing objectives, these adventurers either become master trackers
-        —<a href="{% url 'rulebook:class_detail' 'ranger' %}#stalker">Stalkers</a>—
-        or war <a href="{% url 'rulebook:class_detail' 'ranger' %}#marksman">Marksman</a>.
-    </p>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'rogue' %}">Rogue</a></h1>
-    <p class="text-center">
-        A surprisingly wide variety of people train in this mysterious, stealthy discipline. The less honorable among them have the 
-        ability to master the darker side of combat, employing poisons and stealthy armor-piercing stabs. Some Rogues with a 
-        different sense of nobility and honor may find the arts of obtaining things without murder more to their tastes; with 
-        inexplicably deft movements, they can quietly take things from their enemies, or devise silver-tongued trickeries that can 
-        be useful in a variety of situations. Experienced Rogues become 
-        <a href="{% url 'rulebook:class_detail' 'rogue' %}#assassin">Assassins</a> or 
-        <a href="{% url 'rulebook:class_detail' 'rogue' %}#thief">Thieves</a>.
-    </p>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'spellbinder' %}">Spellbinder</a></h1>
-    <p class="text-center">
-        Spellbinders are fighters that use power from the void. They mainly use this power to counter magic; they specialize in 
-        fighting Wizards by nullifying or reflecting their spells, teleporting to the source of magic, etc. Spellbinders can 
-        enchant void-related gems or scrolls and are able to sense the realm of the arcane in some capacity. Spellbinders can 
-        become <a href="{% url 'rulebook:class_detail' 'spellbinder' %}#sentinel">Sentinels</a>, fighters who use the void as a 
-        more direct source of protection and battlefield disruption, or 
-        <a href="{% url 'rulebook:class_detail' 'spellbinder' %}#harbinger">Harbingers</a>, who focus on using their void powers 
-        to dispose of enemies as quickly as possible. 
-    </p>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'warrior' %}">Warrior</a></h1>
-    <p class="text-center">
-        Warriors typically train to high proficiency in their weapon(s) of choice and specialize in plain weapons fighting. This 
-        allows them to deal and withstand relatively high damage, even more so depending on their specialization. By utilizing 
-        physical combat skills, they can end a fight quickly with a decent weapon. Warriors start with a 
-        <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles">Warrior Title</a> that augments their fighting style; 
-        they can earn more titles over time. They will eventually specialize into either 
-        <a href="{% url 'rulebook:class_detail' 'warrior' %}#berserker">Berserkers</a> who thrive when fighting large groups of 
-        enemies or <a href="{% url 'rulebook:class_detail' 'warrior' %}#champion">Champions</a> who prefer dueling one on one.
-    </p>
-
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'wizard' %}">Wizard</a></h1>
-    <p class="text-center">
-        Wizards study magic with scientific discipline. They are the authority on the arcane. Wizards train to learn two of six 
-        possible magic types. Magic is split into two categories: elemental and manifold. Elemental magics include control over 
-        <a href="{% url 'rulebook:class_detail' 'wizard' %}#pyromancy">fire</a>, 
-        <a href="{% url 'rulebook:class_detail' 'wizard' %}#hydromancy">water</a>, or 
-        <a href="{% url 'rulebook:class_detail' 'wizard' %}#kairomancy">lightning</a>, 
-        while manifold magics include influence over others' 
-        <a href="{% url 'rulebook:class_detail' 'wizard' %}#neuromancy">minds</a>, manipulation of 
-        <a href="{% url 'rulebook:class_detail' 'wizard' %}#avlomancy">life energies</a>, or control over their 
-        <a href="{% url 'rulebook:class_detail' 'wizard' %}#kinesiomancy">physical surroundings</a>. 
-        Each Wizard is innately able to use one magic from each category. They can also create scrolls and enchant gems with a 
-        myriad of effects. Wizards cannot use any metal weapons or wear metal armor.
-    </p>
-    <h1 class="text-center class-header"><a href="{% url 'rulebook:class_detail' 'classless' %}">Classless Talents</a></h1>
+</div>
 {% endblock %}

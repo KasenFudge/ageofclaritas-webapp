@@ -2,78 +2,90 @@
 {% load static %}
 
 {% block content %}
-    <!-- Button to toggle Sidebar -->
-    <button class="btn btn-warning sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
-        <i class="bi bi-layout-sidebar-inset-reverse"></i>
-    </button>
+<div class="container-fluid" data-bs-theme="dark">
+    <div class="row">
+        {% include 'rulebook/kin_sidebar.html' %}
 
-    <!-- Sidebar -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel" data-bs-theme="dark">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="sidebarLabel">Class Navigation</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <nav>
-                <ul>
-                    {% for kin_nav in kin_list %}
-                        <li><a href="{% url 'rulebook:kin_detail' kin_nav.name|lower %}">{{ kin_nav.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </nav>
-        </div>
-    </div>
+        <main class="col-12 col-lg-9 py-4 px-md-4">
+            <h1 class="text-center kin-header mb-4 display-4 fw-bold text-uppercase tracking-wide text-warning">
+                {{ kin.name }}
+            </h1>
 
-    <h1 class="text-center kin-header">{{ kin.name }}</h1>
+            <div class="p-3 mb-4 bg-dark-subtle rounded border border-secondary shadow-sm">
+                <p class="mb-0 fs-5">
+                    <strong class="text-secondary text-uppercase small tracking-wider me-2">Standard Size Category:</strong> 
+                    <span class="text-light">{{ kin.size }}</span>
+                </p>
+            </div>
 
-    <p>
-        <b>Size: </b> {{ kin.size }}
-    </p>
-    <p>
-        <b>Description: </b> {{ kin.description|safe }}
-    </p>
-    
-    <div class="container-fluid">
-        <div id="kinCarousel" class="carousel slide border border-dark" data-bs-ride="carousel">    
-            <!-- Carousel Items -->
-            <div class="carousel-inner">
-                {% for image in kin.kin_image_set.all %}
-                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                        <img src="{{ image.image.url }}" class="d-block mx-auto img-fluid" alt="Image for {{ kin.name }}">
+            <div class="lh-lg text-light-emphasis px-md-2 mb-5 fs-5">
+                {{ kin.description|safe }}
+            </div>
+            
+            {% if kin.kin_images.all %}
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 col-md-10">
+                    <div id="kinCarousel" class="carousel slide border border-secondary rounded shadow-lg bg-black overflow-hidden" data-bs-ride="carousel">    
+                        <div class="carousel-inner">
+                            {% for image in kin.kin_images.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ image.image.url }}" class="d-block mx-auto img-fluid" alt="Concept art illustrating {{ kin.name }} ancestry" style="max-height: 500px; object-fit: contain;">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    
+                        {% if kin.kin_images.all|length > 1 %}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#kinCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#kinCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                    
+                            <div class="carousel-indicators mb-2">
+                                {% for image in kin.kin_images.all %}
+                                    <button type="button" data-bs-target="#kinCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                                        class="{% if forloop.first %}active{% endif %} carousel-indicator-dark" 
+                                        aria-current="{% if forloop.first %}true{% endif %}"
+                                        aria-label="Slide {{ forloop.counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        
-            <!-- Controls/Arrows -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#kinCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#kinCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-    
-            <!-- Indicators/Dots -->
-            <div class="carousel-indicators">
-                {% for image in kin.kin_image_set.all %}
-                <button type="button" data-bs-target="#kinCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
-                class="{% if forloop.first %}active{% endif %} carousel-indicator-dark" aria-current="{% if forloop.first %}true{% endif %}"
-                aria-label="Slide {{ forloop.counter }}"></button>
-                {% endfor %}
+            {% endif %}
+
+            <div class="mt-5 border-top border-secondary pt-4">
+                <h2 class="text-center mb-4 text-uppercase tracking-wide fw-bold">Kinship Attributes</h2>
+                
+                <div class="row g-3">
+                    {% for attribute in kin.attributes.all %}
+                        <div class="col-12">
+                            <div class="card bg-dark-subtle border-secondary h-100 shadow-sm">
+                                <div class="card-body p-4">
+                                    <h4 class="card-title fw-bold text-warning mb-2">
+                                        {% if not attribute.can_start_with %}
+                                            <span class="text-danger-subtle" title="Cannot be taken as a starting attribute">*</span>
+                                        {% endif %}
+                                        {{ attribute.name }}
+                                    </h4>
+                                    <div class="card-text text-light-emphasis lh-lg ps-md-2 border-start border-warning border-opacity-25 mt-2">
+                                        {{ attribute.description|safe }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center text-muted italic py-3">
+                            No unique attributes are registered for this Kin database index.
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
+        </main>
     </div>
-
-    <h2 class="text-center">Attributes</h1>
-    {% for attribute in kin.attribute_set.all %}
-    <p class="attribute-name">
-        <b>{% if not attribute.can_start_with %}*{% endif %}{{ attribute.name }}</b>
-        <ul>
-            <li>{{ attribute.description|safe }}</li>
-        </ul>
-        
-    </p>
-    {% endfor %}
-
+</div>
 {% endblock %}

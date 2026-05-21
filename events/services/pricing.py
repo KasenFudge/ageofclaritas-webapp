@@ -78,7 +78,6 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
         # First-time Discount: Applies a $35 discount if this is the user's first event. Comes with free weapon rental.
         if is_first_event:
             discounts.append({"type": "first_time", "amount_cents": 3500, "reason": "First time attending a main event"})
-            additional_items.append({"type": "weapon_rental", "amount_cents": 0, "reason": "Free weapon rental for first time attendees"})
 
         # Weapon Rental: Applies a $20 charge if user requested weapon
         if weapon_rental and not is_first_event:

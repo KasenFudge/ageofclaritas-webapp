@@ -8,9 +8,11 @@ from .models import(
     Response, Answer
 )
 
-# Register your models here.
 
-# --- Event Creation ---
+# ==========================================
+# EVENT ADMINISTRATION
+# ==========================================
+
 class PriceTierInline(admin.StackedInline):
     model = EventPriceTier
     # Creates 0 instances of this inline on opening the Event Editor
@@ -39,9 +41,11 @@ class EventMediaInline(admin.StackedInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+
     fieldsets = (
         ("Event Info", {
-            "fields": ['title', 'event_type', 'registration_available', 'event_image'],
+            "fields": [('title', 'slug'), 'event_type', 'registration_available', 'event_image'],
         }),
         ("Event Date/Time", {
             "fields": ['start_time', 'end_time', 'downtime_due'],
