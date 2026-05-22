@@ -16,7 +16,7 @@
         <h2 class="class-header mt-4 mb-3 text-primary fw-bold">Skills</h2>
         <div class="talent-section mb-4">
             {% for skill in guild_skills %}
-                <div class="talent-block mb-3">
+                <div id="{{ skill.name|slugify }}" class="talent-block mb-3">
                     <b class="talent-name d-block text-dark fs-5 fw-bold">{{ skill.name }}</b>
                     <div class="talent-description ps-2 border-start border-primary border-2 text-secondary lh-lg">
                         {{ skill.description|safe }}
@@ -30,7 +30,7 @@
         <h2 class="class-header mt-4 mb-3 text-primary fw-bold">Abilities</h2>
         <div class="talent-section mb-4">
             {% for ability in guild_abilities %}
-                <div class="talent-block mb-3">
+                <div id="{{ ability.name|slugify }}" class="talent-block mb-3">
                     <b class="talent-name d-block text-dark fs-5 fw-bold">{{ ability.name }}</b>
                     <div class="talent-description ps-2 border-start border-primary border-2 text-secondary lh-lg">
                         {{ ability.description|safe }}
@@ -55,7 +55,7 @@
             {% if faction.skills %}
                 <h2 class="class-header my-3 text-info fw-bold">Skills</h2>
                 {% for skill in faction.skills %}
-                    <div class="talent-block mb-3">
+                    <div id="{{ skill.name|slugify }}" class="talent-block mb-3">
                         <b class="talent-name d-block text-dark fs-5 fw-bold">{{ skill.name }}</b>
                         <div class="talent-description ps-2 border-start border-info border-2 text-secondary lh-lg">
                             {{ skill.description|safe }}
@@ -67,7 +67,7 @@
             {% if faction.abilities %}
                 <h2 class="class-header my-3 text-info fw-bold">Abilities</h2>
                 {% for ability in faction.abilities %}
-                    <div class="talent-block mb-3">
+                    <div id="{{ ability.name|slugify }}" class="talent-block mb-3">
                         <b class="talent-name d-block text-dark fs-5 fw-bold">{{ ability.name }}</b>
                         <div class="talent-description ps-2 border-start border-info border-2 text-secondary lh-lg">
                             {{ ability.description|safe }}
@@ -93,11 +93,11 @@
                 {% endif %}
 
                 {% if elemental.tier_1 %}
-                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider fw-bold">Tier 1</h3>
+                    <h2 class="class-header my-3 text-danger fw-bold fs-5 text-uppercase tracking-wide">Tier I</h2>
                     {% for talent in elemental.tier_1 %}
-                        <div class="talent-block mb-3">
-                            <b class="talent-name d-block text-dark fw-semibold">{{ talent.name }}</b>
-                            <div class="talent-description ps-2 border-start border-secondary text-secondary lh-lg">
+                        <div id="{{ talent.name|slugify }}" class="talent-block mb-3">
+                            <b class="talent-name d-block text-dark fs-5 fw-bold">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-danger border-2 text-secondary lh-lg">
                                 {{ talent.description|safe }}
                             </div>
                         </div>
@@ -105,11 +105,11 @@
                 {% endif %}
 
                 {% if elemental.tier_2 %}
-                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider fw-bold">Tier 2</h3>
+                    <h2 class="class-header my-3 text-danger fw-bold fs-5 text-uppercase tracking-wide">Tier II</h2>
                     {% for talent in elemental.tier_2 %}
-                        <div class="talent-block mb-3">
-                            <b class="talent-name d-block text-dark fw-semibold">{{ talent.name }}</b>
-                            <div class="talent-description ps-2 border-start border-secondary text-secondary lh-lg">
+                        <div id="{{ talent.name|slugify }}" class="talent-block mb-3">
+                            <b class="talent-name d-block text-dark fs-5 fw-bold">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-danger border-2 text-secondary lh-lg">
                                 {{ talent.description|safe }}
                             </div>
                         </div>
@@ -117,11 +117,11 @@
                 {% endif %}
 
                 {% if elemental.tier_3 %}
-                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider fw-bold">Tier 3</h3>
+                    <h2 class="class-header my-3 text-danger fw-bold fs-5 text-uppercase tracking-wide">Tier III</h2>
                     {% for talent in elemental.tier_3 %}
-                        <div class="talent-block mb-3">
-                            <b class="talent-name d-block text-dark fw-semibold">{{ talent.name }}</b>
-                            <div class="talent-description ps-2 border-start border-secondary text-secondary lh-lg">
+                        <div id="{{ talent.name|slugify }}" class="talent-block mb-3">
+                            <b class="talent-name d-block text-dark fs-5 fw-bold">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-danger border-2 text-secondary lh-lg">
                                 {{ talent.description|safe }}
                             </div>
                         </div>
@@ -146,11 +146,11 @@
                 {% endif %}
 
                 {% if manifold.tier_1 %}
-                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider fw-bold">Tier 1</h3>
+                    <h2 class="class-header my-3 text-danger fw-bold fs-5 text-uppercase tracking-wide">Tier I</h2>
                     {% for talent in manifold.tier_1 %}
-                        <div class="talent-block mb-3">
-                            <b class="talent-name d-block text-dark fw-semibold">{{ talent.name }}</b>
-                            <div class="talent-description ps-2 border-start border-secondary text-secondary lh-lg">
+                        <div id="{{ talent.name|slugify }}" class="talent-block mb-3">
+                            <b class="talent-name d-block text-dark fs-5 fw-bold">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-danger border-2 text-secondary lh-lg">
                                 {{ talent.description|safe }}
                             </div>
                         </div>
@@ -158,11 +158,11 @@
                 {% endif %}
 
                 {% if manifold.tier_2 %}
-                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider fw-bold">Tier 2</h3>
+                    <h2 class="class-header my-3 text-danger fw-bold fs-5 text-uppercase tracking-wide">Tier II</h2>
                     {% for talent in manifold.tier_2 %}
-                        <div class="talent-block mb-3">
-                            <b class="talent-name d-block text-dark fw-semibold">{{ talent.name }}</b>
-                            <div class="talent-description ps-2 border-start border-secondary text-secondary lh-lg">
+                        <div id="{{ talent.name|slugify }}" class="talent-block mb-3">
+                            <b class="talent-name d-block text-dark fs-5 fw-bold">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-danger border-2 text-secondary lh-lg">
                                 {{ talent.description|safe }}
                             </div>
                         </div>
@@ -170,11 +170,11 @@
                 {% endif %}
 
                 {% if manifold.tier_3 %}
-                    <h3 class="class-header mt-3 text-muted small text-uppercase tracking-wider fw-bold">Tier 3</h3>
+                    <h2 class="class-header my-3 text-danger fw-bold fs-5 text-uppercase tracking-wide">Tier III</h2>
                     {% for talent in manifold.tier_3 %}
-                        <div class="talent-block mb-3">
-                            <b class="talent-name d-block text-dark fw-semibold">{{ talent.name }}</b>
-                            <div class="talent-description ps-2 border-start border-secondary text-secondary lh-lg">
+                        <div id="{{ talent.name|slugify }}" class="talent-block mb-3">
+                            <b class="talent-name d-block text-dark fs-5 fw-bold">{{ talent.name }}</b>
+                            <div class="talent-description ps-2 border-start border-danger border-2 text-secondary lh-lg">
                                 {{ talent.description|safe }}
                             </div>
                         </div>

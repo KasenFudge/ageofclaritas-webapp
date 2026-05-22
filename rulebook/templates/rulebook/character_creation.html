@@ -89,7 +89,7 @@
 
         <table class="table p-1">
             <tr>
-                <th><a href="{% url 'rulebook:modifiers' %}" onclick="openMiniWindow(event, this.href)">Modifier:</a></th>
+                <th><a href="{% url 'rulebook:talents' %}#modifiers" onclick="openMiniWindow(event, this.href)">Modifier:</a></th>
             </tr>
             <tr>
                 <td>Players typically do not start with a Modifier.</td>
@@ -98,7 +98,7 @@
 
         <table class="table p-1">
             <tr>
-                <th><a href="{% url 'rulebook:backgrounds' %}" onclick="openMiniWindow(event, this.href)">Backgrounds:</a></th>
+                <th><a href="{% url 'rulebook:backgrounds' %}#backgrounds" onclick="openMiniWindow(event, this.href)">Backgrounds:</a></th>
                 <th></th>
             </tr>
             <tr>
@@ -109,7 +109,7 @@
 
         <table class="table p-1">
             <tr>
-                <th style="width:33.33%"><a href="{% url 'rulebook:backgrounds' %}" onclick="openMiniWindow(event, this.href)">Attributes:</a></th>
+                <th style="width:33.33%"><a href="{% url 'rulebook:kin' %}" onclick="openMiniWindow(event, this.href)">Attributes:</a></th>
                 <th style="width:33.33%"></th>
                 <th style="width:33.33%"></th>
             </tr>
@@ -122,7 +122,7 @@
 
         <table class="table p-1">
             <tr>
-                <th><a href="{% url 'rulebook:modifiers' %}" onclick="openMiniWindow(event, this.href)">Techniques:</a></th>
+                <th><a href="{% url 'rulebook:talents' %}#techniques" onclick="openMiniWindow(event, this.href)">Techniques:</a></th>
             </tr>
             <tr>
                 <td>Techniques are earned in game. Most classes start with none, but Warriors start with a <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" onclick="openMiniWindow(event, this.href)">Title</a>.</td>
@@ -131,12 +131,12 @@
 
         <table class="table p-1">
             <tr>
-                <th style="width:50%"><a href="{% url 'rulebook:skills_and_abilities' %}" onclick="openMiniWindow(event, this.href)">Skills:</a></th>
-                <th style="width:50%"><a href="{% url 'rulebook:skills_and_abilities' %}" onclick="openMiniWindow(event, this.href)">Abilities:</a></th>
+                <th style="width:50%"><a href="{% url 'rulebook:talents' %}#skills-and-abiliites" onclick="openMiniWindow(event, this.href)">Skills:</a></th>
+                <th style="width:50%"><a href="{% url 'rulebook:talents' %}#skills-and-abiliites" onclick="openMiniWindow(event, this.href)">Abilities:</a></th>
             </tr>
             <tr>
-                <td>Choose 1 free <a href="#" onclick="openMiniWindow(event, this.href)">Weapon Dexterity</a>.</td>
-                <td>Select <a href="{% url 'rulebook:wizard_detail' %}" onclick="openMiniWindow(event, this.href)">Magic Spells</a> if you are a Wizard.</td>
+                <td>Choose 1 free <a href="{% url 'rulebook:class_detail' 'classless' %}#weapon-dexterity" onclick="openMiniWindow(event, this.href)">Weapon Dexterity</a>.</td>
+                <td>Select <a href="{% url 'rulebook:class_detail' 'wizard' %}" onclick="openMiniWindow(event, this.href)">Magic Spells</a> if you are a Wizard.</td>
             </tr>
             <tr>
                 <td>With 15 XP, select up to 3 R1 Skills and Abilities.</td>
