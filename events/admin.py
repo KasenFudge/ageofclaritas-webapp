@@ -25,47 +25,63 @@ class PriceTierInline(admin.StackedInline):
 
     fields = ['label', 'min_age', 'max_age', 'price_cents']
 
+# A custom sidebar gate filter to handle reading into your JSON payload field
+class WeaponRentalFilter(admin.SimpleListFilter):
+    title = 'Weapon Rental'
+    parameter_name = 'weapon_rental'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'Yes'),
+            ('no', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            # Uses Django's __contains lookup to find records where the weapon_rental dictionary exists in the array
+            return queryset.filter(additional_items__contains=[{"type": "weapon_rental"}])
+        if self.value() == 'no':
+            return queryset.exclude(additional_items__contains=[{"type": "weapon_rental"}])
+        return queryset
+
 @admin.register(EventAttendee)
 class EventAttendeeAdmin(admin.ModelAdmin):
-    # Organizers see a detailed participant roster layout at a glance
     list_display = [
         "user", 
         "event", 
         "formatted_arrival_time", 
-        "weapon_rental", 
+        "weapon_rental_display", 
         "formatted_final_price", 
         "checked_in"
     ]
     
-    # Allows filtering roster lists by event, check-in flags, and weekend arrival dates
-    list_filter = ["event", "checked_in", "weapon_rental", "arrival_time"]
+    list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time"]
     
-    search_fields = [
-        "user__username", 
-        "user__first_name", 
-        "user__last_name", 
-        "event__title"
-    ]
+    search_fields = ["user__username", "user__first_name", "user__last_name", "event__title"]
     
-    # Sorts the default dashboard queue by arrival time then alphabetical name.
-    ordering = ["arrival_time", "user__full_name"]
+    # Sorts by arrival time, then by last name, then by first name
+    ordering = ["arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
-    
-    # Optimizes database traffic by pre-fetching related foreign keys
     list_select_related = ("event", "user")
 
     # Custom column renderer: Formats full datetime values into crisp event passes
     @admin.display(ordering="arrival_time", description="Scheduled Arrival")
     def formatted_arrival_time(self, obj):
-        # Output style matches your regional time settings: "Sat, May 23 - 3:30 PM"
         return obj.arrival_time.strftime("%a, %b %d — %I:%M %p")
-
+    
     # Custom column renderer: Converts database integer cents into currency displays
     @admin.display(ordering="final_price_cents", description="Price Paid")
     def formatted_final_price(self, obj):
         if obj.final_price_cents is None:
             return "—"
         return f"${obj.final_price_cents / 100:.2f}"
+
+    # Safely extracts weapon rental flags out of the JSON data structure for the list view rows
+    @admin.display(boolean=True, description="Weapon Rental")
+    def weapon_rental_display(self, obj):
+        if isinstance(obj.additional_items, list):
+            return any(item.get("type") == "weapon_rental" for item in obj.additional_items if isinstance(item, dict))
+        return False
 
 class EventAttendeeInline(admin.StackedInline):
     model = EventAttendee
