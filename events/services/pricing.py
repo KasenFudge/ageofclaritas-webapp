@@ -45,14 +45,15 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     if timezone.is_naive(registration_time):
         registration_time = timezone.make_aware(registration_time, timezone.get_current_timezone())
 
-    # Late Arrival Cutoff: At 3pm the day the event startes (I.E. Saturday at 3pm)
-    late_arrival_cutoff = timezone.make_aware(
-        timezone.datetime.combine(event.start_time.date, time(15, 0)),
-        timezone.get_current_timezone()
-    )
     # Make sure arrival time is aware:
     if timezone.is_naive(arrival_time):
         arrival_time = timezone.make_aware(arrival_time, timezone.get_current_timezone())
+
+    # Late Arrival Cutoff: At 3pm the day the event startes (I.E. Saturday at 3pm)
+    late_arrival_cutoff_sat = timezone.make_aware(
+        timezone.datetime.combine(event.start_time.date, time(15, 0)),
+        timezone.get_current_timezone()
+    )
 
     # First-Time Discount: Check if user has attended a main event before:
     has_attended_main_event = (
@@ -69,42 +70,50 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     if event.event_type == EventType.JUNIOR:
         # Early Bird: Registered a week prior to the event for a $10 discount
         if registration_time < early_bird_cutoff:
-            discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Registered a week prior to the Event"})
+            discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Early Bird Discount (Registered 7+ days early)"})
 
-        # Late Arrival: Determine if arrival time is after the late arrival cutoff for $10 discount.
-        if arrival_time >= late_arrival_cutoff:
-            discounts.append({"type": "late_arrival", "amount_cents": 1000, "reason": "Arriving after 3:00pm Saturday"})
+        # Late Arrival Tiers (Junior)
+        if arrival_time:
+            # weekday() returns 5 for Saturday, 6 for Sunday
+            if arrival_time.weekday() == 6:
+                discounts.append({"type": "late_arrival_sunday", "amount_cents": 2000, "reason": "Late Arrival Discount (Sunday-Only Attendance)"})
+            elif arrival_time >= late_arrival_cutoff_sat:
+                discounts.append({"type": "late_arrival_saturday", "amount_cents": 1000, "reason": "Late Arrival Discount (Saturday after 3:00 PM)"})
 
         # First-time Discount: Applies a $35 discount if this is the user's first event. Comes with free weapon rental.
         if is_first_event:
-            discounts.append({"type": "first_time", "amount_cents": 3500, "reason": "First time attending a main event"})
+            discounts.append({"type": "first_time", "amount_cents": 3500, "reason": "First-Time Player Discount"})
+            additional_items.append({"type": "weapon_rental", "amount_cents": 0, "reason": "First-Time Player Token: Free Weapon Rental"})
 
         # Weapon Rental: Applies a $20 charge if user requested weapon
         if weapon_rental and not is_first_event:
-            additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon rental"})
+            additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon Rental"})
 
     # Compute Discounts/Additional Items for Senior Events
     elif event.event_type == EventType.SENIOR:
         # Early Bird: Registered a week prior to the event for a $10 discount
         if registration_time < early_bird_cutoff:
-            discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Registered a week prior to the Event"})
+            discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Early Bird Discount (Registered 7+ days early)"})
 
-        # Late Arrival: Determine if arrival time is after the late arrival cutoff for $5 discount.
-        if arrival_time >= late_arrival_cutoff:
-            discounts.append({"type": "late_arrival", "amount_cents": 500, "reason": "Arriving after 3:00pm Saturday"})
+        # Late Arrival Tiers (Senior)
+        if arrival_time:
+            if arrival_time.weekday() == 6:
+                discounts.append({"type": "late_arrival_sunday", "amount_cents": 1500, "reason": "Late Arrival Discount (Sunday-Only Attendance)"})
+            elif arrival_time >= late_arrival_cutoff_sat:
+                discounts.append({"type": "late_arrival_saturday", "amount_cents": 500, "reason": "Late Arrival Discount (Saturday after 3:00 PM)"})
 
         # Student Discount: Applies a $5 discount if the user registers as a student.
         if student_discount:
-            discounts.append({"type": "student_discount", "amount_cents": 500, "reason": "Registered as a student"})
+            discounts.append({"type": "student_discount", "amount_cents": 500, "reason": "Active Student Discount"})
 
         # First-time Discount: Applies a $35 discount if this is the user's first event. Comes with free weapon rental.
         if is_first_event:
-            discounts.append({"type": "first_time", "amount_cents": 3500, "reason": "First time attending a main event"})
-            additional_items.append({"type": "weapon_rental", "amount_cents": 0, "reason": "Free weapon rental for first time attendees"})
+            discounts.append({"type": "first_time", "amount_cents": 3500, "reason": "First-Time Player Discount"})
+            additional_items.append({"type": "weapon_rental", "amount_cents": 0, "reason": "First-Time Player Token: Free Weapon Rental"})
 
         # Weapon Rental: Applies a $20 charge if user requested weapon
         if weapon_rental and not is_first_event:
-            additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon rental"})
+            additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon Rental"})
 
     # Compute final price and return a new PriceQuote object
     discount_total = sum(d["amount_cents"] for d in discounts)

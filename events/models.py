@@ -126,7 +126,7 @@ class EventAttendee(models.Model):
     checked_in = models.BooleanField(default=False)
 
     # Time the user will arrive at the event.
-    arrival_time = models.TimeField()
+    arrival_time = models.DateTimeField(blank=True)
 
     base_price_cents = models.PositiveIntegerField(help_text="Base price before discounts, in cents")
     final_price_cents = models.PositiveIntegerField(help_text="Final price charged, in cents")
@@ -150,6 +150,16 @@ class EventAttendee(models.Model):
                 name="unique_registration",
             )
         ]
+
+    def save(self, *args, **kwargs):
+        """
+        Enforce data integrity: If no custom arrival time is supplied,
+        default it directly to the exact kickoff second of the event.
+        """
+        if not self.arrival_time and self.event:
+            self.arrival_time = self.event.start_time
+            
+        super().save(*args, **kwargs)
 
 # --- Pictures/Media for Events ---
 

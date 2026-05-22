@@ -7,5 +7,5 @@ app_name = 'events'
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
     path("<slug:slug>/", views.EventDetailView.as_view(), name="event_detail"),
-    path("<slug:slug>/register/", views.EventRegistrationView.as_view(), name="event_registration"),
+    path("<slug:slug>/register/", views.event_registration_view, name="event_registration"),
 ]

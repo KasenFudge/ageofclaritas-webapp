@@ -10,6 +10,30 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField()
 
+    is_student = models.BooleanField(default=False)
+    student_status_expires = models.DateField(null=True, blank=True)
+
+    @property
+    def has_valid_student_discount(self):
+        """
+        Dynamically checks if the user is a student. If their expiration
+        date has passed, it automatically updates the database to reset their status.
+        """
+        if not self.is_student:
+            return False
+        
+        if self.student_status_expires:
+            # Check if today's date has passed the expiration date
+            if timezone.now().date() > self.student_status_expires:
+                # The status has expired! Turn off the flags and save to the database
+                self.is_student = False
+                self.student_status_expires = None
+                self.save(update_fields=['is_student', 'student_status_expires'])
+                return False
+                
+        # If they are a student and either have no expiration date or haven't reached it yet
+        return True
+
     # A registered parent account that can sign up younger players for events. Parent account must be an adult.
     parent_account = models.ForeignKey(
         'self',

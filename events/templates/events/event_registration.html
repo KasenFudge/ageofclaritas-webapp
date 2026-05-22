@@ -44,42 +44,51 @@
     .bootstrap-form-wrapper p:last-child { margin-bottom: 0; }
     .bootstrap-form-wrapper label { display: block; font-weight: 600; font-size: 0.875rem; color: #495057; margin-bottom: 0.375rem; }
     
+    /* UPDATED: Added input[type="datetime-local"] targeting */
     .bootstrap-form-wrapper input[type="text"], 
     .bootstrap-form-wrapper select, 
-    .bootstrap-form-wrapper input[type="time"] { 
+    .bootstrap-form-wrapper input[type="time"],
+    .bootstrap-form-wrapper input[type="datetime-local"] { 
         display: block; width: 100%; padding: 0.375rem 0.75rem; font-size: 1rem; font-weight: 400; line-height: 1.5; color: #212529; background-color: #fff; border: 1px solid #ced4da; border-radius: 0.375rem; transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
     
-    /* Styles the light gray placeholder text */
     .bootstrap-form-wrapper input::placeholder {
         color: #adb5bd !important;
         opacity: 1;
     }
 
+    /* UPDATED: Added focus styling for input[type="datetime-local"] */
     .bootstrap-form-wrapper input[type="text"]:focus, 
     .bootstrap-form-wrapper select:focus, 
-    .bootstrap-form-wrapper input[type="time"]:focus {
+    .bootstrap-form-wrapper input[type="time"]:focus,
+    .bootstrap-form-wrapper input[type="datetime-local"]:focus {
         border-color: #86b7fe; outline: 0; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
     }
-    .bootstrap-form-wrapper input[type="checkbox"] {
+    
+    /* Styles the Radio Buttons cleanly for your payment methods */
+    .bootstrap-form-wrapper ul { list-style: none; padding-left: 0; margin-bottom: 0; }
+    .bootstrap-form-wrapper ul li { margin-bottom: 0.5rem; }
+    .bootstrap-form-wrapper ul li:last-child { margin-bottom: 0; }
+    
+    .bootstrap-form-wrapper input[type="checkbox"],
+    .bootstrap-form-wrapper input[type="radio"] {
         width: 1rem; height: 1rem; margin-right: 0.5rem; vertical-align: middle;
     }
 </style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Find the arrival time input field dynamically (checks name and id variants)
         const arrivalInput = document.querySelector('input[name="arrival_time"]') || document.querySelector('[id*="arrival"]');
         
         if (arrivalInput) {
-            // 1. Force the placeholder gray text into the element
-            arrivalInput.setAttribute('placeholder', 'e.g., 09:30 PM');
+            // UPDATED: Modern browser calendar components utilize native placeholder formatting based on localization
+            arrivalInput.setAttribute('placeholder', 'mm/dd/yyyy --:-- AM/PM');
             
-            // 2. Append a small Bootstrap instruction block immediately below the field
+            // UPDATED: Adjusted text to prompt calendar interaction
             const helperText = document.createElement('small');
             helperText.className = 'text-muted d-block mt-1';
             helperText.style.fontSize = '0.75rem';
-            helperText.innerHTML = '<i class="bi bi-clock me-1"></i>Please use HH:MM AM/PM format.';
+            helperText.innerHTML = '<i class="bi bi-calendar-event me-1"></i>Select your estimated arrival date and time.';
             arrivalInput.parentNode.appendChild(helperText);
         }
     });

@@ -25,6 +25,48 @@ class PriceTierInline(admin.StackedInline):
 
     fields = ['label', 'min_age', 'max_age', 'price_cents']
 
+@admin.register(EventAttendee)
+class EventAttendeeAdmin(admin.ModelAdmin):
+    # Organizers see a detailed participant roster layout at a glance
+    list_display = [
+        "user", 
+        "event", 
+        "formatted_arrival_time", 
+        "weapon_rental", 
+        "formatted_final_price", 
+        "checked_in"
+    ]
+    
+    # Allows filtering roster lists by event, check-in flags, and weekend arrival dates
+    list_filter = ["event", "checked_in", "weapon_rental", "arrival_time"]
+    
+    search_fields = [
+        "user__username", 
+        "user__first_name", 
+        "user__last_name", 
+        "event__title"
+    ]
+    
+    # Sorts the default dashboard queue by arrival time then alphabetical name.
+    ordering = ["arrival_time", "user__full_name"]
+    list_per_page = 50
+    
+    # Optimizes database traffic by pre-fetching related foreign keys
+    list_select_related = ("event", "user")
+
+    # Custom column renderer: Formats full datetime values into crisp event passes
+    @admin.display(ordering="arrival_time", description="Scheduled Arrival")
+    def formatted_arrival_time(self, obj):
+        # Output style matches your regional time settings: "Sat, May 23 - 3:30 PM"
+        return obj.arrival_time.strftime("%a, %b %d — %I:%M %p")
+
+    # Custom column renderer: Converts database integer cents into currency displays
+    @admin.display(ordering="final_price_cents", description="Price Paid")
+    def formatted_final_price(self, obj):
+        if obj.final_price_cents is None:
+            return "—"
+        return f"${obj.final_price_cents / 100:.2f}"
+
 class EventAttendeeInline(admin.StackedInline):
     model = EventAttendee
     # Creates 0 instances of this inline on opening the Event Editor
