@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Age of Claritas - {{ title }}</title>
+    <title>Age of Claritas{% if title %} - {{ title }}{% endif %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/AgeOfClaritasLogo.png' %}">
 
     <!-- Bootstrap 5.3-->

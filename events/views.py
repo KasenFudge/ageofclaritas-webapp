@@ -155,5 +155,6 @@ def event_registration_view(request, slug):
     context = {
         "form": form,
         "event": event,
+        "title": f"Register for {event.title}"
     }
     return render(request, "events/event_registration.html", context)
