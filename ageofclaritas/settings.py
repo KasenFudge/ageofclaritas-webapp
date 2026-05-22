@@ -74,6 +74,11 @@ INSTALLED_APPS = [
     'payments.apps.PaymentsConfig',
 ]
 
+# Force Django to route third-party app migrations away from the read-only package folder
+MIGRATION_MODULES = {
+    'django_summernote': None,
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
