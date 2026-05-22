@@ -17,7 +17,7 @@
                     <p class="fs-6">
                         In addition to those offered by a character's class, every character also has access to 
                         {% if classless_record %}
-                            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-primary text-decoration-none fw-semibold">{{ classless_record.name }}</a>.
+                            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-primary text-decoration-none fw-semibold">{{ classless_record.name }} Talents</a>.
                         {% else %}
                             <a href="{% url 'rulebook:class_detail' 'classless' %}" class="text-primary text-decoration-none fw-semibold">Classless Talents</a>.
                         {% endif %}
