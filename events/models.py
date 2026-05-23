@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 from datetime import datetime, time, timedelta
 from django.utils.text import slugify
 
@@ -68,7 +69,7 @@ class Event(models.Model):
     )
 
     attendees = models.ManyToManyField(
-        "auth.User",  # Falls back cleanly to settings.AUTH_USER_MODEL reference handling
+        settings.AUTH_USER_MODEL,
         through='EventRegistration',
         related_name="events"
     )
@@ -122,7 +123,7 @@ class PaymentStatus(models.TextChoices):
 
 class EventRegistration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="registrations")
-    user = models.ForeignKey("auth.User", on_delete=models.CASCADE, related_name="registrations")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="registrations")
     checked_in = models.BooleanField(default=False)
     arrival_time = models.DateTimeField(blank=True)
 

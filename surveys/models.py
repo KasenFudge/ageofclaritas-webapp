@@ -3,7 +3,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 
-
 class SurveyType(models.TextChoices):
     POST_EVENT = "post_event", "Post Event"
     NEW_PLAYER = "new_player", "New Player"
