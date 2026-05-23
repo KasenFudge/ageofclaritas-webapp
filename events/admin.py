@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import(
-    Event, EventAttendee, EventPriceTier, EventMedia,
+    Event, EventRegistration, EventPriceTier, EventMedia,
     Survey, Question, SurveyQuestion, Choice,
     Response, Answer
 )
@@ -44,8 +44,8 @@ class WeaponRentalFilter(admin.SimpleListFilter):
             return queryset.exclude(additional_items__contains=[{"type": "weapon_rental"}])
         return queryset
 
-@admin.register(EventAttendee)
-class EventAttendeeAdmin(admin.ModelAdmin):
+@admin.register(EventRegistration)
+class EventRegistrationAdmin(admin.ModelAdmin):
     list_display = [
         "user", 
         "event", 
@@ -83,8 +83,8 @@ class EventAttendeeAdmin(admin.ModelAdmin):
             return any(item.get("type") == "weapon_rental" for item in obj.additional_items if isinstance(item, dict))
         return False
 
-class EventAttendeeInline(admin.StackedInline):
-    model = EventAttendee
+class EventRegistrationInline(admin.StackedInline):
+    model = EventRegistration
     # Creates 0 instances of this inline on opening the Event Editor
     extra = 0
 
@@ -115,7 +115,7 @@ class EventAdmin(admin.ModelAdmin):
             "fields": ['photographer'],
         })
     )
-    inlines = [PriceTierInline, EventAttendeeInline, EventMediaInline]
+    inlines = [PriceTierInline, EventRegistrationInline, EventMediaInline]
     list_filter = ['event_type', 'start_time',]
     search_fields = ['title',]
 

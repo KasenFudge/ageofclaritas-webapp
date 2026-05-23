@@ -75,7 +75,7 @@ class Event(models.Model):
     # Who is registered for the event.
     attendees = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        through='EventAttendee',
+        through='EventRegistration',
         related_name="events"
     )
 

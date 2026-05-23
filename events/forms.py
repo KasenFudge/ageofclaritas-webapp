@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from .models import EventAttendee
+from .models import EventRegistration
 
 class EventRegistrationForm(forms.ModelForm):
     # CHANGED: Swapped to DateTimeField with explicit date + time processing support
@@ -37,7 +37,7 @@ class EventRegistrationForm(forms.ModelForm):
     )
 
     class Meta:
-        model = EventAttendee
+        model = EventRegistration
         fields = ["arrival_time", "weapon_rental", "payment_method"]
 
     def __init__(self, *args, event=None, user=None, **kwargs):
