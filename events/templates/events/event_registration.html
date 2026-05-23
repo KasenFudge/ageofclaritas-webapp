@@ -19,11 +19,54 @@
             {% endfor %}
         {% endif %}
 
-        <form method="POST" class="needs-validation">
+        <form method="POST" class="needs-validation" novalidate>
             {% csrf_token %}
             
             <div class="bg-light p-4 rounded-3 border border-light mb-4 bootstrap-form-wrapper">
-                {{ form.as_p }}
+                {% for field in form %}
+                    <div class="mb-3">
+                        {% if field.field.widget.input_type == 'radio' %}
+                            <label class="form-label d-block fw-semibold mb-2">{{ field.label }}</label>
+                            <div class="d-flex flex-column gap-2">
+                                {% for radio in field %}
+                                    <div class="form-check d-flex align-items-center text-nowrap">
+                                        <span class="me-2">{{ radio.tag }}</span>
+                                        <label class="form-check-label cursor-pointer" for="{{ radio.id_for_label }}">
+                                            {{ radio.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if field.help_text %}
+                                <div class="form-text mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+
+                        {% else %}
+                            <label class="form-label fw-semibold mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            
+                            {# Automatically apply the bootstrap class dynamically #}
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <div class="form-check">
+                                    {{ field }}
+                                </div>
+                            {% else %}
+                                {# Adds the required form-control class to inputs #}
+                                {{ field }}
+                            {% endif %}
+
+                            {% if field.help_text %}
+                                <div class="form-text mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+                        {% endif %}
+
+                        {# Field-specific error logging if validations fail #}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ field.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
 
             <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
