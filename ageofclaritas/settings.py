@@ -61,14 +61,17 @@ INSTALLED_APPS = [
     # Core Pages such as index
     'core.apps.CoreConfig',
 
-    # Account and General Portion of the website
+    # Accounts portion of the website
     'accounts.apps.AccountsConfig',
     
-    # Rulebook Portion of the website
+    # Rulebook portion of the website
     'rulebook.apps.RulebookConfig',
 
-    # Events and Surveys Portion of the website
+    # Events portion of the website
     'events.apps.EventsConfig',
+
+    # Surveys Portion of the website
+    'surveys.apps.SurveysConfig',
 
     # Payments through Stripe
     'payments.apps.PaymentsConfig',
@@ -96,15 +99,12 @@ ROOT_URLCONF = 'ageofclaritas.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, "ageofclaritas/templates/base"),
-            os.path.join(BASE_DIR, "rulebook/templates"),
-            os.path.join(BASE_DIR, "core/templates"),
-            os.path.join(BASE_DIR, "accounts/templates"),
-            os.path.join(BASE_DIR, "events/templates"),
-            os.path.join(BASE_DIR, "payments/templates"),
-        ],
-        'APP_DIRS': True,
+
+        # DIRS only needs folders that sit OUTSIDE of your local apps, of which we have none.
+        'DIRS': [], 
+        
+        # APP_DIRS=True tells Django to auto-discover "app_name/templates/" automatically
+        'APP_DIRS': True, 
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

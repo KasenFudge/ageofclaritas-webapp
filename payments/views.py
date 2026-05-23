@@ -8,3 +8,15 @@ def payment_start_view(request, registration_id):
     return render(request, "payments/payment_start.html", {
         "title": "Online Payment Placeholder"
     })
+
+@login_required
+def payment_success_view(request):
+    return render(request, "payments/payment_success.html", {
+        "title": "Payment Success"
+    })
+
+@login_required
+def payment_cancel_view(request):
+    return render(request, "payments/payment_cancel.html", {
+        "title": "Payment Cancelled"
+    })

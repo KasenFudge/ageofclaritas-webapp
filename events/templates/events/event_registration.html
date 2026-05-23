@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block content %}
@@ -7,7 +7,7 @@
         
         <div class="text-center mb-4">
             <h1 class="h3 fw-bold text-dark">Event Registration</h1>
-            <p class="text-muted mt-1 small">Confirming details for <strong>{{ event.title }}</strong></p>
+            <p class="text-muted mt-1 small">Confirming details for <strong>{{ event.display_title }}</strong></p>
         </div>
 
         {% if messages %}
