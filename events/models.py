@@ -109,7 +109,7 @@ class PaymentStatus(models.TextChoices):
     COMPLETE = "complete", "Complete"
     REFUNDED = "refunded", "Refunded"
 
-class EventAttendee(models.Model):
+class EventRegistration(models.Model):
     # Event and User Details
     event = models.ForeignKey(
         Event,

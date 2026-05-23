@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from .models import Event, EventType, EventAttendee
+from .models import Event, EventType, EventRegistration
 from .forms import EventRegistrationForm
 from events.services.pricing import quote_price
 
@@ -97,7 +97,7 @@ def event_registration_view(request, slug):
         raise PermissionDenied("Senior events are only for participants 18+.")
 
     # 3. Prevent Duplicate Registrations
-    if EventAttendee.objects.filter(event=event, user=user).exists():
+    if EventRegistration.objects.filter(event=event, user=user).exists():
         messages.info(request, "You are already registered for this event.")
         return redirect("accounts:upcoming_events")
 
@@ -126,23 +126,23 @@ def event_registration_view(request, slug):
             )
 
             # Build and decorate record payload
-            attendee = form.save(commit=False)
-            attendee.event = event
-            attendee.user = user
-            attendee.arrival_time = arrival_time
+            registration = form.save(commit=False)
+            registration.event = event
+            registration.user = user
+            registration.arrival_time = arrival_time
 
             # Apply calculated invoice rows
-            attendee.base_price_cents = quote.base_cents
-            attendee.final_price_cents = quote.final_cents
-            attendee.discounts = quote.discounts
-            attendee.additional_items = quote.additional_items
+            registration.base_price_cents = quote.base_cents
+            registration.final_price_cents = quote.final_cents
+            registration.discounts = quote.discounts
+            registration.additional_items = quote.additional_items
             
             # Commit record to db tables
-            attendee.save()
+            registration.save()
 
             # Dynamic checkout rerouting
             if payment_method == "online":
-                return redirect("accounts:payment_start", attendee_id=attendee.id)
+                return redirect("payments:payment_start", registration_id=registration.id)
             
             messages.success(request, f"Successfully registered for {event.title}!")
             return redirect("accounts:upcoming_events")

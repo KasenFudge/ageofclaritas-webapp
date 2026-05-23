@@ -1,6 +1,5 @@
 from django.urls import path
 
-from rulebook.urls import app_name, urlpatterns
 from . import views
 
 app_name = 'events'
