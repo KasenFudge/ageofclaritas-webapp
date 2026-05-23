@@ -1,36 +1,49 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from django.utils import timezone
 
-from .models import CustomUser, Waiver, WaiverSignature
 from django_summernote.admin import SummernoteModelAdmin
 
-# Register your models here.
+from .models import CustomUser, Waiver, WaiverSignature
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    # Fields to display in the list view (the main table)
-    list_display = ('username', 'email', 'date_of_birth', 'age', 'is_staff')
+    # Display fields in the grid layout (Added is_student)
+    list_display = ('username', 'email', 'date_of_birth', 'display_age', 'is_student', 'is_staff')
     
-    # Add filters on the right sidebar
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
+    # Enable filtering by student status and core flags on the right sidebar
+    list_filter = ('is_student', 'is_staff', 'is_superuser', 'is_active', 'groups')
 
-    # We append our custom fields to the standard UserAdmin fieldsets
-    # Fieldsets for the "Edit User" page
+    search_fields = ('username', 'email', 'first_name', 'last_name')    
+    ordering = ('username',)
+
+    # Explicitly register dynamic or computed fields as read-only
+    readonly_fields = ('display_age',)
+
+    # Form fieldsets for editing an existing user
     fieldsets = UserAdmin.fieldsets + (
         ('Personal Info (Custom)', {
             'fields': ('date_of_birth', 'parent_account'),
         }),
+        ('Student Status Tracking', {
+            'fields': ('is_student', 'student_status_expires'),
+        })
     )
 
-    # Fieldsets for the "Add User" page
+    # Form fieldsets for creating a new user through the admin panel
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Personal Info (Custom)', {
             'fields': ('email', 'date_of_birth', 'parent_account'),
         }),
     )
 
-    search_fields = ('username', 'email', 'first_name', 'last_name')    
-    ordering = ('username',)
+    # Helper method to calculate age cleanly inside the admin grid
+    @admin.display(description='Age')
+    def display_age(self, obj):
+        if obj.date_of_birth:
+            return obj.age_on(timezone.localdate())
+        return "N/A"
 
 # Used for context of who has signed specifc waiver
 class WaiverSignatureInline(admin.TabularInline):
