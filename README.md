@@ -23,6 +23,11 @@ If you are setting up the project for the first time or performing a fresh datab
 
 ## Maintenance Commands
 
+### Accessing Database
+In the case the database needs to be accessed, run:
+`docker exec -it aoc_db psql -U aocdb_admin -d aoc_db`
+NOTE: if your database configuration is different than the example provided below in Environment Files, this will need modified.
+
 ### Static Files
 If CSS or images are not appearing correctly after an update, run:
 `docker exec -it aoc_webapp python manage.py collectstatic --noinput`

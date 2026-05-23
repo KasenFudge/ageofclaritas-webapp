@@ -28,17 +28,15 @@ class IndexView(ListView):
 
     # Get the events in the current year
     def get_queryset(self):
-            year = timezone.now().year
-
-            start = timezone.make_aware(datetime(year, 1, 1))
-            end = timezone.make_aware(datetime(year + 1, 1, 1))
-
-            # Grab the events within the defined range, then 
+            """
+            Returns all future events sorted chronologically, 
+            ensuring an evergreen timeline for the players.
+            """
             return (
-                 super()
-                 .get_queryset()
-                 .filter(start_time__gte=start, start_time__lt=end)
-                 .order_by('start_time')
+                super()
+                .get_queryset()
+                .filter(end_time__gt=timezone.now())
+                .order_by('start_time')
             )
 
     def get_context_data(self, **kwargs):
