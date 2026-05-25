@@ -77,8 +77,8 @@ class EventRegistrationAdmin(admin.ModelAdmin):
             "description": "Core check-in utility for game masters managing player check-ins at the gate."
         }),
         ("Registration Context", {
-            "fields": (("user", "event"),),
-            "description": "The specific player account and timeline anchor linked to this pass."
+            "fields": ("user", "event"),
+            "description": "The specific player account and timeline anchor linked to this ticket."
         }),
         ("Financial & Transaction Ledger", {
             "fields": ("final_price_cents", "base_price_cents"),
