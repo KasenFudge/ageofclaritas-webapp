@@ -60,14 +60,15 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         "formatted_arrival_time", 
         "weapon_rental_display", 
         "formatted_final_price",
-        "payment_status",
+        "is_manually_paid",
+        "payment_status_display",
         "checked_in"
     ]
-    list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time"]
+    list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time", "is_manually_paid"]
     search_fields = ["user__username", "user__first_name", "user__last_name", "event__title"]
     ordering = ["arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
-    list_select_related = ("event", "user")
+    list_select_related = ("event", "user", "order")
 
     readonly_fields = ["arrival_time", "base_price_cents", "discounts", "additional_items"]
 
@@ -81,7 +82,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
             "description": "The specific player account and timeline anchor linked to this ticket."
         }),
         ("Financial & Transaction Ledger", {
-            "fields": ("final_price_cents", "base_price_cents"),
+            "fields": ("final_price_cents", "base_price_cents", "is_manually_paid"), 
             "description": "Calculated total base cost plus applicable age tier modifications processed at checkout."
         }),
         ("Meta Payload Data", {
@@ -106,6 +107,11 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         if isinstance(obj.additional_items, list):
             return any(item.get("type") == "weapon_rental" for item in obj.additional_items if isinstance(item, dict))
         return False
+
+    # "Paid Indicator" Checkmark mapping to the model's is_paid @property
+    @admin.display(boolean=True, description="Cleared/Paid")
+    def payment_status_display(self, obj):
+        return obj.is_paid
 
 
 @admin.register(Event)
