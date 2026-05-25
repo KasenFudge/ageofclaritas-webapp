@@ -41,7 +41,7 @@ class CustomUser(AbstractUser):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='child_accounts'
+        related_name='child_accounts',
         help_text=(
             "Links this profile to a primary adult guardian account. "
             "Enables unified family checkouts and minor event registration management."
@@ -107,7 +107,7 @@ class CustomUser(AbstractUser):
         """
         self.full_clean()  # Forces the clean() rules above to execute on .save() calls
         super().save(*args, **kwargs)
-        
+
     # Later on will have stuff for characters here, will probably create a whole seperate app for them down the
     # line because it will get complicated. A foreign key relation.
 
