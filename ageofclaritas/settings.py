@@ -33,9 +33,10 @@ SECURE_SSL_REDIRECT = False # Nginx handles this
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
-    "https://kasenfudge.me",       # Add the main domain
-    "https://www.kasenfudge.me",   # Add the www version
-    "https://cis598.kasenfudge.me" # Keep the subdomain
+    "https://kasenfudge.me",        # Testing Domain
+    "https://www.kasenfudge.me",    # Testing www version
+    "https://ageofclaritas.com",    # Main Domain
+    "https://www.ageofclaritas.com" # Main www version
 ]
 
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
@@ -192,3 +193,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'core:index'
 LOGOUT_REDIRECT_URL = 'core:index'
+
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")

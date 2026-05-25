@@ -1,22 +1,62 @@
-{% extends "core/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<div class="container py-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            
-            <div class="card shadow-sm border p-5 bg-white rounded-3">
-                <div class="display-3 mb-3 text-success">🎯</div>
-                <h1 class="fw-bold h3 mb-2">{{ title }}</h1>
-                <p class="text-muted mb-4">
-                    Success! The registration pipeline routed perfectly. This dashboard landing page is under construction.
-                </p>
-                <a href="/" class="btn btn-primary fw-semibold px-4 shadow-sm">
-                    Back to Home
-                </a>
-            </div>
+<div class="container" style="max-width: 800px; margin: 40px auto; font-family: sans-serif;">
+    <h2>Household Registrations & Passes</h2>
+    <p style="color: #666;">Select the family passes you want to pay for, then proceed to checkout.</p>
 
+    <form action="{% url 'payment_start_view' %}" method="POST">
+        {% csrf_exempt %} {% csrf_token %}
+
+        <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead style="background-color: #f5f5f5;">
+                    <tr>
+                        <th style="padding: 12px; width: 50px;">Select</th>
+                        <th style="padding: 12px;">Attendee</th>
+                        <th style="padding: 12px;">Event / Pass</th>
+                        <th style="padding: 12px; text-align: right;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in upcoming_registrations %}
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px; text-align: center;">
+                            <input type="checkbox" 
+                                   name="registration_ids" 
+                                   value="{{ reg.id }}"
+                                   style="width: 18px; height: 18px; cursor: pointer;">
+                        </td>
+                        <td style="padding: 12px; font-weight: bold;">
+                            {{ reg.user.get_full_name|default:reg.user.username }}
+                        </td>
+                        <td style="padding: 12px;">
+                            {{ reg.event.title }}
+                        </td>
+                        <td style="padding: 12px; text-align: right; color: #4f46e5; font-weight: bold;">
+                            {# Assuming you have a helper method to display cents as dollars nicely #}
+                            ${{ reg.final_price_cents|divisibleby:100|yesno:",,0" }} 
+                            {# Temporary basic math indicator if no property exists: #}
+                            ${{ reg.final_price_cents }} cents
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="padding: 20px; text-align: center; color: #999;">
+                            No pending household registrations found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
+
+        <div style="text-align: right;">
+            <button type="submit" 
+                    style="background-color: #4f46e5; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                Proceed to Secure Checkout
+            </button>
+        </div>
+    </form>
 </div>
 {% endblock %}

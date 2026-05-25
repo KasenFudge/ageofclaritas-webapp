@@ -68,39 +68,42 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     )
     is_first_event = not has_attended_main_event
 
-    # Process Universal Core Rules (Applies to ALL event types)
-    # Early Bird Discount: $10 off if registering early.
-    if registration_time < early_bird_cutoff:
-        discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Early Bird Discount (Registered 7+ days early)"})
-
-    # First Event Discount: $35 off if it is their first event, and a free weapon rental
+    # First Event Discount: Ticket is free if it is their first event, and a free weapon rental (end pricing calculation)
     if is_first_event:
-        discounts.append({"type": "first_time", "amount_cents": 3500, "reason": "First-Time Player Discount"})
-        additional_items.append({"type": "weapon_rental", "amount_cents": 0, "reason": "First-Time Player Token: Free Weapon Rental"})
-    # Weapon Rental: $20 charge to rent weapons.
-    elif weapon_rental:
-        additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon Rental"})
+        discounts.append({"type": "first_time", "amount_cents": base, "reason": "First-Time Player Discount: Free Event Entry"})
+        additional_items.append({"type": "weapon_rental", "amount_cents": 0, "reason": "First-Time Player Discount: Free Weapon Rental"})
 
-    # Process Type-Specific Rules
-    if event.event_type == EventType.JUNIOR:
-        if arrival_time:
-            local_arrival = timezone.localtime(arrival_time)
-            # weekday() returns 5 for Saturday, 6 for Sunday
-            if local_arrival.weekday() == 6:
-                discounts.append({"type": "late_arrival_sunday", "amount_cents": 2000, "reason": "Late Arrival Discount (Sunday-Only Attendance)"})
-            elif local_arrival >= late_arrival_cutoff_sat:
-                discounts.append({"type": "late_arrival_saturday", "amount_cents": 1000, "reason": "Late Arrival Discount (Saturday after 3:00 PM)"})
+    # If not first event, check for discounts and additional items to apply:
+    else:
+        # Process Universal Core Rules (Applies to ALL event types)
+        # Early Bird Discount: $10 off if registering early.
+        if registration_time < early_bird_cutoff:
+            discounts.append({"type": "early_bird", "amount_cents": 1000, "reason": "Early Bird Discount (Registered 7+ days early)"})
 
-    elif event.event_type == EventType.SENIOR:
-        if arrival_time:
-            local_arrival = timezone.localtime(arrival_time)
-            if local_arrival.weekday() == 6:
-                discounts.append({"type": "late_arrival_sunday", "amount_cents": 1500, "reason": "Late Arrival Discount (Sunday-Only Attendance)"})
-            elif local_arrival >= late_arrival_cutoff_sat:
-                discounts.append({"type": "late_arrival_saturday", "amount_cents": 500, "reason": "Late Arrival Discount (Saturday after 3:00 PM)"})
+        # Weapon Rental: $20 charge to rent weapons.
+        if weapon_rental:
+            additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon Rental"})
 
-        if student_discount:
-            discounts.append({"type": "student_discount", "amount_cents": 500, "reason": "Active Student Discount"})
+        # Process Type-Specific Rules
+        if event.event_type == EventType.JUNIOR:
+            if arrival_time:
+                local_arrival = timezone.localtime(arrival_time)
+                # weekday() returns 5 for Saturday, 6 for Sunday
+                if local_arrival.weekday() == 6:
+                    discounts.append({"type": "late_arrival_sunday", "amount_cents": 2000, "reason": "Late Arrival Discount (Sunday-Only Attendance)"})
+                elif local_arrival >= late_arrival_cutoff_sat:
+                    discounts.append({"type": "late_arrival_saturday", "amount_cents": 1000, "reason": "Late Arrival Discount (Saturday after 3:00 PM)"})
+
+        elif event.event_type == EventType.SENIOR:
+            if arrival_time:
+                local_arrival = timezone.localtime(arrival_time)
+                if local_arrival.weekday() == 6:
+                    discounts.append({"type": "late_arrival_sunday", "amount_cents": 1500, "reason": "Late Arrival Discount (Sunday-Only Attendance)"})
+                elif local_arrival >= late_arrival_cutoff_sat:
+                    discounts.append({"type": "late_arrival_saturday", "amount_cents": 500, "reason": "Late Arrival Discount (Saturday after 3:00 PM)"})
+
+            if student_discount:
+                discounts.append({"type": "student_discount", "amount_cents": 500, "reason": "Active Student Discount"})
 
     # Compute final price and return a new PriceQuote object
     discount_total = sum(d["amount_cents"] for d in discounts)

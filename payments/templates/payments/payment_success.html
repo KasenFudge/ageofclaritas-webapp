@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 50px auto; text-align: center; font-family: sans-serif;">
+    <div style="color: #2e7d32; font-size: 4rem; margin-bottom: 20px;">✓</div>
+    <h2>Payment Successful!</h2>
+    <p>Thank you! Your registration payment has been processed successfully.</p>
+    <p style="color: #666; font-size: 0.9rem;">
+        Your digital passes are now active. GMs at the event gate will see your household updated automatically.
+    </p>
+    
+    <div style="margin-top: 30px;">
+        <a href="{% url 'accounts:upcoming_events' %}" 
+           style="background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+           Return to My Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
