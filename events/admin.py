@@ -59,7 +59,8 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         "event", 
         "formatted_arrival_time", 
         "weapon_rental_display", 
-        "formatted_final_price", 
+        "formatted_final_price",
+        "payment_status",
         "checked_in"
     ]
     list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time"]
@@ -67,6 +68,28 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     ordering = ["arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
     list_select_related = ("event", "user")
+
+    readonly_fields = ["user", "event", "arrival_time", "base_price_cents", "discounts", "additional_items"]
+
+    fieldsets = (
+        ("Attendance", {
+            "fields": ("checked_in", "arrival_time"),
+            "description": "Core check-in utility for game masters managing player check-ins at the gate."
+        }),
+        ("Registration Context", {
+            "fields": (("user", "event"),),
+            "description": "The specific player account and timeline anchor linked to this pass."
+        }),
+        ("Financial & Transaction Ledger", {
+            "fields": ("final_price_cents", "base_price_cents"),
+            "description": "Calculated total base cost plus applicable age tier modifications processed at checkout."
+        }),
+        ("Meta Payload Data", {
+            "fields": ("discounts", "additional_items"),
+            "classes": ("collapse",),
+            "description": "Raw JSON configurations detailing applied discount arrays and additional items."
+        }),
+    )
 
     @admin.display(ordering="arrival_time", description="Scheduled Arrival")
     def formatted_arrival_time(self, obj):
