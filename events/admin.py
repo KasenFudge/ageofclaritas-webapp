@@ -69,7 +69,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     list_per_page = 50
     list_select_related = ("event", "user")
 
-    readonly_fields = ["user", "event", "arrival_time", "base_price_cents", "discounts", "additional_items"]
+    readonly_fields = ["arrival_time", "base_price_cents", "discounts", "additional_items"]
 
     fieldsets = (
         ("Attendance", {
