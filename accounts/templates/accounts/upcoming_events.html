@@ -5,10 +5,8 @@
     <h2>Household Registrations & Passes</h2>
     <p style="color: #666;">Select the family passes you want to pay for, then proceed to checkout.</p>
 
-    <form action="{% url 'payment_start_view' %}" method="POST">
-        {% csrf_exempt %} {% csrf_token %}
-
-        <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
+    <form action="{% url 'payments:payment_start' %}" method="POST">
+        {% csrf_token %} <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead style="background-color: #f5f5f5;">
                     <tr>
@@ -34,10 +32,11 @@
                             {{ reg.event.title }}
                         </td>
                         <td style="padding: 12px; text-align: right; color: #4f46e5; font-weight: bold;">
-                            {# Assuming you have a helper method to display cents as dollars nicely #}
-                            ${{ reg.final_price_cents|divisibleby:100|yesno:",,0" }} 
-                            {# Temporary basic math indicator if no property exists: #}
-                            ${{ reg.final_price_cents }} cents
+                            {% if reg.final_price_cents %}
+                                ${{ reg.final_price_cents|stringformat:"d"|slice:":-2" }}.{{ reg.final_price_cents|stringformat:"d"|slice:"-2:" }}
+                            {% else %}
+                                $0.00
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
