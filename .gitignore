@@ -55,6 +55,4 @@ npm-debug.log*
 # ==========================================
 # Obsidian Note Vault Tracking
 # ==========================================
-# We want to track your Markdown design notes, but NOT Obsidian's 
-# internal user-interface layout states or temporary workspace setups.
 .obsidian/
