@@ -1,0 +1,16 @@
+[tool.ruff]
+# Tells the linter which Python rules to enforce
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+# E/W = Pycodestyle (standard spacing/formatting errors)
+# F = Pyflakes (catches logical bugs like unused imports or variables)
+# I = Isort (automatically alphabetizes and organizes your import blocks)
+select = ["E", "W", "F", "I"]
+ignore = []
+
+[tool.djlint]
+# Tells the frontend linter to expect Django Template tags instead of raw HTML
+profile = "django"
+indent = 4
