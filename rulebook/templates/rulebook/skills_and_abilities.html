@@ -1,138 +1,165 @@
 {% load static %}
 
 <div class="anchor-container">
-    <h2 class="text-center section-header">Skills and Abilities</h2>
-    <a class="anchor" id="skills-and-abiliites"></a>
+  <h2 class="text-center section-header">Skills and Abilities</h2>
+  <a class="anchor" id="skills-and-abiliites"></a>
 </div>
 <p>
-    A Player's <a href="{% url 'rulebook:classes' %}">Class</a> determines the skills and abilities they have access to in most cases. Every player has access to 
-    <a href="{% url 'rulebook:class_detail' 'classless' %}">Classlss Talents</a> in addition to those offered by their class.
+  A Player's <a href="{% url 'rulebook:classes' %}">Class</a> determines the
+  skills and abilities they have access to in most cases. Every player has
+  access to
+  <a href="{% url 'rulebook:class_detail' 'classless' %}">Classlss Talents</a>
+  in addition to those offered by their class.
 </p>
-<p>A Skill is a Talent that can be used repeatedly without resting. Instead of purchasing multiple of the same Skill, you can upgrade its rank to increase its usefulness.</p>
-<p>An Ability is an expendable Talent that refreshes after resting. You can purchase multiple of the same Ability to have multiple uses available before resting.</p>
-<p>Refer to the chart below for costs of purchasing a Skill and the order of Ability purchases. An associated in-game achievement is usually a prerequisite for purchasing a Rank 3 Talent.</p>
+<p>
+  A Skill is a Talent that can be used repeatedly without resting. Instead of
+  purchasing multiple of the same Skill, you can upgrade its rank to increase
+  its usefulness.
+</p>
+<p>
+  An Ability is an expendable Talent that refreshes after resting. You can
+  purchase multiple of the same Ability to have multiple uses available before
+  resting.
+</p>
+<p>
+  Refer to the chart below for costs of purchasing a Skill and the order of
+  Ability purchases. An associated in-game achievement is usually a prerequisite
+  for purchasing a Rank 3 Talent.
+</p>
 
 <div class="container-fluid my-3">
-    <div class="row d-flex align-items-stretch">
-        <div class="col-xl-2 col-12 border border-black d-flex flex-column flex-grow-1 costs-table">
-            <table class="border-0 p-3">
-                <tr>
-                    <th><h5>Costs:</h5></th>
-                </tr>
-                <tr>
-                    <td class="border-top border-black"><b>Rank I Skills</b> - 5XP</td>
-                </tr>
-                <tr>
-                    <td><b>Rank II Skills</b> - 10XP</td>
-                </tr>
-                <tr>
-                    <td><b>Rank III Skills</b> - 15XP</td>
-                </tr>
-                <tr class="border-top border-black">
-                    <td><b>Rank I Abilities</b> - 5XP</td>
-                </tr>
-                <tr>
-                    <td><b>Rank II Abilities</b> - 5XP</td>
-                </tr>
-                <tr>
-                    <td><b>Rank III Abilities</b> - 5XP</td>
-                </tr>
-            </table>
+  <div class="row d-flex align-items-stretch">
+    <div
+      class="col-xl-2 col-12 border border-black d-flex flex-column flex-grow-1 costs-table"
+    >
+      <table class="border-0 p-3">
+        <tr>
+          <th><h5>Costs:</h5></th>
+        </tr>
+        <tr>
+          <td class="border-top border-black"><b>Rank I Skills</b> - 5XP</td>
+        </tr>
+        <tr>
+          <td><b>Rank II Skills</b> - 10XP</td>
+        </tr>
+        <tr>
+          <td><b>Rank III Skills</b> - 15XP</td>
+        </tr>
+        <tr class="border-top border-black">
+          <td><b>Rank I Abilities</b> - 5XP</td>
+        </tr>
+        <tr>
+          <td><b>Rank II Abilities</b> - 5XP</td>
+        </tr>
+        <tr>
+          <td><b>Rank III Abilities</b> - 5XP</td>
+        </tr>
+      </table>
+    </div>
+    <div
+      class="col-xl-10 col-12 border border-black d-flex flex-column flex-grow-1 orders-table"
+    >
+      <div class="row g-0">
+        <div
+          class="col-xl-4 col-12 d-flex flex-column justify-content-center align-items-center talent-purchase-key"
+        >
+          <h5>Purchase Order Key:</h5>
+          <table class="text-center">
+            <tr>
+              <td class="already-owned">Already Owned</td>
+              <td class="purchase-first">Purchase First</td>
+            </tr>
+            <tr>
+              <td class="purchase-second">Purchase Second</td>
+              <td class="purchase-third">Purchase Third</td>
+            </tr>
+          </table>
         </div>
-        <div class="col-xl-10 col-12 border border-black d-flex flex-column flex-grow-1 orders-table">
-            <div class="row g-0">
-                <div class="col-xl-4 col-12 d-flex flex-column justify-content-center align-items-center talent-purchase-key">
-                    <h5>Purchase Order Key:</h5>
-                    <table class="text-center">
-                        <tr>
-                            <td class="already-owned">Already Owned</td>
-                            <td class="purchase-first">Purchase First</td>
-                        </tr>
-                        <tr>
-                            <td class="purchase-second">Purchase Second</td>
-                            <td class="purchase-third">Purchase Third</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-xl-8 col-12 d-flex flex-row flex-wrap justify-content-center align-items-center">
-                    <h5 class="skill-order-label">Skill Purchase Order:</h5>
-                    <div class="skill-block purchase-first">R1</div>
-                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    <div class="skill-block purchase-second">R2</div>
-                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    <div class="skill-block purchase-third">R3</div>
-                </div>
-            </div>
-            <div class="row g-0">
-                <div class="col-12 border-top border-black d-flex flex-row flex-wrap justify-content-center align-items-center">
-                    <h5 class="ability-order-label">Ability Purchase Order:</h5>
-                    <div class="d-flex flex-row flex-wrap justify-content-center align-items-center">
-                        <div class="pyramid">
-                            <div class="ability-row">
-                                <div class="ability-block hidden"></div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block hidden"></div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block purchase-first">R1</div>
-                            </div>
-                        </div>
-                    
-                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    
-                        <div class="pyramid">
-                            <div class="ability-row">
-                                <div class="ability-block hidden"></div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block purchase-second">R2</div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block already-owned">R1</div>
-                                <div class="ability-block purchase-first">R1</div>
-                            </div>
-                        </div>
-                    
-                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    
-                        <div class="pyramid">
-                            <div class="ability-row">
-                                <div class="ability-block purchase-third">R3</div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block already-owned">R2</div>
-                                <div class="ability-block purchase-second">R2</div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block already-owned">R1</div>
-                                <div class="ability-block already-owned">R1</div>
-                                <div class="ability-block purchase-first">R1</div>
-                            </div>
-                        </div>
-                    
-                        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    
-                        <div class="pyramid">
-                            <div class="ability-row">
-                                <div class="ability-block already-owned">R3</div>
-                                <div class="ability-block purchase-third">R3</div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block already-owned">R2</div>
-                                <div class="ability-block already-owned">R2</div>
-                                <div class="ability-block purchase-second">R2</div>
-                            </div>
-                            <div class="ability-row">
-                                <div class="ability-block already-owned">R1</div>
-                                <div class="ability-block already-owned">R1</div>
-                                <div class="ability-block already-owned">R1</div>
-                                <div class="ability-block purchase-first">R1</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div
+          class="col-xl-8 col-12 d-flex flex-row flex-wrap justify-content-center align-items-center"
+        >
+          <h5 class="skill-order-label">Skill Purchase Order:</h5>
+          <div class="skill-block purchase-first">R1</div>
+          <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+          <div class="skill-block purchase-second">R2</div>
+          <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+          <div class="skill-block purchase-third">R3</div>
         </div>
-    </div>        
+      </div>
+      <div class="row g-0">
+        <div
+          class="col-12 border-top border-black d-flex flex-row flex-wrap justify-content-center align-items-center"
+        >
+          <h5 class="ability-order-label">Ability Purchase Order:</h5>
+          <div
+            class="d-flex flex-row flex-wrap justify-content-center align-items-center"
+          >
+            <div class="pyramid">
+              <div class="ability-row">
+                <div class="ability-block hidden"></div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block hidden"></div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block purchase-first">R1</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+
+            <div class="pyramid">
+              <div class="ability-row">
+                <div class="ability-block hidden"></div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block purchase-second">R2</div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block already-owned">R1</div>
+                <div class="ability-block purchase-first">R1</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+
+            <div class="pyramid">
+              <div class="ability-row">
+                <div class="ability-block purchase-third">R3</div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block already-owned">R2</div>
+                <div class="ability-block purchase-second">R2</div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block already-owned">R1</div>
+                <div class="ability-block already-owned">R1</div>
+                <div class="ability-block purchase-first">R1</div>
+              </div>
+            </div>
+
+            <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+
+            <div class="pyramid">
+              <div class="ability-row">
+                <div class="ability-block already-owned">R3</div>
+                <div class="ability-block purchase-third">R3</div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block already-owned">R2</div>
+                <div class="ability-block already-owned">R2</div>
+                <div class="ability-block purchase-second">R2</div>
+              </div>
+              <div class="ability-row">
+                <div class="ability-block already-owned">R1</div>
+                <div class="ability-block already-owned">R1</div>
+                <div class="ability-block already-owned">R1</div>
+                <div class="ability-block purchase-first">R1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

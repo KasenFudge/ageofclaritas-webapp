@@ -1,139 +1,187 @@
-{% extends "core/base.html" %}
-{% load static %}
-
-{% block content %}
+{% extends "core/base.html" %} {% load static %} {% block content %}
 <div class="container my-5 d-flex justify-content-center">
-    <div class="card shadow border-light p-4 p-md-5" style="max-width: 500px; width: 100%; border-radius: 12px;">
-        
-        <div class="text-center mb-4">
-            <h1 class="h3 fw-bold text-dark">Event Registration</h1>
-            <p class="text-muted mt-1 small">Confirming details for <strong>{{ event.display_title }}</strong></p>
-        </div>
-
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm" role="alert">
-                    <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="POST" class="needs-validation" novalidate>
-            {% csrf_token %}
-            
-            <div class="bg-light p-4 rounded-3 border border-light mb-4 bootstrap-form-wrapper">
-                {% for field in form %}
-                    <div class="mb-3">
-                        {% if field.field.widget.input_type == 'radio' %}
-                            <label class="form-label d-block fw-semibold mb-2">{{ field.label }}</label>
-                            <div class="d-flex flex-column gap-2">
-                                {% for radio in field %}
-                                    <div class="form-check d-flex align-items-center text-nowrap">
-                                        <span class="me-2">{{ radio.tag }}</span>
-                                        <label class="form-check-label cursor-pointer" for="{{ radio.id_for_label }}">
-                                            {{ radio.choice_label }}
-                                        </label>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            {% if field.help_text %}
-                                <div class="form-text mt-1">{{ field.help_text }}</div>
-                            {% endif %}
-
-                        {% else %}
-                            <label class="form-label fw-semibold mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            
-                            {# Automatically apply the bootstrap class dynamically #}
-                            {% if field.field.widget.input_type == 'checkbox' %}
-                                <div class="form-check">
-                                    {{ field }}
-                                </div>
-                            {% else %}
-                                {# Adds the required form-control class to inputs #}
-                                {{ field }}
-                            {% endif %}
-
-                            {% if field.help_text %}
-                                <div class="form-text mt-1">{{ field.help_text }}</div>
-                            {% endif %}
-                        {% endif %}
-
-                        {# Field-specific error logging if validations fail #}
-                        {% if field.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ field.errors|striptags }}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
-                Confirm & Calculate Pricing
-            </button>
-        </form>
-        
-        <div class="text-center mt-4">
-            <p class="text-muted small mb-0" style="font-size: 0.75rem;">
-                <i class="bi bi-shield-lock me-1"></i> Age category filters and matrices run securely on submission.
-            </p>
-        </div>
+  <div
+    class="card shadow border-light p-4 p-md-5"
+    style="max-width: 500px; width: 100%; border-radius: 12px"
+  >
+    <div class="text-center mb-4">
+      <h1 class="h3 fw-bold text-dark">Event Registration</h1>
+      <p class="text-muted mt-1 small">
+        Confirming details for <strong>{{ event.display_title }}</strong>
+      </p>
     </div>
+
+    {% if messages %} {% for message in messages %}
+    <div
+      class="alert alert-info alert-dismissible fade show border-0 shadow-sm"
+      role="alert"
+    >
+      <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endfor %} {% endif %}
+
+    <form method="POST" class="needs-validation" novalidate>
+      {% csrf_token %}
+
+      <div
+        class="bg-light p-4 rounded-3 border border-light mb-4 bootstrap-form-wrapper"
+      >
+        {% for field in form %}
+        <div class="mb-3">
+          {% if field.field.widget.input_type == 'radio' %}
+          <label class="form-label d-block fw-semibold mb-2"
+            >{{ field.label }}</label
+          >
+          <div class="d-flex flex-column gap-2">
+            {% for radio in field %}
+            <div class="form-check d-flex align-items-center text-nowrap">
+              <span class="me-2">{{ radio.tag }}</span>
+              <label
+                class="form-check-label cursor-pointer"
+                for="{{ radio.id_for_label }}"
+              >
+                {{ radio.choice_label }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+          {% if field.help_text %}
+          <div class="form-text mt-1">{{ field.help_text }}</div>
+          {% endif %} {% else %}
+          <label
+            class="form-label fw-semibold mb-1"
+            for="{{ field.id_for_label }}"
+            >{{ field.label }}</label
+          >
+
+          {# Automatically apply the bootstrap class dynamically #} {% if
+          field.field.widget.input_type == 'checkbox' %}
+          <div class="form-check">{{ field }}</div>
+          {% else %} {# Adds the required form-control class to inputs #} {{
+          field }} {% endif %} {% if field.help_text %}
+          <div class="form-text mt-1">{{ field.help_text }}</div>
+          {% endif %} {% endif %} {# Field-specific error logging if validations
+          fail #} {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-success btn-lg w-100 fw-bold shadow-sm"
+      >
+        Confirm & Calculate Pricing
+      </button>
+    </form>
+
+    <div class="text-center mt-4">
+      <p class="text-muted small mb-0" style="font-size: 0.75rem">
+        <i class="bi bi-shield-lock me-1"></i> Age category filters and matrices
+        run securely on submission.
+      </p>
+    </div>
+  </div>
 </div>
 
 <style>
-    .bootstrap-form-wrapper p { margin-bottom: 1.25rem; position: relative; }
-    .bootstrap-form-wrapper p:last-child { margin-bottom: 0; }
-    .bootstrap-form-wrapper label { display: block; font-weight: 600; font-size: 0.875rem; color: #495057; margin-bottom: 0.375rem; }
-    
-    /* UPDATED: Added input[type="datetime-local"] targeting */
-    .bootstrap-form-wrapper input[type="text"], 
-    .bootstrap-form-wrapper select, 
-    .bootstrap-form-wrapper input[type="time"],
-    .bootstrap-form-wrapper input[type="datetime-local"] { 
-        display: block; width: 100%; padding: 0.375rem 0.75rem; font-size: 1rem; font-weight: 400; line-height: 1.5; color: #212529; background-color: #fff; border: 1px solid #ced4da; border-radius: 0.375rem; transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-    
-    .bootstrap-form-wrapper input::placeholder {
-        color: #adb5bd !important;
-        opacity: 1;
-    }
+  .bootstrap-form-wrapper p {
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .bootstrap-form-wrapper p:last-child {
+    margin-bottom: 0;
+  }
+  .bootstrap-form-wrapper label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #495057;
+    margin-bottom: 0.375rem;
+  }
 
-    /* UPDATED: Added focus styling for input[type="datetime-local"] */
-    .bootstrap-form-wrapper input[type="text"]:focus, 
-    .bootstrap-form-wrapper select:focus, 
-    .bootstrap-form-wrapper input[type="time"]:focus,
-    .bootstrap-form-wrapper input[type="datetime-local"]:focus {
-        border-color: #86b7fe; outline: 0; box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
-    }
-    
-    /* Styles the Radio Buttons cleanly for your payment methods */
-    .bootstrap-form-wrapper ul { list-style: none; padding-left: 0; margin-bottom: 0; }
-    .bootstrap-form-wrapper ul li { margin-bottom: 0.5rem; }
-    .bootstrap-form-wrapper ul li:last-child { margin-bottom: 0; }
-    
-    .bootstrap-form-wrapper input[type="checkbox"],
-    .bootstrap-form-wrapper input[type="radio"] {
-        width: 1rem; height: 1rem; margin-right: 0.5rem; vertical-align: middle;
-    }
+  /* UPDATED: Added input[type="datetime-local"] targeting */
+  .bootstrap-form-wrapper input[type="text"],
+  .bootstrap-form-wrapper select,
+  .bootstrap-form-wrapper input[type="time"],
+  .bootstrap-form-wrapper input[type="datetime-local"] {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+  }
+
+  .bootstrap-form-wrapper input::placeholder {
+    color: #adb5bd !important;
+    opacity: 1;
+  }
+
+  /* UPDATED: Added focus styling for input[type="datetime-local"] */
+  .bootstrap-form-wrapper input[type="text"]:focus,
+  .bootstrap-form-wrapper select:focus,
+  .bootstrap-form-wrapper input[type="time"]:focus,
+  .bootstrap-form-wrapper input[type="datetime-local"]:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+
+  /* Styles the Radio Buttons cleanly for your payment methods */
+  .bootstrap-form-wrapper ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+  .bootstrap-form-wrapper ul li {
+    margin-bottom: 0.5rem;
+  }
+  .bootstrap-form-wrapper ul li:last-child {
+    margin-bottom: 0;
+  }
+
+  .bootstrap-form-wrapper input[type="checkbox"],
+  .bootstrap-form-wrapper input[type="radio"] {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
 </style>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const arrivalInput = document.querySelector('input[name="arrival_time"]') || document.querySelector('[id*="arrival"]');
-        
-        if (arrivalInput) {
-            // UPDATED: Modern browser calendar components utilize native placeholder formatting based on localization
-            arrivalInput.setAttribute('placeholder', 'mm/dd/yyyy --:-- AM/PM');
-            
-            // UPDATED: Adjusted text to prompt calendar interaction
-            const helperText = document.createElement('small');
-            helperText.className = 'text-muted d-block mt-1';
-            helperText.style.fontSize = '0.75rem';
-            helperText.innerHTML = '<i class="bi bi-calendar-event me-1"></i>Select your estimated arrival date and time.';
-            arrivalInput.parentNode.appendChild(helperText);
-        }
-    });
+  document.addEventListener("DOMContentLoaded", function () {
+    const arrivalInput =
+      document.querySelector('input[name="arrival_time"]') ||
+      document.querySelector('[id*="arrival"]');
+
+    if (arrivalInput) {
+      // UPDATED: Modern browser calendar components utilize native placeholder formatting based on localization
+      arrivalInput.setAttribute("placeholder", "mm/dd/yyyy --:-- AM/PM");
+
+      // UPDATED: Adjusted text to prompt calendar interaction
+      const helperText = document.createElement("small");
+      helperText.className = "text-muted d-block mt-1";
+      helperText.style.fontSize = "0.75rem";
+      helperText.innerHTML =
+        '<i class="bi bi-calendar-event me-1"></i>Select your estimated arrival date and time.';
+      arrivalInput.parentNode.appendChild(helperText);
+    }
+  });
 </script>
 {% endblock %}

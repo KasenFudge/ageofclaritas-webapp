@@ -1,19 +1,19 @@
 import stripe
-from stripe import StripeClient
 from django.conf import settings
-from django.db import transaction
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.http import HttpResponse
-
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from stripe import StripeClient
 
 from events.models import EventRegistration
 from payments.models import Order, PaymentStatus
 
 stripe_client = StripeClient(getattr(settings, "STRIPE_API_KEY", ""))
+
 
 @login_required
 def payment_start_view(request):
@@ -34,18 +34,14 @@ def payment_start_view(request):
 
     # 2. Security Boundary: Build the allowed household pool (Self + Children)
     authorized_user_ids = [user.id]
-    child_ids = list(user.child_accounts.values_list('id', flat=True))
+    child_ids = list(user.child_accounts.values_list("id", flat=True))
     authorized_user_ids.extend(child_ids)
 
     # 3. Fetch ONLY the requested registrations that belong to this household
     # This prevents malicious users from injecting random IDs into the POST data
     pending_registrations = EventRegistration.objects.filter(
-        id__in=selected_ids,
-        user_id__in=authorized_user_ids,
-        is_manually_paid=False
-    ).exclude(
-        order__payment_status=PaymentStatus.COMPLETE
-    )
+        id__in=selected_ids, user_id__in=authorized_user_ids, is_manually_paid=False
+    ).exclude(order__payment_status=PaymentStatus.COMPLETE)
 
     # If verification drops all rows (e.g. invalid IDs), fail safely
     if not pending_registrations.exists():
@@ -57,22 +53,14 @@ def payment_start_view(request):
 
         # Handle purely $0.00 selections safely
         if total_cents == 0:
-            order = Order.objects.create(
-                user=user,
-                total_amount_cents=0,
-                payment_status=PaymentStatus.COMPLETE
-            )
+            order = Order.objects.create(user=user, total_amount_cents=0, payment_status=PaymentStatus.COMPLETE)
             for reg in pending_registrations:
                 reg.order = order
                 reg.save()
             return redirect("payments:payment_success_view")
 
         # Create the standard pending umbrella Order
-        order = Order.objects.create(
-            user=user,
-            total_amount_cents=total_cents,
-            payment_status=PaymentStatus.PENDING
-        )
+        order = Order.objects.create(user=user, total_amount_cents=total_cents, payment_status=PaymentStatus.PENDING)
 
         # Map the selected items to our transaction tracker
         for reg in pending_registrations:
@@ -83,17 +71,19 @@ def payment_start_view(request):
     stripe_line_items = []
     for reg in pending_registrations:
         if reg.final_price_cents > 0:
-            stripe_line_items.append({
-                "price_data": {
-                    "currency": "usd",
-                    "product_data": {
-                        "name": f"Pass: {reg.event.title}",
-                        "description": f"Ticket for {reg.user.get_full_name() or reg.user.username}",
+            stripe_line_items.append(
+                {
+                    "price_data": {
+                        "currency": "usd",
+                        "product_data": {
+                            "name": f"Pass: {reg.event.title}",
+                            "description": f"Ticket for {reg.user.get_full_name() or reg.user.username}",
+                        },
+                        "unit_amount": reg.final_price_cents,
                     },
-                    "unit_amount": reg.final_price_cents,
-                },
-                "quantity": 1,
-            })
+                    "quantity": 1,
+                }
+            )
 
     # 6. Generate absolute return links
     success_url = request.build_absolute_uri(reverse("payment_success_view")) + "?session_id={CHECKOUT_SESSION_ID}"
@@ -106,14 +96,14 @@ def payment_start_view(request):
                 "line_items": stripe_line_items,
                 "mode": "payment",
                 "metadata": {
-                    "order_id": str(order.id), # Stripe API requires keys and values in metadata to be strings.
+                    "order_id": str(order.id),  # Stripe API requires keys and values in metadata to be strings.
                     "user_id": str(user.id),
                 },
                 "success_url": success_url,
                 "cancel_url": cancel_url,
             }
         )
-        
+
         order.stripe_session_id = checkout_session.id
         order.save()
 
@@ -121,6 +111,7 @@ def payment_start_view(request):
         return render(request, "payments/payment_error.html", {"error": str(e)})
 
     return redirect(checkout_session.url, allow_external_redirect=True)
+
 
 @csrf_exempt
 @require_POST
@@ -135,9 +126,7 @@ def stripe_webhook_view(request):
 
     try:
         # Construct the event using the initialized stripe_client object
-        event = stripe_client.construct_event(
-            payload, sig_header, webhook_secret
-        )
+        event = stripe_client.construct_event(payload, sig_header, webhook_secret)
     except ValueError:
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError:
@@ -148,7 +137,7 @@ def stripe_webhook_view(request):
         # Collect information from the event to update our database.
         session = event.data.object
         metadata = getattr(session, "metadata", {})
-        
+
         # Pull our custom order ID tracking flag out of the metadata dictionary
         order_id = metadata.get("order_id")
 
@@ -163,13 +152,14 @@ def stripe_webhook_view(request):
 
     return HttpResponse(status=200)
 
+
 @login_required
 def payment_success_view(request):
     # Stripe passes ?session_id={CHECKOUT_SESSION_ID} in the URL string.
-    # We can grab it if we want to show a receipt later, but for now, 
+    # We can grab it if we want to show a receipt later, but for now,
     # we just want to tell the parent everything worked!
     session_id = request.GET.get("session_id")
-    
+
     context = {
         "session_id": session_id,
     }

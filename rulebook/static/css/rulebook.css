@@ -1,348 +1,348 @@
 /* Navigation Sidebars */
 .sidebar-toggle {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    z-index: 1000;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
 }
 
 .offcanvas-body a {
-    color: #007bff;
+  color: #007bff;
 }
 
-table, tr, td {
-    border: 1px solid black;
+table,
+tr,
+td {
+  border: 1px solid black;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 0px
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0px;
 }
 
 .class-header,
 .kin-header {
-    padding-top: 15px;
+  padding-top: 15px;
 }
 
 h1.class-header,
 h1.kin-header {
-    padding-top: 25px;
+  padding-top: 25px;
 }
 
 h2.class-header,
 h2.kin-header {
-    padding-top: 20px;
+  padding-top: 20px;
 }
 
 .talent-name,
 .attribute-name {
-    display: inline-block;
-    margin-top: 15px;
+  display: inline-block;
+  margin-top: 15px;
 }
 
 /* Rulebook Index CSS */
-    .box-header-link {
-        font-size: 2rem;
-    }
+.box-header-link {
+  font-size: 2rem;
+}
 
-    .table-of-contents-box {
-        margin-top: 20px;
-    }
+.table-of-contents-box {
+  margin-top: 20px;
+}
 
-    .contents-text {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+.contents-text {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 /* End of Rulebook Index CSS */
 
 /* Kin Carousel CSS */
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: auto; /* Removes the default full-side width */
-        height: 40px; /* Restrict height to fit the icon */
-        padding: 20px 0px; /* Add some padding around the icons for easier clicking */
-        background: none; /* Remove background from the button area */
-        border: none; /* Ensure there’s no border */
-        display: flex; /* Center the icon inside */
-        justify-content: center;
-        align-items: center;
-        top: 50%;
-        z-index: 1; /* Keep above other elements */
-        filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.5)); /* Add a shadow for visibility */
-    }
+.carousel-control-prev,
+.carousel-control-next {
+  width: auto; /* Removes the default full-side width */
+  height: 40px; /* Restrict height to fit the icon */
+  padding: 20px 0px; /* Add some padding around the icons for easier clicking */
+  background: none; /* Remove background from the button area */
+  border: none; /* Ensure there’s no border */
+  display: flex; /* Center the icon inside */
+  justify-content: center;
+  align-items: center;
+  top: 50%;
+  z-index: 1; /* Keep above other elements */
+  filter: drop-shadow(
+    2px 2px 5px rgba(0, 0, 0, 0.5)
+  ); /* Add a shadow for visibility */
+}
 
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        width: 40px; /* Set desired size for the icon */
-        height: 40px;
-        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-        border-radius: 50%; /* Circular */
-        transition: background-color 0.3s ease;
-    }
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 40px; /* Set desired size for the icon */
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  border-radius: 50%; /* Circular */
+  transition: background-color 0.3s ease;
+}
 
-    .carousel-control-prev-icon:hover,
-    .carousel-control-next-icon:hover {
-        background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
-        transform: scale(1.1); /* Slightly larger on hover */
-        transition: background-color 0.3s ease; /* Smooth hover transition */
-        filter: drop-shadow(4px 4px 7px rgba(0, 0, 0, 0.6));
-    }
+.carousel-control-prev-icon:hover,
+.carousel-control-next-icon:hover {
+  background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
+  transform: scale(1.1); /* Slightly larger on hover */
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+  filter: drop-shadow(4px 4px 7px rgba(0, 0, 0, 0.6));
+}
 
-    .carousel-control-prev {
-        left: 20px; /* Position the control closer to the left edge */
-    }
+.carousel-control-prev {
+  left: 20px; /* Position the control closer to the left edge */
+}
 
-    .carousel-control-next {
-        right: 20px; /* Position the control closer to the right edge */
-    }
+.carousel-control-next {
+  right: 20px; /* Position the control closer to the right edge */
+}
 
-    .carousel-indicator-dark {
-        background-color: rgba(100, 100, 100, 0.5) !important;
-        transition: background-color 0.3s ease;
-    }
+.carousel-indicator-dark {
+  background-color: rgba(100, 100, 100, 0.5) !important;
+  transition: background-color 0.3s ease;
+}
 
-    .carousel-indicator-dark:hover {
-        background-color: rgba(35, 35, 35, 0.5) !important;
-        transform: scale(1.1);
-        transition: background-color 0.3s ease;
-    }
+.carousel-indicator-dark:hover {
+  background-color: rgba(35, 35, 35, 0.5) !important;
+  transform: scale(1.1);
+  transition: background-color 0.3s ease;
+}
 
-    .carousel-indicator-dark.active {
-        background-color: rgba(0, 0, 0, 0.8) !important;
-        transform: scale(1.1);
-    }
+.carousel-indicator-dark.active {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  transform: scale(1.1);
+}
 
-    .carousel-control-prev-icon:focus, 
-    .carousel-control-next-icon:focus,
-    .carousel-indicator-dark:focus {
-        outline: 2px solid rgba(0, 0, 0, 0.8);
-        outline-offset: 2px;
-    }
+.carousel-control-prev-icon:focus,
+.carousel-control-next-icon:focus,
+.carousel-indicator-dark:focus {
+  outline: 2px solid rgba(0, 0, 0, 0.8);
+  outline-offset: 2px;
+}
 
-    #kinCarousel {
-        margin: 20px auto; /* Centered horizontally */
-        max-width: 75%;
-        height: auto;
-    }
+#kinCarousel {
+  margin: 20px auto; /* Centered horizontally */
+  max-width: 75%;
+  height: auto;
+}
 
-    .carousel-inner .carousel-item img {
-        max-width: 100%;
-        max-height: 70vh;
-        width: auto;
-        height: auto;
-        object-fit: contain;
-    }
+.carousel-inner .carousel-item img {
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
 
-    @media (max-width: 768px) {
-        #kinCarousel {
-            margin: 10px 20px; /* Adjust margins for smaller screens */
-        }
+@media (max-width: 768px) {
+  #kinCarousel {
+    margin: 10px 20px; /* Adjust margins for smaller screens */
+  }
 
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            width: 20px;
-            height: 20px; /* Smaller controls for mobile */
-        }
-    }
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 20px;
+    height: 20px; /* Smaller controls for mobile */
+  }
+}
 /* End of Kin Carousel CSS */
 
 /* Character Creation CSS */
-    .character-creation-table h1 {
-        margin-top: 0px;
-        margin-bottom: 10px;
-    }
+.character-creation-table h1 {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
 
-    .character-creation-table table, 
-    .character-creation-table tr {
-        border: none;
-    }
+.character-creation-table table,
+.character-creation-table tr {
+  border: none;
+}
 /* End Of Character Creation CSS */
 
 /* Skills and Abilities CSS */
 
-    /* Icky Bootstrap Grid has Padding and neat Background Color */
-    .costs-table,
-    .orders-table {
-        padding: 0px;
-        background-color: #f4f4f4;
-    }
-    
-    /* Costs Table CSS */      
-        .costs-table table {
-            margin: 0;
-        }
+/* Icky Bootstrap Grid has Padding and neat Background Color */
+.costs-table,
+.orders-table {
+  padding: 0px;
+  background-color: #f4f4f4;
+}
 
-        .costs-table tr,
-        .costs-table td {
-            border: none;
-        }
+/* Costs Table CSS */
+.costs-table table {
+  margin: 0;
+}
 
-        .costs-table th,
-        .costs-table td {
-            padding: 8px;
-        }
+.costs-table tr,
+.costs-table td {
+  border: none;
+}
 
-        .costs-table h5 {
-            font-weight: bold;
-        }
-    /* End of Costs Table CSS */
+.costs-table th,
+.costs-table td {
+  padding: 8px;
+}
 
-    /* Orders Table CSS */        
-        /* All Spacing And Orientation stuff of the Blocks */
+.costs-table h5 {
+  font-weight: bold;
+}
+/* End of Costs Table CSS */
 
-        /* 
+/* Orders Table CSS */
+/* All Spacing And Orientation stuff of the Blocks */
+
+/* 
         Pyramid's center content vertically to better line up with other pyramids
         */
-        .pyramid {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* 
+.pyramid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 
         Ability Rows handle Horizontal Centering to make the Pyramid Structure in 
         the pyramid flex container
         */
-        .ability-row {
-            display: flex;
-            justify-content: center;
-        }
-        
-        /* General Style for the Blocs */
-        .skill-block,
-        .ability-block {
-            border: 1px solid #000;
-            margin: -1px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.ability-row {
+  display: flex;
+  justify-content: center;
+}
 
-        /* y-margin for spacing (top & bottom) */
-        .pyramid,
-        .skill-block {
-            margin: 15px 0px;
-        }
+/* General Style for the Blocs */
+.skill-block,
+.ability-block {
+  border: 1px solid #000;
+  margin: -1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        /*
+/* y-margin for spacing (top & bottom) */
+.pyramid,
+.skill-block {
+  margin: 15px 0px;
+}
+
+/*
         Skill blocks get bigger as we go to emphasize more of an upgrade
         */
-        .skill-block.purchase-first {
-            width: 60px;
-            height: 60px;
-        }
+.skill-block.purchase-first {
+  width: 60px;
+  height: 60px;
+}
 
-        .skill-block.purchase-second {
-            width: 65px;
-            height: 65px;
-        }
+.skill-block.purchase-second {
+  width: 65px;
+  height: 65px;
+}
 
-        .skill-block.purchase-third {
-            width: 70px;
-            height: 70px;
-        }
+.skill-block.purchase-third {
+  width: 70px;
+  height: 70px;
+}
 
-        /*
+/*
         Ability blocks smaller to emphasize more of a lesser, expendable resource
         */
-        .ability-block {
-            width: 40px;
-            height: 40px;
-        }
+.ability-block {
+  width: 40px;
+  height: 40px;
+}
 
-        /* Size and Spacing for the Arrows, handle distance between Blocks Here */
-        .arrow {
-            font-size: 16pt; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 25px;
-        }
+/* Size and Spacing for the Arrows, handle distance between Blocks Here */
+.arrow {
+  font-size: 16pt;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 25px;
+}
 
-        /* The Labels by the Blocks, keep them a little apart */
-        .skill-order-label,
-        .ability-order-label {
-            margin: 20px 40px 20px 0px;
-            font-weight: bold;
-        }
+/* The Labels by the Blocks, keep them a little apart */
+.skill-order-label,
+.ability-order-label {
+  margin: 20px 40px 20px 0px;
+  font-weight: bold;
+}
 
+/* Block Colors and Style */
+/* Still want blocks in Rows 2 & 3 for earlier pyramids for orientation */
+.hidden {
+  border: none;
+  background-color: transparent;
+}
 
-        /* Block Colors and Style */
-        /* Still want blocks in Rows 2 & 3 for earlier pyramids for orientation */
-        .hidden {
-            border: none;
-            background-color: transparent;
-        }
+.already-owned,
+.purchase-first,
+.purchase-second,
+.purchase-third {
+  font-weight: bold !important;
+}
 
-        .already-owned,
-        .purchase-first,
-        .purchase-second,
-        .purchase-third {
-            font-weight: bold !important;
-        }
+.already-owned {
+  background-color: white !important;
+  color: black !important;
+}
 
-        .already-owned {
-            background-color: white !important;
-            color: black !important;
-        }
+.purchase-first {
+  color: white;
+  background: linear-gradient(to bottom, #00bfff, #0073ff);
+  border: 1px solid #0056b3;
+}
 
-        .purchase-first {
-            color: white;
-            background: linear-gradient(to bottom, #00bfff, #0073ff);
-            border: 1px solid #0056b3;
-        }
-        
-        .purchase-second {
-            color: white;
-            background: linear-gradient(to bottom, #0073ff, #0000ff);
-            border: 1px solid #003f80;
-        }
-        
-        .purchase-third {
-            color: white;
-            background: linear-gradient(to bottom, #0000ff, #00008b);
-            border: 1px solid #00005f;
-        }
-        
-        
-        /* The Purchase Key Styling, Mainly Spacing */
-        .talent-purchase-key h5 {
-            margin-top: 10px;
-            margin-bottom: 0px;
-            font-weight: bold;
-        }
-        
-        .talent-purchase-key table {
-            margin: 15px 10%;
-            width: auto; /* Override the Default of 100% Width set earlier */
-        }
+.purchase-second {
+  color: white;
+  background: linear-gradient(to bottom, #0073ff, #0000ff);
+  border: 1px solid #003f80;
+}
 
-        .talent-purchase-key td {
-            padding: 10px 20px;
-        }
-        /* End of Orders Table CSS */
+.purchase-third {
+  color: white;
+  background: linear-gradient(to bottom, #0000ff, #00008b);
+  border: 1px solid #00005f;
+}
 
-    /* Responsive Borders */
-    .talent-purchase-key {
-        border-bottom: 1px solid black;
-    }
+/* The Purchase Key Styling, Mainly Spacing */
+.talent-purchase-key h5 {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-weight: bold;
+}
 
-    .costs-table {
-        border-bottom: none !important;
-    }
+.talent-purchase-key table {
+  margin: 15px 10%;
+  width: auto; /* Override the Default of 100% Width set earlier */
+}
 
-    @media (min-width: 1200px) {
+.talent-purchase-key td {
+  padding: 10px 20px;
+}
+/* End of Orders Table CSS */
 
-        .costs-table {
-            border-right: none !important;
-            border-bottom: 1px solid black !important;
-        }
+/* Responsive Borders */
+.talent-purchase-key {
+  border-bottom: 1px solid black;
+}
 
-        .talent-purchase-key {
-            border-bottom: none;
-            border-right: 1px solid black;
-        }
-    }
+.costs-table {
+  border-bottom: none !important;
+}
+
+@media (min-width: 1200px) {
+  .costs-table {
+    border-right: none !important;
+    border-bottom: 1px solid black !important;
+  }
+
+  .talent-purchase-key {
+    border-bottom: none;
+    border-right: 1px solid black;
+  }
+}
 /* End of Skills and Abilities CSS */
-

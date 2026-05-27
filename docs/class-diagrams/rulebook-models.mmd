@@ -1,0 +1,97 @@
+classDiagram
+    direction TB
+
+    %% Define Enums from TextChoices
+    class TalentType {
+        <<enumeration>>
+        SKILL
+        ABILITY
+        WEAPON_WARRIOR_TITLE
+        ARMOR_WARRIOR_TITLE
+        SUPPORT_WARRIOR_TITLE
+        MISC_WARRIOR_TITLE
+        TIER_1
+        TIER_2
+        TIER_3
+    }
+
+    class ClassType {
+        <<enumeration>>
+        GUILD
+        FACTION
+        ELEMENTAL
+        MANIFOLD
+        CLASSLESS
+    }
+
+    %% Core Data Models
+    class Class {
+        +CharField name
+        +SlugField slug
+        +TextField description
+        +ForeignKey guild
+        +CharField class_type
+        +BooleanField has_special_rules
+        +TextField special_rules
+        +save(*args, **kwargs)
+        +str()
+    }
+
+    class Talent {
+        +CharField name
+        +ForeignKey class_for
+        +TextField description
+        +BooleanField is_rankless
+        +IntegerField priority
+        +CharField talent_type
+        +str()
+    }
+
+    class Kin {
+        +CharField name
+        +SlugField slug
+        +TextField short_description
+        +TextField description
+        +CharField size
+        +save(*args, **kwargs)
+        +str()
+    }
+
+    class Kin_Image {
+        +ImageField image
+        +ForeignKey kin_for
+    }
+
+    class Attribute {
+        +CharField name
+        +ForeignKey kin_for
+        +TextField description
+        +BooleanField can_start_with
+        +str()
+    }
+
+    %% Establishing Data Relationships
+    Class ..> ClassType : choices
+    Talent ..> TalentType : choices
+
+    %% Class Layout Hooks
+    Class "1" *-- "0..*" Talent : class_for (talents)
+    Class o-- Class : factions (guild) {1 to 0..*}
+
+    %% Kin Layout Hooks
+    Kin "1" *-- "0..*" Kin_Image : kin_images (kin_for)
+    Kin "1" *-- "0..*" Attribute : attributes (kin_for)
+    
+    %% STYLING: Nordic Minimalist
+    %% Core Entities (Deep Slate Blue) 
+    style Class fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff 
+    style Kin fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff 
+    
+    %% Child Components (Soft Sage Teal) 
+    style Talent fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff 
+    style Attribute fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff 
+    style Kin_Image fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff 
+    
+    %% Meta Data / Configuration Enums (Muted Sand/Cream) 
+    style TalentType fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b 
+    style ClassType fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b

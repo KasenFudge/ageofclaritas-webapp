@@ -2,29 +2,26 @@
 
 <!doctype html>
 <html lang="en" data-bs-theme="light">
+  {% block header_block %} {% include 'core/base_head.html' %} {% endblock %}
 
-    {% block header_block %}
-        {% include 'core/base_head.html' %}
-    {% endblock %}
+  <body>
+    <div class="wrapper">
+      <!-- Navbar -->
+      {% include 'core/base_nav.html' %}
+      <!-- End of Navbar -->
 
-    <body>
-        <div class="wrapper">
-            <!-- Navbar -->
-            {% include 'core/base_nav.html' %}
-            <!-- End of Navbar -->
+      <!-- Page Content -->
+      <div class="content">{% block content %} {% endblock %}</div>
+      <!-- End of Page Content -->
 
-            <!-- Page Content -->
-            <div class="content">
-                {% block content %}
-
-                {% endblock %}
-            </div>
-            <!-- End of Page Content -->
-             
-            <!-- Footer -->
-            {% include 'core/base_footer.html' %}
-            <!-- End of Footer -->
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </body>
+      <!-- Footer -->
+      {% include 'core/base_footer.html' %}
+      <!-- End of Footer -->
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

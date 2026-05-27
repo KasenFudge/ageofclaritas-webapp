@@ -1,0 +1,64 @@
+classDiagram
+    direction TB
+
+    %% Main App Models
+    class CustomUser {
+        +EmailField email
+        +DateField date_of_birth
+        +BooleanField is_student
+        +DateField student_status_expires
+        +ForeignKey parent_account
+        +has_valid_student_discount* bool
+        +age* int
+        +age_on(date) int
+        +has_signed_active_waiver() bool
+        +clean()
+        +save(*args, **kwargs)
+        +str()
+    }
+
+    class Waiver {
+        +CharField title
+        +DateField effective_date
+        +TextField content
+        +BooleanField is_active
+        +save(*args, **kwargs)
+        +str()
+    }
+
+    class WaiverSignature {
+        +ForeignKey user
+        +ForeignKey waiver
+        +DateTimeField signed_at
+        +str()
+    }
+
+    %% External Cross-App References
+    class Response {
+        <<external>>
+    }
+    class EventRegistration {
+        <<external>>
+    }
+
+    %% Establishing Data Relationships
+    
+    %% Self-referential loop for Parent/Child accounts
+    CustomUser o-- CustomUser : child_accounts (1 to 0..*)    
+    
+    %% Waiver Relationships with CustomUser
+    CustomUser "1" <-- "*" WaiverSignature : waiver_signatures (user)
+    Waiver "1" <-- "*" WaiverSignature : signatures (waiver)
+
+    %% Cross-App Hooks
+    CustomUser "1" <-- "0..*" EventRegistration : registrations (user)
+    CustomUser "1" <-- "0..*" Response : survey_submissions (user)
+
+    %% STYLING: Nordic Minimalist
+    style CustomUser fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff
+    style Waiver fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+    style WaiverSignature fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+    
+    %% External Dependencies (Light Charcoal / Gray Border)
+    style Response fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
+    style EventRegistration fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff

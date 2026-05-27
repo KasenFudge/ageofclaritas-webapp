@@ -1,575 +1,1027 @@
-{% extends "core/base.html" %}
-{% load static %}
+{% extends "core/base.html" %} {% load static %} {% block content %}
+<h1 class="text-center page-header">Definitions</h1>
+<p class="text-center">
+  This is a list of commonly used terms and their definitions.
+</p>
+<br /><br />
+
+<h2 class="text-center">Claritas Basics</h2>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Player:</strong> A person participating in Age of Claritas.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Ability:</strong> An ability is something that is “expended” when
+  used, and can only be used a certain number of times, equal to the number of
+  purchases, over a given period of time and can't be regained until a later
+  time specific to the the ability in question.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Skill:</strong> A skill is a passive trait that can be used at anytime
+  during gameplay.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Talent:</strong> Any skill, ability, background, magic, etc. is
+  classified as a <a href="#">Talent</a>.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>XP or Experience Points:</strong> Mysterious blue crystal objects
+  visible only to certain people. Can be used to increase a player's power by
+  gaining new abilities, skills, spells, or health. Alternatively,
+  <a href="#">XP</a> can be used to get someone out of a difficult predicament.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Call:</strong> The way players and NPCs indicate their swing or use of
+  an ability. e.g. “Crushing Blow, 8!” (A warrior who normally swings for 4
+  announces that he is using a crushing blow rank 1 which adds 4 to his damage.)
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Class:</strong> <a href="% url 'rulebook:classes' %">Class</a> is a
+  designation that shows a player's role in society and governs the types of
+  Skills and abilities that player can learn.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>PC or Player Character:</strong> The one designated character
+  controlled by the player who created it.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>NPC or Non Playable Character:</strong> Any character that was not
+  created by a player.
+</p>
+
+<p class="">
+  <br />
+  <strong>Adventurer:</strong> Any character that can observe XP as a tangible
+  object. Every player character is an adventurer.<br />
+</p>
+
+<p class="">
+  <strong>Guild:</strong> Guilds are class specific organization which players
+  can only join by completing the three Guild quests. Once joined they allow the
+  player to learn the rank twos and threes of their character's 5 starting class
+  specific skills and/or abilities. Each guild also has joinable factions that
+  further expand a player's possible learnable class specific skills and/or
+  abilities.
+</p>
+
+<p class=""></p>
+
+<p class="">
+  <strong>Guild Leader:</strong> Guild leaders are the heads of their guilds and
+  usually the strongest and wisest member of their guild. If a player is
+  interested in joining a guild the guild leader is the person to find and talk
+  too. If a player wants to find any guild leader for any reason, they can
+  almost always count on them being in their guild.
+</p>
+
+<p class=""></p>
 
-{% block content %}
-    <h1 class="text-center page-header">Definitions</h1>
-    <p class="text-center">This is a list of commonly used terms and their definitions.</p>
-    <br/><br/>
+<p class="">
+  <strong>Faction:</strong> Factions are class specific organization which
+  players can only join by completing the three faction quests of the faction
+  they wish to join. A faction is only joinable after a player joins their
+  classes respective guild. Each class has 2 joinable factions, one of which is
+  usually more specialized towards that class, while the other is more for those
+  who want to be half class specific and half fighter. Each faction gives 5
+  unique skills and/or abilities.
+</p>
 
-    <h2 class="text-center">Claritas Basics</h2>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>FL or Faction Leader:</strong> Faction leaders very similar in many
+  ways are the heads of their factions and usually the strongest and wisest
+  member of their faction. If a player is interested in joining a faction the
+  faction leader is the person to find and talk too. They are usually housed
+  within the guild that the player has joined.
+</p>
 
-    <p class=""><strong>Player:</strong> A person participating in Age of Claritas.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Guild/Faction Quest:</strong> An adventure introduced to a player by a
+  guild or faction they are a part of that is not an initiation.
+</p>
 
-    <p class=""><strong>Ability:</strong> An ability is something that is “expended” when used, and can only be used a certain number of times, equal to the number of purchases, over a given period of time and can't be regained until a later time specific to the the ability in question.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Guild/Faction Initiation:</strong> A task given by a guild/faction
+  leader to test an applicant's aptitude. In most cases, one must complete this
+  quest before being allowed to join the group they are interested in.
+</p>
 
-    <p class=""><strong>Skill:</strong> A skill is a passive trait that can be used at anytime during gameplay.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Copper:</strong> Tough metal coins stamped with a crest, which are the
+  <a href="#">currency</a> of choice for most of the known world surrounding
+  Wilshire.
+</p>
 
-    <p class=""><strong>Talent:</strong> Any skill, ability, background, magic, etc. is classified as a <a href="#">Talent</a>. </p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Armor:</strong> Any item worn by a character to designed to protect
+  the character from damage.
+</p>
 
-    <p class=""><strong>XP or Experience Points:</strong> Mysterious blue crystal objects visible only to certain people. Can be used to increase a player's power by gaining new abilities, skills, spells, or health. Alternatively, <a href="#">XP</a> can be used to get someone out of a difficult predicament.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Health Points:</strong> <a href="#">HP</a> is a player's natural
+  vitality.
+</p>
 
-    <p class=""><strong>Call:</strong> The way players  and NPCs indicate their swing or use of an ability. e.g. “Crushing Blow, 8!” (A warrior who normally swings for 4 announces that he is using a crushing blow rank 1 which adds 4 to his damage.)</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Durability Points:</strong> A player's
+  <a href="#">Durability Points</a> are the total of their Health Points and
+  Armor Points.
+</p>
 
-    <p class=""><strong>Class:</strong> <a href="% url 'rulebook:classes' %">Class</a> is a designation that shows a player's role in society and governs the types of Skills and abilities that player can learn.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Unconscious:</strong> A player that has reaches 0 HP, meaning all
+  their armor and health points are depleted, becomes
+  <a href="Death/">unconscious</a>.
+</p>
 
-    <p class=""><strong>PC or Player Character:</strong> The one designated character controlled by the player who created it.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Death or Dead:</strong> When a Character is incapable of being
+  revived, they are <a href="#">dead</a>.
+</p>
 
-    <p class=""><strong>NPC or Non Playable Character:</strong> Any character that was not created by a player.</p>
+<p class=""></p>
 
-    <p class=""><br>
-    <strong>Adventurer:</strong> Any character that can observe XP as a tangible object. Every player character is an adventurer.<br>
-    </p>
+<p class="">
+  <strong>Order:</strong> An order is somewhat like a guild or faction that is
+  joinable by most players. How you join them, both the benefits of joining them
+  and who is allowed to join them varies from order to order.
+</p>
 
-    <p class=""><strong>Guild:</strong> Guilds are class specific organization which players can only join by completing the three Guild quests. Once joined they allow the player to learn the rank twos and threes of their character's 5 starting class specific skills and/or abilities. Each guild also has joinable factions that further expand a player's possible learnable class specific skills and/or abilities.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Kin:</strong> In Claritas there are many different Kin, each with
+  their own political systems and ways of life, and new Kins are always being
+  discovered!
+</p>
 
-    <p class=""><strong>Guild Leader:</strong> Guild leaders are the heads of their guilds and usually the strongest and wisest member of their guild. If a player is interested in joining a guild the guild leader is the person to find and talk too. If a player wants to find any guild leader for any reason, they can almost always count on them being in their guild.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Attribute:</strong> An attribute are unique skills and abilities each
+  kin has.
+</p>
 
-    <p class=""><strong>Faction:</strong> Factions are class specific organization which players can only join by completing the three faction quests of the faction they wish to join. A faction is only joinable after a player joins their classes respective guild. Each class has 2 joinable factions, one of which is usually more specialized towards that class, while the other is more for those who want to be half class specific and half fighter. Each faction gives 5 unique skills and/or abilities.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Claritas:</strong> The plane in which the players reside.
+</p>
 
-    <p class=""><strong>FL or Faction Leader:</strong> Faction leaders very similar in many ways are the heads of their factions and usually the strongest and wisest member of their faction. If a player is interested in joining a faction the faction leader is the person to find and talk too. They are usually housed within the guild that the player has joined.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Wilshire:</strong> The main town adventurers are drawn to.
+</p>
 
-    <p class=""><strong>Guild/Faction Quest:</strong> An adventure introduced to a player by a guild or faction they are a part of that is not an initiation.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class=""><strong>Adventure:</strong> Any trip out of Wilshire.</p>
 
-    <p class=""><strong>Guild/Faction Initiation:</strong> A task given by a guild/faction leader to test an applicant's aptitude. In most cases, one must complete this quest before being allowed to join the group they are interested in.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Party:</strong> A group of individuals going on an adventure.
+</p>
 
-    <p class=""><strong>Copper:</strong> Tough metal coins stamped with a crest, which are the <a href="#">currency</a> of choice for most of the known world surrounding Wilshire.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Quest:</strong> An adventure out into the unknown that has no direct
+  monetary or objective gain.
+</p>
 
-    <p class=""><strong>Armor:</strong> Any item worn by a character to designed to protect the character from damage.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Event:</strong> A designated time where Age of Claritas is being
+  hosted by the designated GMs is called an <a href="Events/">Event</a>.
+</p>
 
-    <p class=""><strong>Health Points:</strong> <a href="#">HP</a> is a player's natural vitality.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Encounter:</strong> Any single run-in with NPCs while on a quest or
+  job.
+</p>
 
-    <p class=""><strong>Durability Points:</strong> A player's <a href="#">Durability Points</a> are the total of their Health Points and Armor Points.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Phys-rep or Physical Representation:</strong> A Phys-rep is the OoG
+  object that is used to indicate the placement, look and feel of an item IG.
+</p>
 
-    <p class=""><strong>Unconscious:</strong> A player that has reaches 0 HP, meaning all their armor and health points are depleted, becomes <a href="Death/">unconscious</a>.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>GM or Game Master:</strong> An individual who runs the events, creates
+  the stories, world and setting is called a
+  <a href="Our-Team/">Game Master</a>.
+</p>
 
-    <p class=""><strong>Death or Dead:</strong> When a Character is incapable of being revived, they are <a href="#">dead</a>.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>RM or Realm Master:</strong> An individual who helps the GM run the
+  events.
+</p>
 
-    <p class=""><strong>Order:</strong> An order is somewhat like a guild or faction that is joinable by most players. How you join them, both the benefits of joining them and who is allowed to join them varies from order to order. </p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class=""><strong>Roll:</strong> Rock paper scissors.</p>
 
-    <p class=""><strong>Kin:</strong> In Claritas there are many different Kin, each with their own political systems and ways of life, and new Kins are always being discovered!</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Rank or R:</strong> The term rank is essentially the power or
+  effectiveness of something. Everything is based on 3s and ranks are no
+  exception as there is almost always only a R1, R2 and R3 of any skill,
+  ability, weapon, armor, spell, etc.
+</p>
 
-    <p class=""><strong>Attribute:</strong> An attribute are unique skills and abilities each kin has.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Rest:</strong> Adventurers may choose to rest in between encounters or
+  at night in order to regain HP and/or their abilities.
+</p>
 
-    <p class=""><strong>Claritas:</strong> The plane in which the players reside.</p>
+<p class=""><br /></p>
 
-    <p class=""> </p>
+<p class=""></p>
+<h2 class="text-center">Combat Basics</h2>
 
-    <p class=""><strong>Wilshire:</strong> The main town adventurers are drawn to.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Armor Points:</strong> <a href="#">Armor Points</a> denote the amount
+  of damage a piece of armor will take before breaking and needing
+  <a href="#">repair</a>.
+</p>
 
-    <p class=""><strong>Adventure:</strong> Any trip out of Wilshire.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Swing:</strong> The amount of damage inflicted by one hit of a weapon.
+</p>
 
-    <p class=""><strong>Party:</strong> A group of individuals going on an adventure.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Loot:</strong> The process of taking items and or gold from a NPC or a
+  PC after combat.
+</p>
 
-    <p class=""><strong>Quest:</strong> An adventure out into the unknown that has no direct monetary or objective gain.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Hold:</strong> When “Hold” is called by a GM or RM the gameplay is
+  temporarily paused until reinitiated by a GM or RM. This is done to explain,
+  describe, because of Talent, or because of safety.
+</p>
 
-    <p class=""><strong>Event:</strong> A designated time where Age of Claritas is being hosted by the designated GMs is called an <a href="Events/">Event</a>.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>DR or Damage Reduction: </strong>DR reduces the amount of damage taken
+  by a hit equal to the DR. So if I had DR 1 and was hit by 3 damage I would
+  only take 2.<br />
+</p>
 
-    <p class=""><strong>Encounter:</strong> Any single run-in with NPCs while on a quest or job.</p>
+<p class="">
+  <strong>Durability:</strong> Damage that will be done to armor, rather than
+  the body part beneath it. If your chestplate has 12 durability remaining then
+  it will break and become unusable after taking 12 more damage.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Phys-rep or Physical Representation:</strong> A Phys-rep is the OoG object that is used to indicate the placement, look and feel of an item IG.</p>
+<p class="">
+  <strong>Damage:</strong> A physical affliction that reduces a character's HP
+  or armor durability.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>GM or Game Master:</strong> An individual who runs the events, creates the stories, world and setting is called a <a href="Our-Team/">Game Master</a>.</p>
+<p class="">
+  <strong>Direct or Direct to Health:</strong> This term is used when something
+  ignores DR and armor and reduces a player's HP directly.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>RM or Realm Master:</strong> An individual who helps the GM run the events.</p>
+<p class="">
+  <strong>Weight:</strong> The amount a particular item burdens the holder of
+  that item is called its <a href="#">Weight</a>.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Roll:</strong> Rock paper scissors.</p>
+<p class="">
+  <strong>Weight Capacity:</strong> How much <a href="#">Weight</a> a single
+  character can hold.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Rank or R:</strong> The term rank is essentially the power or effectiveness of something. Everything is based on 3s and ranks are no exception as there is almost always only a R1, R2 and R3 of any skill, ability, weapon, armor, spell, etc.</p>
+<p class=""></p>
+<h2 class="text-center">Combat Advanced</h2>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Rest:</strong> Adventurers may choose to rest in between encounters or at night in order to regain HP and/or their abilities. </p>
+<p class="">
+  <b>Stun Effect:</b> Any effect that changes the way a character can move or
+  interact with the world. The following are stun effects the player may induce
+  or encounter. When hit with a stun effect, role play the full extent of the
+  effect provided it is safe to do so out of game.
+</p>
 
-    <p class=""><br>
-    </p>
+<p class=""></p>
 
-    <p class=""> </p>
-    <h2 class="text-center">Combat Basics</h2>
+<p class="">
+  <strong>Knockback:</strong> The target is forced to move in a given direction,
+  depending on what ability was used. Generally the distance of the knockback
+  depends on the rank of the ability used to induce it as follows.
+</p>
 
-    <p class=""> </p>
+<p class=""><strong> (Rank I)</strong> - 5'</p>
 
-    <p class=""><strong>Armor Points:</strong> <a href="#">Armor Points</a> denote the amount of damage a piece of armor will take before breaking and needing <a href="#">repair</a>. </p>
+<p class=""><strong> (Rank II) </strong>- 10'</p>
 
-    <p class=""> </p>
+<p class=""><strong> (Rank III)</strong> - 20'</p>
 
-    <p class=""><strong>Swing:</strong> The amount of damage inflicted by one hit of a weapon.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Pin:</strong> A target's leg gets stuck in place for a duration. The
+  target may remove the effect at its halfway point or beyond, ending the effect
+  early, but will receive a gimp effect by doing so. If both legs are gimped,
+  you cannot end a pin effect early. This counts for all pins, things like
+  frostbite, paralysis, stagger, a throwing nail, etc
+</p>
 
-    <p class=""><strong>Loot:</strong> The process of taking items and or gold from a NPC or a PC after combat.</p>
+<p class=""><strong> (Rank I)</strong> - 5 seconds</p>
 
-    <p class=""> </p>
+<p class=""><strong> (Rank II)</strong> - 10 seconds</p>
 
-    <p class=""><strong>Hold:</strong> When “Hold” is called by a GM or RM the gameplay is temporarily paused until reinitiated by a GM or RM. This is done to explain, describe, because of Talent, or because of safety.</p>
+<p class=""><strong> (Rank III)</strong> - 20 seconds</p>
 
-    <p class=""> </p>
+<p></p>
 
-    <p class=""><strong>DR or Damage Reduction: </strong>DR reduces the amount of damage taken by a hit equal to the DR. So if I had DR 1 and was hit by 3 damage I would only take 2.<br>
-    </p>
+<p class="">
+  <strong>Shaken:</strong> The affected target cannot make an offensive action
+  and must walk for the duration
+</p>
 
-    <p class=""><strong>Durability:</strong> Damage that will be done to armor, rather than the body part beneath it. If your chestplate has 12 durability remaining then it will break and become unusable after taking 12 more damage.</p>
+<p class=""><strong> (Rank I)</strong> - 5 seconds</p>
 
-    <p class=""> </p>
+<p class=""><strong> (Rank II)</strong> - 10 seconds</p>
 
-    <p class=""><strong>Damage:</strong> A physical affliction that reduces a character's HP or armor durability.</p>
+<p class=""><strong> (Rank III)</strong> - 20 seconds</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Direct or Direct to Health:</strong> This term is used when something ignores DR and armor and reduces a player's HP directly.</p>
+<p class="">
+  <strong>Blind: </strong>The affected target cannot see, and the PC/NPC must
+  close their eyes if safe to do so for the specified duration.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Weight:</strong> The amount a particular item burdens the holder of that item is called its <a href="#">Weight</a>.</p>
+<p class="">
+  <strong>Paralyze: </strong>The affected target is PINNED for the duration.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Weight Capacity:</strong> How much <a href="#">Weight</a> a single character can hold.</p>
+<p class="">
+  <strong>Numbness: </strong>The affected target's base swing is reduced by the
+  specified amount.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""> </p>
-    <h2 class="text-center">Combat Advanced</h2>
+<p class="">
+  <strong>Frenzy:</strong> The affected target must attack the closest target to
+  them regardless of affiliation.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><b>Stun Effect:</b> Any effect that changes the way a character can move or interact with the world. The following are stun effects the player may induce or encounter. When hit with a stun effect, role play the full extent of the effect provided it is safe to do so out of game.</p>
+<p class="">
+  <strong>Mute: </strong>The affected target may not make any verbal noises for
+  the duration.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Knockback:</strong> The target is forced to move in a given direction, depending on what ability was used. Generally the distance of the knockback depends on the rank of the ability used to induce it as follows.</p>
+<p class="">
+  <strong>Weakness: </strong>The target cannot run for the specified duration.
+</p>
 
-    <p class=""><strong>    (Rank I)</strong> - 5'</p>
+<p class=""></p>
 
-    <p class=""><strong>    (Rank II) </strong>- 10'</p>
+<p class=""><strong>Miscellaneous Combat Effects</strong></p>
 
-    <p class=""><strong>    (Rank III)</strong> - 20'</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Collision Damage:</strong> The damage taken when thrown into any
+  object. This is normally 3dmg.
+</p>
+<h2 class="text-center">Magic Basics</h2>
 
-    <p class=""><strong>Pin:</strong> A target's leg gets stuck in place for a duration. The target may remove the effect at its halfway point or beyond, ending the effect early, but will receive a gimp effect by doing so. If both legs are gimped, you cannot end a pin effect early. This counts for all pins, things like frostbite, paralysis, stagger, a throwing nail, etc </p>
+<p class=""></p>
 
-    <p class=""><strong>    (Rank I)</strong> - 5 seconds</p>
+<p class="">
+  <em
+    >Note on Spell Packets Crafting: Spell packets are generally a cloth square
+    with a pouch of small beans/lentils/rice enclosed for weight and heft, where
+    the packet is tied closed with rubber bands.
+  </em>
+</p>
 
-    <p class=""><strong>    (Rank II)</strong> - 10 seconds</p>
+<p class=""></p>
 
-    <p class=""><strong>    (Rank III)</strong> - 20 seconds</p>
+<p class="">
+  <strong>Magic:</strong>
+  <a href="{% url 'rulebook:wizard_detail' %}">Magic</a> is any form of Spell
+  used by a wizard or certain creatures.
+</p>
 
-    <p> </p>
+<p class=""></p>
 
-    <p class=""><strong>Shaken:</strong> The affected target cannot make an offensive action and must walk for the duration</p>
+<p class="">
+  <strong>Cast:</strong> Throwing a spell ball to cause a spell effect from a
+  distance.
+</p>
 
-    <p class=""><strong>    (Rank I)</strong> - 5 seconds</p>
+<p class=""></p>
 
-    <p class=""><strong>    (Rank II)</strong> - 10 seconds</p>
+<p class="">
+  <strong>Void:</strong> Void is a type of energy that Spellbinders harness for
+  their talents that negate arcane magic.
+</p>
 
-    <p class=""><strong>    (Rank III)</strong> - 20 seconds</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Arcane: </strong>Magic of the Manifold or Elemental variety.
+</p>
 
-    <p class=""><strong>Blind: </strong>The affected target cannot see, and the PC/NPC must close their eyes if safe to do so for the specified duration.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Interplanar Invocation:</strong> An Interplanar Invocation is any form
+  of Spell used by a cleric.
+</p>
 
-    <p class=""><strong>Paralyze: </strong>The affected target is PINNED for the duration.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Manifold:</strong> These are the three non-elemental practices of
+  wizards which include: Neuromancy, Kinesiomancy and Necromancy.
+</p>
 
-    <p class=""><strong>Numbness: </strong>The affected target's base swing is reduced by the specified amount.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Elemental:</strong> These are the three non manifold practices of
+  wizards which include: Hydromancy, Pyromancy and Kairomancy.
+</p>
 
-    <p class=""><strong>Frenzy:</strong> The affected target must attack the closest target to them regardless of affiliation.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Wizard:</strong> The respectful title for a
+  <a href="{% url 'rulebook:wizard_detail' %}">magic</a> user.
+</p>
 
-    <p class=""><strong>Mute: </strong>The affected target may not make any verbal noises for the duration.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Tome:</strong> A book used by Wizards to amplify their magical
+  capabilities.
+</p>
 
-    <p class=""><strong>Weakness: </strong>The target cannot run for the specified duration.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Weapon Casting: </strong>A powerful technique to cast magic through
+  weapons, modifying the weapon's swing to be the magic effect.
+</p>
 
-    <p class=""><strong>Miscellaneous Combat Effects</strong></p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Spell:</strong> A spell is a formula for the invocation of a
+  supernatural power. Spells regenerate after every encounter. Spells can be
+  cast without a tome, but without a tome spells have ½ casts rounding down.
+</p>
 
-    <p class=""><strong>Collision Damage:</strong> The damage taken when thrown into any object. This is normally 3dmg.</p>
-    <h2 class="text-center">Magic Basics</h2>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Tier:</strong> Tiers come in 3s and are partitions of ranks, higher
+  tiers are usually only obtainable by gaining or meeting certain requirements
+  such as a certain amount of spells in one tier to get to the next.
+</p>
 
-    <p class=""><em>Note on Spell Packets Crafting: Spell packets are generally a cloth square with a pouch of small beans/lentils/rice enclosed for weight and heft, where the packet is tied closed with rubber bands. </em></p>
+<p class=""></p>
+<h2 class="text-center">Crafting (in game)</h2>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Magic:</strong> <a href="{% url 'rulebook:wizard_detail' %}">Magic</a> is any form of Spell used by a wizard or certain creatures.</p>
+<p class="">
+  <strong>Scroll:</strong> Scrolls can only be written by Void knights, Clerics
+  and Wizards. They are imbued with a spell that can be/do most anything, as
+  long as it conforms to the respective class of the writer and rank of the
+  skill.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Cast:</strong> Throwing a spell ball to cause a spell effect from a distance.</p>
+<p class="">
+  <strong>Enchantment:</strong> Enchantments can only be done by Void knights,
+  Clerics and Wizards. They are imbued with a spell, it can be any spell the
+  player has and can use. Enchantments go away after a certain amount of uses or
+  time depending on the rank of the player that is enchanting. There are gems
+  that can hold enchantments the best, but they are rare and expensive.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Void:</strong> Void is a type of energy that Spellbinders harness for their talents that negate arcane magic.</p>
+<p class="">
+  <strong>Elixir:</strong> A helpful drink usually brewed by Clerics, physically
+  represented by a small bottle. Beware, for while most potions offer a great
+  boon upon drinking, some shady folk can make poisons with very negative
+  effects to the drinker.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Arcane: </strong>Magic of the Manifold or Elemental variety.</p>
+<p class="">
+  <strong>Plant:</strong> Anything acquired through the skill gathering that can
+  be used to make a potion with a negative effect.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Interplanar Invocation:</strong> An Interplanar Invocation is any form of Spell used by a cleric.</p>
+<p class="">
+  <strong>Herb:</strong> Any substance used to make a potion with positive and
+  negative affects.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Manifold:</strong> These are the three non-elemental practices of wizards which include: Neuromancy,  Kinesiomancy and Necromancy.</p>
+<p class="">
+  <strong>Gem:</strong> Translucent stones, or crystals often used for
+  high-value currency due to their rarity.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Elemental:</strong> These are the three non manifold practices of wizards which include: Hydromancy, Pyromancy and Kairomancy.</p>
+<p class="">
+  <strong>Ingot:</strong> A standardized bar of metal, refined and ready for
+  smithing.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Wizard:</strong> The respectful title for a <a href="{% url 'rulebook:wizard_detail' %}">magic</a> user.</p>
+<p class="">
+  <strong>Flower:</strong> Anything acquired through the skill gathering that
+  can be used to make a potion with a positive effect.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
+<h2>Weapons</h2>
 
-    <p class=""><strong>Tome:</strong> A book used by Wizards to amplify their magical capabilities.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Weapon:</strong> Any item that falls within a weapon class and can
+  deal damage.
+</p>
 
-    <p class=""><strong>Weapon Casting: </strong>A powerful technique to cast magic through weapons, modifying the weapon's swing to be the magic effect.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Dual Wield:</strong> Dual wielding is the use of any two one handed
+  weapons at the same time.
+</p>
 
-    <p class=""><strong>Spell:</strong> A spell is a formula for the invocation of a supernatural power. Spells regenerate after every encounter. Spells can be cast without a tome, but without a tome spells have ½ casts rounding down. </p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Weapon Attack Type:</strong> The manner in which a weapon inflicts
+  damage. i.e. axe = chop, hammer = blunt etc.
+</p>
 
-    <p class=""><strong>Tier:</strong> Tiers come in 3s and are partitions of ranks, higher tiers are usually only obtainable by gaining or meeting certain requirements such as a certain amount of spells in one tier to get to the next.</p>
+<p class=""></p>
 
-    <p class=""> </p>
-    <h2 class="text-center">Crafting (in game)</h2>
+<p class="">
+  <strong>WD or Weapon Dexterity:</strong> An adventurer's proficiency with a
+  specific weapon class.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Scroll:</strong> Scrolls can only be written by Void knights, Clerics and Wizards. They are imbued with a spell that can be/do most anything, as long as it conforms to the respective class of the writer and rank of the skill.</p>
+<p class="">
+  <strong>Inorganic Armor/weapon:</strong> This is any weapon or armor that is
+  made from any form of inorganic matter, there are some unique IG inorganic
+  materials.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Enchantment:</strong> Enchantments can only be done by Void knights, Clerics and Wizards. They are imbued with a spell, it can be any spell the player has and can use. Enchantments go away after a certain amount of uses or time depending on the rank of the player that is enchanting. There are gems that can hold enchantments the best, but they are rare and expensive.</p>
+<p class="">
+  <strong>Organic Armor/weapon:</strong> This is any weapon or armor that is
+  made from any form of organic matter, there are some unique IG organic
+  materials, like chitin.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Elixir:</strong> A helpful drink usually brewed by Clerics, physically represented by a small bottle. Beware, for while most potions offer a great boon upon drinking, some shady folk can make poisons with very negative effects to the drinker.</p>
+<p class="">
+  <strong>One-handed Weapon:</strong> Any weapon that is intended to be used in
+  one hand.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Plant:</strong> Anything acquired through the skill gathering that can be used to make a potion with a negative effect.</p>
+<p class="">
+  <strong>Two-handed Weapon:</strong> A “great” tier weapon which usually must
+  hit an enemy while both of the wielder's hands are on the grip for damage to
+  count. In certain cases, some great weapons may be one-handed with a suitably
+  strong character (and player).
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Herb:</strong> Any substance used to make a potion with positive and negative affects.</p>
+<p class="">
+  <strong>OaL or Overall Length:</strong> This is a term associated with weapon
+  classes to help define the differences in length between them. (i.e. If
+  someone determines that their sword is 36' OaL than they know whether it's
+  considered a long or short sword.)
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Gem:</strong> Translucent stones, or crystals often used for high-value currency due to their rarity.</p>
+<p class="">
+  <strong>Weapon Class:</strong> The specific classification of a weapon based
+  the following maximum OaL:
+</p>
 
-    <p class=""> </p>
+<p class=""><strong> Dagger</strong>: 16"</p>
 
-    <p class=""><strong>Ingot:</strong> A standardized bar of metal, refined and ready for smithing.</p>
+<p class=""><strong> Short Sword</strong>: 32"</p>
 
-    <p class=""> </p>
+<p class=""><strong> Long Sword</strong>: 48"</p>
 
-    <p class=""><strong>Flower:</strong> Anything acquired through the skill gathering that can be used to make a potion with a positive effect.</p>
+<p class=""><strong> Great</strong>: no max</p>
 
-    <p class=""> </p>
-    <h2>Weapons</h2>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Shield Class</strong>: The specific classification of a shield is
+  equal to a proportion of the user's height and the shield's maximum diameter.
+</p>
 
-    <p class=""><strong>Weapon:</strong> Any item that falls within a weapon class and can deal damage.</p>
+<p class="">
+  e.g. If you are 6' and want to make a buckler, it must be equal to or less
+  than 14.4" at its widest part.
+</p>
 
-    <p class=""> </p>
+<p class=""><strong>Buckler</strong>: 20% of the user's height</p>
 
-    <p class=""><strong>Dual Wield:</strong> Dual wielding is the use of any two one handed weapons at the same time.</p>
+<p class=""><strong>Medium Shield</strong>: 35% of the user's height</p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Great Shield</strong>: Anything larger than 35% of user's height
+</p>
 
-    <p class=""><strong>Weapon Attack Type:</strong> The manner in which a weapon inflicts damage. i.e. axe = chop, hammer = blunt etc.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <em
+    ><strong>Physrep / Weapon / Armor / Shield Crafting:</strong> All weapons to
+    be used in Age of Claritas must have 1" of foam surrounding any rigid body
+    within the weapon on striking surfaces. If you are making a foam sword for
+    use in combat that has a solid core for structure, it must have at least 1"
+    of foam around the core on striking surfaces and be fully encased. If you
+    use any sort of weights in your weapon, likewise it must have 1" of foam
+    surrounding the weights for striking surfaces. No sharp/coarse/rough rigid
+    structures are permitted in any weapon, shield, or armor because they may
+    damage foam weapons. Shield edges must have some form of padding. Metal
+    surfaces in Shields / Armor is not strictly forbidden provided that the
+    edges are covered and it cannot damage a weapon; please consult with a GM at
+    game start to check it is game-eligible. The entire body of a throwing
+    weapon (knife, kunai, ninja star, etc.) is considered striking surface.
+    Arrows must be larp-safe and the head must be very well padded and larger
+    than the eye socket to prevent injury. GMs always have final say on whether
+    or not a weapon, armor, or shield is permitted--please ask about your weapon
+    if you are unsure and always verge on the side of safety.</em
+  >
+</p>
 
-    <p class=""><strong>WD or Weapon Dexterity:</strong> An adventurer's proficiency with a specific weapon class.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Shield swing reduction</strong>: when wielding a shield the user's
+  swing is reduced by an amount based the shield size (to a minimum swing of 1).
+</p>
 
-    <p class=""><strong>Inorganic Armor/weapon:</strong> This is any weapon or armor that is made from any form of inorganic matter, there are some unique IG inorganic materials.</p>
+<p class=""><strong>Buckler</strong>: no penalty</p>
 
-    <p class=""> </p>
+<p class=""><strong>Medium Shield</strong>: -1 base damage</p>
 
-    <p class=""><strong>Organic Armor/weapon:</strong> This is any weapon or armor that is made from any form of organic matter, there are some unique IG organic materials, like chitin.</p>
+<p class=""><strong>Great Shield</strong>: -2 base damage</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>One-handed Weapon:</strong> Any weapon that is intended to be used in one hand.</p>
+<p class="">
+  <strong>Stun Point</strong>: A figure specified on an item card, where if an
+  attack exceeding the stun point is blocked the user takes an effect.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Two-handed Weapon:</strong> A “great” tier weapon which usually must hit an enemy while both of the wielder's hands are on the grip for damage to count. In certain cases, some great weapons may be one-handed with a suitably strong character (and player).</p>
+<p class="">
+  <strong>Shield Stun effect</strong>: each shield has a different stun effect
+  when its stun point is met.
+</p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Buckler</strong>: The shield arm is numbed and unusable for 2 seconds.
+</p>
 
-    <p class=""><strong>OaL or Overall Length:</strong> This is a term associated with weapon classes to help define the differences in length between them. (i.e. If someone determines that their sword is 36' OaL than they know whether it's considered a long or short sword.)</p>
+<p class="">
+  <strong>Medium Shield</strong>: The player takes a stumble backwards
+</p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Great Shield</strong>: The player is shaken for 5 seconds (can only
+  walk and defend)
+</p>
 
-    <p class=""><strong>Weapon Class:</strong> The specific classification of a weapon based the following maximum OaL:</p>
+<p class=""></p>
+<h2 class="text-center">Acronyms, Ability Usage</h2>
 
-    <p class=""><strong>    Dagger</strong>: 16"</p>
+<p class=""></p>
 
-    <p class=""><strong>    Short Sword</strong>: 32"</p>
+<p class=""><strong>IGD or In Game Day:</strong> A single day in game.</p>
 
-    <p class=""><strong>    Long Sword</strong>: 48"</p>
+<p class=""></p>
 
-    <p class=""><strong>    Great</strong>: no max</p>
+<p class="">
+  <strong>IG or In Game:</strong> In game represents anything occurring, or
+  interacting with a character. this also represents when a player is acting
+  like their character.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Shield Class</strong>: The specific classification of a shield is equal to a proportion of the user's height and the shield's maximum diameter.</p>
+<p class=""><strong>OoGD or Out Of Game Day:</strong> A real world day.</p>
 
-    <p class="">                                                   e.g. If you are 6' and want to make a buckler, it must be equal to or less than 14.4" at its widest part.</p>
+<p class=""></p>
 
-    <p class="">    <strong>Buckler</strong>: 20% of the user's height</p>
+<p class="">
+  <strong>OPIGD or Once Per In Game Day:</strong> This is a description used to
+  represent that something occurs once over a period of 1 IGD.
+</p>
 
-    <p class="">    <strong>Medium Shield</strong>: 35% of the user's height</p>
+<p class=""></p>
 
-    <p class="">    <strong>Great Shield</strong>: Anything larger than 35% of user's height</p>
+<p class="">
+  <strong>OPOoGD or Once Per Day Out Of Game Day:</strong> This is a description
+  used to represent that something occurs once over a period of 1 OGD.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><em><strong>Physrep / Weapon / Armor / Shield Crafting:</strong> All weapons to be used in Age of Claritas must have 1" of foam surrounding any rigid body within the weapon on striking surfaces. If you are making a foam sword for use in combat that has a solid core for structure, it must have at least 1" of foam around the core on striking surfaces and be fully encased. If you use any sort of weights in your weapon, likewise it must have 1" of foam surrounding the weights for striking surfaces. No sharp/coarse/rough rigid structures are permitted in any weapon, shield, or armor because they may damage foam weapons. Shield edges must have some form of padding. Metal surfaces in Shields / Armor is not strictly forbidden provided that the edges are covered and it cannot damage a weapon; please consult with a GM at game start to check it is game-eligible. The entire body of a throwing weapon (knife, kunai, ninja star, etc.) is considered striking surface. Arrows must be larp-safe and the head must be very well padded and larger than the eye socket to prevent injury. GMs always have final say on whether or not a weapon, armor, or shield is permitted--please ask about your weapon if you are unsure and always verge on the side of safety.</em></p>
+<p class="">
+  <strong>OPQ or Once Per Quest:</strong> This is a description used to
+  represent that something occurs once over a period of 1 Quest.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>Shield swing reduction</strong>: when wielding a shield the user's swing is reduced by an amount based the shield size (to a minimum swing of 1).</p>
+<p class="">
+  <strong>OPE or Once Per Event:</strong> This is a description used to
+  represent that something occurs once over a period of 1 Event.
+</p>
 
-    <p class="">    <strong>Buckler</strong>: no penalty</p>
+<p class=""></p>
 
-    <p class="">    <strong>Medium Shield</strong>: -1 base damage</p>
+<p class="">
+  <strong>OPEn or Once Per Encounter:</strong> This is a description used to
+  represent that something occurs once over a period of 1 Encounter.
+</p>
 
-    <p class="">    <strong>Great Shield</strong>: -2 base damage</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>OoG or Out of Game:</strong> Out of Game represents anything that
+  occurs in real life but not gameplay. OoG is also used when a player has a
+  gameplay mechanics based question. to signify this the Player puts their hand
+  on their head and asks the question. this is only to be used if the question
+  is absolutely unavoidable in game.
+</p>
 
-    <p class=""><strong>Stun Point</strong>: A figure specified on an item card, where if an attack exceeding the stun point is blocked the user takes an effect.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>OPR or Once Per Rest:</strong> This is a description used to represent
+  that something occurs once over a period of 1 rest.
+</p>
 
-    <p class=""><strong>Shield Stun effect</strong>: each shield has a different stun effect when its stun point is met.</p>
+<p class=""></p>
 
-    <p class="">    <strong>Buckler</strong>: The shield arm is numbed and unusable for 2 seconds.</p>
+<p class="">
+  <strong>TPQ or Twice Per Quest:</strong> This is a description used to
+  represent that something occurs twice per quest.
+</p>
 
-    <p class="">    <strong>Medium Shield</strong>: The player takes a stumble backwards</p>
+<p class=""></p>
 
-    <p class="">    <strong>Great Shield</strong>: The player is shaken for 5 seconds (can only walk and defend)</p>
+<p class=""></p>
+<h2>Other</h2>
 
-    <p class=""> </p>
-    <h2 class="text-center">Acronyms, Ability Usage</h2>
+<p class="">
+  <strong>Ludus:</strong> A battlefield strategy luck and chance board game
+  where Nobles can attack other towns or defend their own.
+  <a href="#">Ludus</a> is also anything that concerns a Noble's town's
+  management.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>IGD or In Game Day:</strong> A single day in game.</p>
+<p class="">
+  <strong>BP or Battle Points:</strong> BP are the essential XP earned by
+  fighting in Ludus. BP can be used to purchase various Tactics, Bonuses, and
+  other town upgrades.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>IG or In Game:</strong> In game represents anything occurring, or interacting with a character. this also represents when a player is acting like their character.</p>
+<p class="">
+  <strong>Common:</strong> An ordinary individual of any Kin whom is not an
+  Adventurer.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OoGD or Out Of Game Day:</strong> A real world day.</p>
+<p class="">
+  <strong>Halfbreed:</strong> A half-breed is someone that is one half human and
+  one half another Kin. Halfbreed is a
+  <a href="{% url 'rulebook:modifiers' %}">Modifier</a> that players can choose
+  for their character.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OPIGD or Once Per In Game Day:</strong> This is a description used to represent that something occurs once over a period of 1 IGD.</p>
+<p class="">
+  <strong>Artifact:</strong> Strange items, typically weapons or other items
+  sought by the adventuring-type, that are tracked due to their storied
+  abilities, magical and otherwise. As the name “artifact” suggests, these are
+  often vestiges of ages, heroes, or powers long past, and while their notoriety
+  may vary depending on the number and prevalence of the legends surrounding it,
+  they are all precious items for some reason or another.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OPOoGD or Once Per Day Out Of Game Day:</strong>  This is a description used to represent that something occurs once over a period of 1 OGD.</p>
+<p class="">
+  <strong>Rhino-Hiding:</strong> A form of cheating by fudging numbers (most
+  commonly, the amount of health or armor durability one has remaining,
+  typically after receiving a hit that should have been killing or
+  armor-breaking) which the nature of a LARP requires the player keep track of.
+  This is the only easy way to cheat at the game, and while extreme cases are
+  obvious and easy to catch, occasional small-scale rhino-hiding is expected to
+  be minimized by the honesty of the players. The term comes from a joke on the
+  behavior of players defending their cheating in this method.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OPQ or Once Per Quest:</strong> This is a description used to represent that something occurs once over a period of 1 Quest.</p>
+<p class="">
+  <strong>Machine Gunning:</strong> When a player attacks rapidly, using only
+  wrist movement and without roleplaying the proper swing of a weapon. Damage
+  dealt while Machine Gunning does not count.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OPE or Once Per Event:</strong> This is a description used to represent that something occurs once over a period of 1 Event.</p>
+<p class="">
+  <strong>Turn:</strong> The act of infecting or being infected with werewolfism
+  or vampirism.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OPEn or Once Per Encounter:</strong> This is a description used to represent that something occurs once over a period of 1 Encounter.</p>
+<h2 class="text-center">Antiquated Terms</h2>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OoG or Out of Game:</strong> Out of Game represents anything that occurs in real life but not gameplay. OoG is also used when a player has a gameplay mechanics based question. to signify this the Player puts their hand on their head and asks the question. this is only to be used if the question is absolutely unavoidable in game.</p>
+<p class="">
+  <strong>DP or Defense Points:</strong> The exact amount of a player's armor's
+  current durability.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>OPR or Once Per Rest:</strong> This is a description used to represent that something occurs once over a period of 1 rest.</p>
+<p class="">
+  <strong>Game:</strong> A competition that can result in a payout.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""><strong>TPQ or Twice Per Quest:</strong> This is a description used to represent that something occurs twice per quest.</p>
+<p class="">
+  <strong>Food:</strong> Food must be consumed once per in-game day. Better food
+  or larger portions will fill you more.
+</p>
 
-    <p class=""> </p>
+<p class=""></p>
 
-    <p class=""> </p>
-    <h2>Other</h2>
+<p class="">
+  <strong>Fr or Fram:</strong> A basic measurement of food representing the
+  amount a common eats in a month.
+</p>
 
-    <p class=""><strong>Ludus:</strong> A battlefield strategy luck and chance board game where Nobles can attack other towns or defend their own. <a href="#">Ludus</a> is also anything that concerns a Noble's town's management. </p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Prowess:</strong> The strength developed by a character or NPC which
+  can determine many things, including total weight capacity (prowess increases
+  this), ability to use heavier equipment, or even the ability to overcome an
+  opponent in grappling or pulling things (such as weapons) away from them.
+</p>
 
-    <p class=""><strong>BP or Battle Points:</strong> BP are the essential XP earned by fighting in Ludus. BP can be used to purchase various Tactics, Bonuses, and other town upgrades.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Stacking:</strong> the use of multiple skills and/or abilities to
+  boost a common stat beyond what one skill or ability would be able to do.
+</p>
 
-    <p class=""><strong>Common:</strong> An ordinary individual of any Kin whom is not an Adventurer.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Sleep:</strong> A character must sleep at least 2 watches per night to
+  be fully rested. If a player doesn't sleep they lose an HP. If a player only
+  gets 1 watch worth of sleep they don't lose or gain HP.
+</p>
 
-    <p class=""><strong>Halfbreed:</strong> A half-breed is someone that is one half human and one half another Kin. Halfbreed is a <a href="{% url 'rulebook:modifiers' %}">Modifier</a> that players can choose for their character.</p>
+<p class=""></p>
 
-    <p class=""> </p>
+<p class="">
+  <strong>Watch:</strong> Watches occur during the sleeping part of a resting
+  period. There are 3 watches per rest.
+</p>
 
-    <p class=""><strong>Artifact:</strong> Strange items, typically weapons or other items sought by the adventuring-type, that are tracked due to their storied abilities, magical and otherwise. As the name “artifact” suggests, these are often vestiges of ages, heroes, or powers long past, and while their notoriety may vary depending on the number and prevalence of the legends surrounding it, they are all precious items for some reason or another.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Rhino-Hiding:</strong> A form of cheating by fudging numbers (most commonly, the amount of health or armor durability one has remaining, typically after receiving a hit that should have been killing or armor-breaking) which the nature of a LARP requires the player keep track of. This is the only easy way to cheat at the game, and while extreme cases are obvious and easy to catch, occasional small-scale rhino-hiding is expected to be minimized by the honesty of the players. The term comes from a joke on the behavior of players defending their cheating in this method.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Machine Gunning:</strong> When a player attacks rapidly, using only wrist movement and without roleplaying the proper swing of a weapon. Damage dealt while Machine Gunning does not count.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Turn:</strong> The act of infecting or being infected with werewolfism or vampirism.</p>
-
-    <p class=""> </p>
-
-    <h2 class="text-center">Antiquated Terms</h2>
-
-    <p class=""> </p>
-
-    <p class=""><strong>DP or Defense Points:</strong> The exact amount of a player's armor's current durability.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Game:</strong> A competition that can result in a payout.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Food:</strong> Food must be consumed once per in-game day. Better food or larger portions will fill you more.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Fr or Fram:</strong> A basic measurement of food representing the amount a common eats in a month.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Prowess:</strong> The strength developed by a character or NPC which can determine many things, including total weight capacity (prowess increases this), ability to use heavier equipment, or even the ability to overcome an opponent in grappling or pulling things (such as weapons) away from them.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Stacking:</strong> the use of multiple skills and/or abilities to boost a common stat beyond what one skill or ability would be able to do.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Sleep:</strong> A character must sleep at least 2 watches per night to be fully rested. If a player doesn't sleep they lose an HP. If a player only gets 1 watch worth of sleep they don't lose or gain HP.</p>
-
-    <p class=""> </p>
-
-    <p class=""><strong>Watch:</strong> Watches occur during the sleeping part of a resting period. There are 3 watches per rest.</p>
-
-    <p class=""> </p>
+<p class=""></p>
 {% endblock %}

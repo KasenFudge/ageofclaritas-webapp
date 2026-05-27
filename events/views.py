@@ -1,24 +1,25 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import request
-from django.views.generic import DetailView, ListView, CreateView
-from datetime import datetime
-from django.utils import timezone
-from django.shortcuts import get_object_or_404, render, redirect
-from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.generic import DetailView, ListView
 
-from .models import Event, EventType, EventRegistration
-from .forms import EventRegistrationForm
 from events.services.pricing import quote_price
+
+from .forms import EventRegistrationForm
+from .models import Event, EventRegistration, EventType
+
 
 # Macro to set the current app
 def SetCurrentApp(context):
-    context['current_app'] = 'events'
+    context["current_app"] = "events"
+
 
 # Macro to set the title of the page
 def SetPageTitle(context, title):
-    context['title'] = title
+    context["title"] = title
+
 
 # Create your views here.
 class IndexView(ListView):
@@ -28,16 +29,11 @@ class IndexView(ListView):
 
     # Get the events in the current year
     def get_queryset(self):
-            """
-            Returns all future events sorted chronologically, 
-            ensuring an evergreen timeline for the players.
-            """
-            return (
-                super()
-                .get_queryset()
-                .filter(end_time__gt=timezone.now())
-                .order_by('start_time')
-            )
+        """
+        Returns all future events sorted chronologically,
+        ensuring an evergreen timeline for the players.
+        """
+        return super().get_queryset().filter(end_time__gt=timezone.now()).order_by("start_time")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,7 +49,8 @@ class IndexView(ListView):
         SetPageTitle(context, "Events")
 
         return context
-    
+
+
 class EventDetailView(DetailView):
     model = Event
     template_name = "events/event_detail.html"
@@ -64,13 +61,14 @@ class EventDetailView(DetailView):
         event = self.object
 
         # Give Context EventType for Comparison
-        context['EventType'] = EventType
+        context["EventType"] = EventType
 
         SetCurrentApp(context)
         SetPageTitle(context, event.title)
 
         return context
-    
+
+
 @login_required
 def event_registration_view(request, slug):
     # 1. Fetch target event data
@@ -80,17 +78,18 @@ def event_registration_view(request, slug):
     # 2. Enforce Age & Validation Safeguards
     if not user.date_of_birth:
         raise PermissionDenied("Birthdate required to register.")
-    
+
     event_date = event.start_time.date()
     user_age = user.age_on(event_date)
-    
-    # TODO: This may need to be updated to allow parent accounts (accounts with child accounts) to register their children.
+
+    # TODO: This may need to be updated to allow parent accounts
+    # (accounts with child accounts) to register their children.
     if event.event_type == EventType.JUNIOR:
         if user_age < 8:
             raise PermissionDenied("Children must be 8 or older to register.")
         if user_age >= 18:
             raise PermissionDenied("Junior events are only for participants under 18.")
-    
+
     if event.event_type == EventType.SENIOR and user_age < 18:
         raise PermissionDenied("Senior events are only for participants 18+.")
 
@@ -106,7 +105,7 @@ def event_registration_view(request, slug):
 
         # Pass event and user into form initialization (replacing get_form_kwargs)
         form = EventRegistrationForm(request.POST, event=event, user=user)
-        
+
         if form.is_valid():
             arrival_time = form.cleaned_data.get("arrival_time") or event.start_time
             weapon_rental = form.cleaned_data.get("weapon_rental", False)
@@ -120,7 +119,7 @@ def event_registration_view(request, slug):
                 registration_time=registration_time,
                 arrival_time=arrival_time,
                 student_discount=student_discount,
-                weapon_rental=weapon_rental
+                weapon_rental=weapon_rental,
             )
 
             # Build and decorate record payload
@@ -134,14 +133,14 @@ def event_registration_view(request, slug):
             registration.final_price_cents = quote.final_cents
             registration.discounts = quote.discounts
             registration.additional_items = quote.additional_items
-            
+
             # Commit record to db tables
             registration.save()
 
             # Dynamic checkout rerouting
             if payment_method == "online":
                 return redirect("payments:payment_start", registration_id=registration.id)
-            
+
             messages.success(request, f"Successfully registered for {event.title}!")
             return redirect("accounts:upcoming_events")
     else:
@@ -150,9 +149,5 @@ def event_registration_view(request, slug):
         # Build empty display form instance on safe GET request methods
         form = EventRegistrationForm(event=event, user=user)
 
-    context = {
-        "form": form,
-        "event": event,
-        "title": f"Register for {event.title}"
-    }
+    context = {"form": form, "event": event, "title": f"Register for {event.title}"}
     return render(request, "events/event_registration.html", context)

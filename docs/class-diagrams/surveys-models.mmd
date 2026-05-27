@@ -1,0 +1,112 @@
+classDiagram
+    direction TB
+
+    %% Enums
+    class SurveyType {
+        <<enumeration>>
+        POST_EVENT
+        NEW_PLAYER
+        OTHER
+    }
+
+    class QuestionType {
+        <<enumeration>>
+        MC_SINGLE
+        MC_MULTI
+        TEXT
+        RATING
+    }
+
+    %% Main App Models
+    class Survey {
+        +ForeignKey event
+        +CharField survey_type
+        +CharField title
+        +CharField description
+        +BooleanField is_active
+        +DateTimeField created_at
+        +save(*args, **kwargs)
+        +clean()
+        +str()
+    }
+
+    class Question {
+        +CharField question_type
+        +CharField text
+        +str()
+    }
+
+    class SurveyQuestion {
+        +ForeignKey survey
+        +ForeignKey question
+        +PositiveIntegerField position
+        +BooleanField is_required
+        +str()
+    }
+
+    class Choice {
+        +ForeignKey question
+        +CharField label
+        +PositiveIntegerField position
+        +str()
+    }
+
+    class Response {
+        +ForeignKey survey
+        +ForeignKey user
+        +DateTimeField submitted_at
+        +str()
+    }
+
+    class Answer {
+        +ForeignKey response
+        +ForeignKey survey_question
+        +ForeignKey question
+        +TextField text_response
+        +clean()
+        +save(*args, **kwargs)
+    }
+
+    %% External Cross-App References
+    class Event {
+        <<external>>
+    }
+    class CustomUser {
+        <<external>>
+    }
+
+    %% Establishing Data Relationships
+    Survey ..> SurveyType : choices
+    Question ..> QuestionType : choices
+
+    %% Cross-App Hooks
+    Event "0..1" o-- "0..*" Survey : surveys (event)
+    CustomUser "1" <-- "0..*" Response : survey_submissions (user)
+
+    %% Core Template Hierarchy
+    Survey "1" o-- "0..*" SurveyQuestion : survey_questions (survey)
+    Question "1" <-- "1" SurveyQuestion : survey_links (question)
+    Question "1" o-- "0..*" Choice : choices (question)
+
+    %% Submission Hierarchy
+    Survey "1" <-- "0..*" Response : submissions (survey)
+    
+    %% The Answer Bridge
+    Response "1" o-- "0..*" Answer : answers (response)
+    SurveyQuestion "1" <-- "0..*" Answer : answers (survey_question)
+    Choice "0..*" <-- "0..*" Answer : selected_choices
+
+    %% STYLING: Nordic Minimalist
+    style Survey fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff
+    style Question fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff
+    style Response fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff
+    
+    style SurveyQuestion fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+    style Choice fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+    style Answer fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+
+    style SurveyType fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b
+    style QuestionType fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b
+
+    style Event fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
+    style CustomUser fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff

@@ -1,0 +1,47 @@
+classDiagram
+    direction TB
+
+    %% Enums
+    class PaymentStatus {
+        <<enumeration>>
+        PENDING
+        COMPLETE
+        REFUNDED
+    }
+
+    %% Main App Models
+    class Order {
+        +ForeignKey user
+        +CharField stripe_session_id
+        +PositiveIntegerField total_amount_cents
+        +CharField payment_status
+        +DateTimeField created_at
+        +DateTimeField updated_at
+        +str()
+    }
+
+    %% External Cross-App References
+    class CustomUser {
+        <<external>>
+    }
+    class EventRegistration {
+        <<external>>
+    }
+
+    %% Establishing Data Relationships
+    Order ..> PaymentStatus : choices
+
+    %% Cross-App Hooks
+    CustomUser "1" <-- "0..*" Order : orders (user)
+    Order "0..1" o-- "1..*" EventRegistration : registrations (order)
+
+    %% STYLING: Nordic Minimalist
+    %% Core Transaction Entities (Deep Slate Blue)
+    style Order fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff
+    
+    %% Choices Enums (Muted Sand/Cream)
+    style PaymentStatus fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b
+
+    %% External Dependencies (Light Charcoal / Gray Border)
+    style CustomUser fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
+    style EventRegistration fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff

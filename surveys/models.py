@@ -1,12 +1,13 @@
-from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.dispatch import receiver
+
 
 class SurveyType(models.TextChoices):
     POST_EVENT = "post_event", "Post Event"
     NEW_PLAYER = "new_player", "New Player"
-    OTHER      = "other", "Other"
+    OTHER = "other", "Other"
 
 
 class Survey(models.Model):
@@ -15,7 +16,8 @@ class Survey(models.Model):
         "events.Event",
         on_delete=models.SET_NULL,
         related_name="surveys",
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     survey_type = models.CharField(
         max_length=20,
@@ -23,8 +25,7 @@ class Survey(models.Model):
         default=SurveyType.POST_EVENT,
     )
     title = models.CharField(
-        max_length=80,
-        help_text='If linked to an event, defaults to "{Event Type} Post Event Survey: {Event Title}".'
+        max_length=80, help_text='If linked to an event, defaults to "{Event Type} Post Event Survey: {Event Title}".'
     )
     description = models.CharField(max_length=500, blank=True, default="")
     is_active = models.BooleanField(default=True)
@@ -46,9 +47,9 @@ class Survey(models.Model):
 
 class QuestionType(models.TextChoices):
     MC_SINGLE = "mc_single", "Multiple Choice (single)"
-    MC_MULTI  = "mc_multi",  "Multiple Choice (multiple)"
-    TEXT      = "text",      "Short/Long Text"
-    RATING    = "rating",    "Rating (e.g., 1-5)"
+    MC_MULTI = "mc_multi", "Multiple Choice (multiple)"
+    TEXT = "text", "Short/Long Text"
+    RATING = "rating", "Rating (e.g., 1-5)"
 
 
 class Question(models.Model):
@@ -71,9 +72,7 @@ class SurveyQuestion(models.Model):
 
     class Meta:
         ordering = ["position"]
-        constraints = [
-            models.UniqueConstraint(fields=["survey", "question"], name="uq_survey_question_once")
-        ]
+        constraints = [models.UniqueConstraint(fields=["survey", "question"], name="uq_survey_question_once")]
 
     def __str__(self):
         return f"{self.survey}: {self.position} - {self.question}"
@@ -86,9 +85,7 @@ class Choice(models.Model):
 
     class Meta:
         ordering = ["position"]
-        constraints = [
-            models.UniqueConstraint(fields=["question", "label"], name="uq_choice_text_per_question")
-        ]
+        constraints = [models.UniqueConstraint(fields=["question", "label"], name="uq_choice_text_per_question")]
 
     def __str__(self):
         return self.label
@@ -97,10 +94,7 @@ class Choice(models.Model):
 class Response(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name="submissions")
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True, blank=True,
-        related_name="survey_submissions"
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="survey_submissions"
     )
     submitted_at = models.DateTimeField(auto_now_add=True)
 
@@ -129,7 +123,7 @@ class Answer(models.Model):
     def clean(self):
         if self.survey_question and self.question and self.survey_question.question_id != self.question_id:
             raise ValidationError("Answer.question must match SurveyQuestion.question.")
-        
+
         if self.response_id and self.survey_question_id:
             if self.response.survey_id != self.survey_question.survey_id:
                 raise ValidationError("Submission.survey and SurveyQuestion.survey must match.")
@@ -156,7 +150,7 @@ class Answer(models.Model):
 def validate_selected_choices(sender, instance: Answer, action, reverse, model, pk_set, **kwargs):
     if action not in {"pre_add", "pre_clear"}:
         return
-    
+
     question_type = instance.survey_question.question.question_type
 
     if question_type == QuestionType.TEXT:

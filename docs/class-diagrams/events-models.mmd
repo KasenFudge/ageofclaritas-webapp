@@ -1,0 +1,95 @@
+classDiagram
+    direction TB
+
+    %% Enums
+    class EventType {
+        <<enumeration>>
+        SENIOR
+        JUNIOR
+        FEAST
+        OTHER
+    }
+
+    %% Main App Models
+    class Event {
+        +CharField title
+        +SlugField slug
+        +CharField event_type
+        +IntegerField base_price_cents
+        +BooleanField registration_available
+        +DateTimeField start_time
+        +DateTimeField end_time
+        +DateTimeField downtime_due
+        +ImageField event_image
+        +CharField photographer
+        +display_title* str
+        +save(*args, **kwargs)
+        +str()
+    }
+
+    class EventPriceTier {
+        +ForeignKey event
+        +CharField label
+        +PositiveSmallIntegerField min_age
+        +PositiveSmallIntegerField max_age
+        +PositiveIntegerField price_cents
+    }
+
+    class EventRegistration {
+        +ForeignKey event
+        +ForeignKey user
+        +BooleanField checked_in
+        +DateTimeField arrival_time
+        +PositiveIntegerField base_price_cents
+        +PositiveIntegerField final_price_cents
+        +JSONField discounts
+        +JSONField additional_items
+        +ForeignKey order
+        +BooleanField is_manually_paid
+        +is_paid* bool
+        +save(*args, **kwargs)
+        +str()
+    }
+
+    class EventMedia {
+        +ForeignKey event
+        +ImageField image
+        +CharField alt_text
+    }
+
+    %% External Cross-App References
+    class CustomUser {
+        <<external>>
+    }
+    class Order {
+        <<external>>
+    }
+    class Survey {
+        <<external>>
+    }
+
+    %% Establishing Data Relationships
+    Event ..> EventType : choices
+
+    %% Core Event Components
+    Event "1" o-- "0..*" EventPriceTier : price_tiers (event)
+    Event "1" o-- "0..*" EventMedia : pictures (event)
+    Event "1" <-- "0..*" EventRegistration : registrations (event)
+    
+    %% Cross-app Hooks
+    CustomUser "1" <-- "0..*" EventRegistration : registrations (user)
+    Order "0..1" o-- "1..*" EventRegistration : registrations (order)
+    Survey "0..*" --o "0..1" Event : surveys (event)
+
+    %% STYLING: Nordic Minimalist
+    style Event fill:#2f3e46,stroke:#354f52,stroke-width:2px,color:#fff
+    style EventPriceTier fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+    style EventRegistration fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+    style EventMedia fill:#52796f,stroke:#354f52,stroke-width:1px,color:#fff
+
+    style EventType fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b
+
+    %% External App Blocks (Light Charcoal / Gray Border)
+    style CustomUser fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
+    style Order fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
+    style Survey fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff

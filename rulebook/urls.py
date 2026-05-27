@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 app_name = "rulebook"
@@ -11,5 +12,4 @@ urlpatterns = [
     path("character-creation/", views.CharacterCreationView.as_view(), name="character_creation"),
     path("talents/", views.TalentsView.as_view(), name="talents"),
     path("definitions/", views.DefinitionsView.as_view(), name="definitions"),
-
 ]

@@ -1,4 +1,8 @@
-# Setup on Hosting Service
+# Age of Claritas Webapp
+
+This is a Django webapp for the Age of Claritas Website that is under active development.
+
+## Setup on Hosting Service
 
 The application is containerized using Docker. These instructions assume you have Docker and Docker Compose installed on your host (e.g., DigitalOcean Droplet).
 
@@ -24,25 +28,32 @@ If you are setting up the project for the first time or performing a fresh datab
 ## Maintenance Commands
 
 ### Accessing Database
+
 In the case the database needs to be accessed, run:
 `docker exec -it aoc_db psql -U aocdb_admin -d aoc_db`
 NOTE: if your database configuration is different than the example provided below in Environment Files, this will need modified.
 
 ### Static Files
+
 If CSS or images are not appearing correctly after an update, run:
 `docker exec -it aoc_webapp python manage.py collectstatic --noinput`
 
 ### Viewing Logs
+
 To troubleshoot a service (e.g., Nginx or Webapp):
 `docker compose logs -f [service_name]`
 
-# Environment Files
+## Environment Files
+
 For environment files, which are not included in the GitHub Repo, you'll need to make a .env folder.
 I then recommend putting the following in it.\n
 Note that anything that looks empty, like "//" or "xxxxxxxxxxx" needs to be filled in on your end.
-## ./.env
+
+### ./.env
+
 This is an example of the environment file for the age of claritas application
-```
+
+```.env
 # SECURITY (Used by Django)
 SECRET_KEY='xxxxxxxxxxx'
 DEBUG=False
@@ -63,19 +74,25 @@ ALLOWED_HOSTS='["kasenfudge.me", "www.kasenfudge.me", "167.99.232.224", "127.0.0
 ```
 
 ## Using a Virtual Environment
+
 I also recommend creating a a virtual environment and running it during development.
 To create a Virtual Environment, type and run the following in a terminal:
+
+```bash
+python -m venv .venv
 ```
-$ python -m venv .env/venv
-```
+
 This will create a virtual environment called venv in the .env folder.
 Then to run it, you type the path to the Activate Script into a terminal (on Windows).
 In the above case (from the main directory):
+
+```bash
+.venv/scripts/activate
 ```
-$ .env/venv/scripts/activate
-```
+
 This may work differently for MacOS/Linux systems.
 Then to deactivate, you just type deactivate into a terminal.
-```
-$ deactivate
+
+```bash
+deactivate
 ```
