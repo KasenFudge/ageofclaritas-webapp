@@ -1,0 +1,78 @@
+graph TD
+    %% ==========================================
+    %% APP-BASED COLOR DEFINITIONS
+    %% ==========================================
+    classDef core fill:#2f3e46,stroke:#cbd5e1,stroke-width:2px,color:#fff;
+    classDef accounts fill:#52796f,stroke:#cbd5e1,stroke-width:1px,color:#fff;
+    classDef rulebook fill:#9A7B56,stroke:#cbd5e1,stroke-width:1px,color:#fff;
+    classDef events fill:#2B3F64,stroke:#cbd5e1,stroke-width:1px,color:#fff;
+    classDef payments fill:#e07a5f,stroke:#cbd5e1,stroke-width:1px,color:#fff;
+    classDef stripe fill:#f4f1de,stroke:#e07a5f,stroke-width:1px,color:#3d405b;
+
+    %% ==========================================
+    %% CORE/NAV SYSTEM
+    %% ==========================================
+    Index["Home / Landing Page"]:::core
+    Navbar["Global Navigation Matrix"]:::core
+    Index ~~~ Navbar
+
+    Navbar --> Login["Login Page"]:::accounts
+    Navbar --> AccountCreation["Account Creation"]:::accounts
+
+    %% ==========================================
+    %% ACCOUNTS APP DOMAIN
+    %% ==========================================
+    Navbar --> Dashboard["User Dashboard"]:::accounts
+    Dashboard --> Settings["View/Edit Settings"]:::accounts
+    Dashboard --> UpcomingEvents["View Upcoming Registered Events"]:::accounts
+    Dashboard --> SurveyOverview["View Current Surveys"]:::accounts
+    Dashboard --> Waivers["View Current Waiver(s)"]:::accounts
+
+    %% ==========================================
+    %% STAFF / ADMINISTRATIVE APP DOMAIN
+    %% ==========================================
+    Navbar --> AdminDash["🛠️ Staff Dashboard"]:::core
+    AdminDash --> RulebookReg["Rulebook Database Manipulation"]:::rulebook
+    AdminDash --> CheckedIn["🚪 Event Check-In Matrix"]:::events
+    AdminDash --> SurveyAnalytics["📈 Survey Analytics"]:::accounts
+
+    %% ==========================================
+    %% RULEBOOK APP DOMAIN
+    %% ==========================================
+    Navbar --> RulebookIndex["Rulebook Home"]:::rulebook
+    RulebookIndex --> ClassesList["Classes Page"]:::rulebook
+    ClassesList --> ClassDetail["Class Details"]:::rulebook
+    RulebookIndex --> KinList["Kin Page"]:::rulebook
+    KinList --> KinDetail["Kin Details"]:::rulebook
+
+    %% ==========================================
+    %% EVENTS APP DOMAIN
+    %% ==========================================
+    Navbar --> EventsIndex["Events Home"]:::events
+    EventsIndex --> EventsList["View Upcoming Events"]:::events
+    EventsList --> EventDetail["Event Details"]:::events
+    
+    %% User Validation & Registration Flow
+    EventDetail -- Click Register Button --> WaiverCheck{"User has active<br>signed Waiver?"}:::accounts
+    WaiverCheck -- "No" --> Waivers
+    WaiverCheck -- "Yes" --> EventRegistration["Event Registration Form"]:::events
+    EventRegistration --> PaymentMethod{{"Declared Payment Method"}}:::events
+
+    %% ==========================================
+    %% PAYMENTS APP DOMAIN (STRIPE PIPELINE)
+    %% ==========================================
+    PaymentStart{"Calculate Stripe<br>Session Details"}:::payments
+
+    %% Handle Registrations
+    PaymentMethod -- "Pay Later<br>(In Person/Adding Registration)" --> UpcomingEvents
+    PaymentMethod -- "Pay Online" --> PaymentStart
+    UpcomingEvents -- "Pay Registrations Online" --> PaymentStart
+
+    PaymentStart --> StripeSession["💳 Stripe Session Active"]:::stripe
+    StripeSession --> CompleteCheckout{{"Complete Checkout?"}}:::stripe
+    
+    CompleteCheckout -- "Yes (Webhook):" --> PaymentSuccess["🎉 Payment Success Page"]:::payments
+    CompleteCheckout -- "No (Cancel/Fail)" --> PaymentCancel["📝 Payment Cancelled Page"]:::payments
+    
+    PaymentSuccess --> UpcomingEvents
+    PaymentCancel --> UpcomingEvents

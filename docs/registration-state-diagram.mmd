@@ -1,0 +1,49 @@
+stateDiagram-v2
+    [*] --> Initiated : User clicks "Register"
+
+    state Initiated {
+        [*] --> WaiverCheck
+        WaiverCheck --> BlockedByWaiver : No Signature
+        WaiverCheck --> FormOpened : Active Signature Found
+        BlockedByWaiver --> FormOpened : Parent/User signs waiver
+    }
+
+    FormOpened --> INCOMPLETE_PaymentState : User Submits Registration Form Details
+
+    state INCOMPLETE_PaymentState {
+        [*] --> InitialRecord
+        note right of InitialRecord
+            Registration record exists.
+            Fields are completely editable.
+        end note
+        
+        InitialRecord --> StripeRedirect : Chooses "Pay Online Now" (or via Hub)
+        InitialRecord --> HubDeferred : Chooses "Pay Later / In Person"
+    }
+
+    state StripeRedirect {
+        [*] --> StripeSessionActive
+        StripeSessionActive --> WebhookReceived_Success : Complete Payment
+        StripeSessionActive --> AbandonedSession : Cancel / Timeout
+    }
+
+    AbandonedSession --> HubDeferred : Redirect back to Upcoming Events Hub
+
+    %% Absolute Source of Truth Gate
+    HubDeferred --> StripeRedirect : User clicks "Pay Registrations Online" from Hub
+
+    WebhookReceived_Success --> COMPLETE_PaymentState : System fires successful transaction code
+    
+    state COMPLETE_PaymentState {
+        [*] --> LockedRecord
+        note left of LockedRecord
+            Registration locked to editing.
+            Accounting record verified.
+        end note
+    }
+
+    %% Admin Check-In Actions
+    HubDeferred --> CheckedIn : Staff clicks "Verify Payment & Check In" (Cash/Check at gate)
+    LockedRecord --> CheckedIn : Staff clicks "Check In" (Online prepaid)
+
+    CheckedIn --> [*] : Event Attendance Finalized
