@@ -51,7 +51,7 @@ def payment_start_view(request):
     with transaction.atomic():
         total_cents = sum(reg.final_price_cents for reg in pending_registrations)
 
-        # Handle purely $0.00 selections safely
+        # Handle purely $0.00 selections as an already complete order
         if total_cents == 0:
             order = Order.objects.create(user=user, total_amount_cents=0, payment_status=PaymentStatus.COMPLETE)
             for reg in pending_registrations:
@@ -59,8 +59,8 @@ def payment_start_view(request):
                 reg.save()
             return redirect("payments:payment_success_view")
 
-        # Create the standard pending umbrella Order
-        order = Order.objects.create(user=user, total_amount_cents=total_cents, payment_status=PaymentStatus.PENDING)
+        # Create the standard incomplete Order
+        order = Order.objects.create(user=user, total_amount_cents=total_cents)
 
         # Map the selected items to our transaction tracker
         for reg in pending_registrations:

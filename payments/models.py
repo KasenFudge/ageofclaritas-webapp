@@ -24,7 +24,7 @@ class Order(models.Model):
         help_text="The combined sum of all attached registrations in this specific transaction"
     )
 
-    payment_status = models.CharField(max_length=10, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
+    payment_status = models.CharField(max_length=15, choices=PaymentStatus.choices, default=PaymentStatus.INCOMPLETE)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
