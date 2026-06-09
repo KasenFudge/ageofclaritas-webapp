@@ -58,7 +58,7 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     ).exists()
     is_first_event = not has_attended_main_event
 
-    # First Event Discount: Ticket is free if it is their first event, and a free weapon rental (end pricing calculation)
+    # First Event Discount: Ticket is free if it is their first event, and a free weapon rental
     if is_first_event:
         discounts.append(
             {"type": "first_time", "amount_cents": base, "reason": "First-Time Player Discount: Free Event Entry"}

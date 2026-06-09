@@ -64,11 +64,10 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         "formatted_arrival_time",
         "weapon_rental_display",
         "formatted_final_price",
-        "is_manually_paid",
         "payment_status_display",
         "checked_in",
     ]
-    list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time", "is_manually_paid"]
+    list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time"]
     search_fields = ["user__username", "user__first_name", "user__last_name", "event__title"]
     ordering = ["arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
@@ -94,12 +93,15 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         (
             "Financial & Transaction Ledger",
             {
-                "fields": ("final_price_cents", "base_price_cents", "is_manually_paid"),
+                "fields": (
+                    "final_price_cents",
+                    "base_price_cents",
+                ),
                 "description": "Pricing information for this registration.",
             },
         ),
         (
-            "Meta Payload Data",
+            "Payload Data",
             {
                 "fields": ("discounts", "additional_items"),
                 "classes": ("collapse",),

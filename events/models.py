@@ -120,7 +120,9 @@ class EventRegistration(models.Model):
 
     # Day of Event Administration
     checked_in = models.BooleanField(default=False)
-    arrival_time = models.DateTimeField(blank=True)
+    declared_arrival_time = models.DateTimeField(blank=True)
+    # TODO: How to handle validating when user actually arrives at event for late arrival discounts.
+    actual_arrival_time = models.DateTimeField(blank=True)
 
     # Ticket Pricing Information
     base_price_cents = models.PositiveIntegerField(help_text="Base price before discounts, in cents")
@@ -138,17 +140,9 @@ class EventRegistration(models.Model):
         help_text="The parent transaction cart used to clear this registration online.",
     )
 
-    # Retain a local flag for payment at event.
-    is_manually_paid = models.BooleanField(
-        default=False,
-        help_text="Set to True if a Game Master manually accepts cash/check at the event without an online Order.",
-    )
-
-    # A quick helper property to check if this ticket is cleared to enter
+    # A helper property to check if this ticket is cleared to enter
     @property
     def is_paid(self) -> bool:
-        if self.is_manually_paid:
-            return True
         return self.order is not None and self.order.payment_status == "complete"
 
     def __str__(self):

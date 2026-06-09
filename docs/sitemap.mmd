@@ -66,7 +66,8 @@ graph TD
     %% Handle Registrations
     PaymentMethod -- "Pay Later<br>(In Person/Adding Registration)" --> UpcomingEvents
     PaymentMethod -- "Pay Online" --> PaymentStart
-    UpcomingEvents -- "Pay Registrations Online" --> PaymentStart
+    UpcomingEvents --> OutstandingBalance[["View Outstanding Balance"]]:::accounts
+    OutstandingBalance -- "Pay Registrations Online" --> PaymentStart
 
     PaymentStart --> StripeSession["💳 Stripe Session Active"]:::stripe
     StripeSession --> CompleteCheckout{{"Complete Checkout?"}}:::stripe
