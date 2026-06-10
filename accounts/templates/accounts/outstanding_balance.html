@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <h2>Outstanding Balance</h2>
+  {% if outstanding_registrations %}
+    <p>The following registrations are currently unpaid - either pay now online or bring payment in person the day of the event:</p>
+    <div class="unpaid-items-list">
+      {% for reg in outstanding_registrations %}
+        <div class="billing-card">
+          <div class="billing-header">
+            <h3 class="event-title">{{ reg.event.title }}</h3>
+            <p class="event-time">Starts: {{ reg.event.start_time|date:"g:i A" }}</p>
+          </div>
+          <div class="billing-breakdown">
+            <!-- Base Price -->
+            <div class="line-item base-line">
+              <span>Base Price</span>
+              <span>${{ reg.base_price|floatformat:2 }}</span>
+            </div>
+            <!-- Discount Information -->
+            {% for discount in reg.formatted_discounts %}
+              <div class="line-item text-success small">
+                <span>- {{ discount.reason }}</span>
+                <span>-${{ discount.amount|floatformat:2 }}</span>
+              </div>
+            {% endfor %}
+            <!-- Additional Item Information -->
+            {% for item in reg.formatted_additional_items %}
+              <div class="line-item text-muted small">
+                <span>+ {{ item.reason }}</span>
+                <span>+${{ item.amount|floatformat:2 }}</span>
+              </div>
+            {% endfor %}
+            <!-- Final Price -->
+            <hr class="billing-divider" />
+            <div class="line-item item-total fw-bold">
+              <span>Registration Subtotal:</span>
+              <span>${{ reg.final_price|floatformat:2 }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="payment-summary-box mt-4 p-4 border rounded bg-light">
+      <div class="line-item final-total">
+        <h3 class="mb-0 fw-bold">Total Amount Due</h3>
+        <div class="text-end">
+          <span>${{ total_balance|floatformat:2 }}</span>
+        </div>
+      </div>
+      <hr />
+      <div class="payment-actions d-flex justify-content-end gap-3 align-items-center">
+        <span class="text-muted small">
+          <i class="bi bi-lock-fill"></i> Secure, encrypted checkout
+        </span>
+        <form action="{% url 'payments:payment_start' %}" method="post">
+          {% csrf_token %}
+          {% for reg in outstanding_registrations %}
+            <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
+          {% endfor %}
+          <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">Pay Now Online</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <div class="success-state text-center py-5">
+      <h3>You have no outstanding charges at this time.</h3>
+      <a href="{% url 'accounts:upcoming_events' %}" class="btn btn-primary">Return to My Schedule</a>
+    </div>
+  {% endif %}
+{% endblock content %}

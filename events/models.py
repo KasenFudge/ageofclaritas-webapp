@@ -145,6 +145,28 @@ class EventRegistration(models.Model):
     def is_paid(self) -> bool:
         return self.order is not None and self.order.payment_status == "complete"
 
+    # Helper properties used in displaying pricing information in templates
+    @property
+    def base_price(self):
+        return self.base_price_cents / 100.0
+
+    @property
+    def final_price(self):
+        return self.final_price_cents / 100.0
+
+    @property
+    def formatted_discounts(self):
+        """Converts internal discount information into a clean, easily used format"""
+        return [{"type": d["type"], "amount": d["amount_cents"] / 100.0, "reason": d["reason"]} for d in self.discounts]
+
+    @property
+    def formatted_additional_items(self):
+        """Converts internal additional items information into a clean, easily used format"""
+        return [
+            {"type": i["type"], "amount": i["amount_cents"] / 100.0, "reason": i["reason"]}
+            for i in self.additional_items
+        ]
+
     def __str__(self):
         return f"{self.user.username} - {self.event.title}"
 

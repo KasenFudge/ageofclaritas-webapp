@@ -1,93 +1,65 @@
-{% extends "core/base.html" %} {% block content %}
-<div
-  class="container"
-  style="max-width: 800px; margin: 40px auto; font-family: sans-serif"
->
-  <h2>Household Registrations & Passes</h2>
-  <p style="color: #666">
-    Select the family passes you want to pay for, then proceed to checkout.
-  </p>
+{% extends "core/base.html" %}
 
-  <form action="{% url 'payments:payment_start' %}" method="POST">
-    {% csrf_token %}
-    <div
-      style="
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 20px;
-      "
-    >
-      <table style="width: 100%; border-collapse: collapse; text-align: left">
-        <thead style="background-color: #f5f5f5">
-          <tr>
-            <th style="padding: 12px; width: 50px">Select</th>
-            <th style="padding: 12px">Attendee</th>
-            <th style="padding: 12px">Event / Pass</th>
-            <th style="padding: 12px; text-align: right">Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for reg in upcoming_registrations %}
-          <tr style="border-bottom: 1px solid #ddd">
-            <td style="padding: 12px; text-align: center">
-              <input
-                type="checkbox"
-                name="registration_ids"
-                value="{{ reg.id }}"
-                style="width: 18px; height: 18px; cursor: pointer"
-              />
-            </td>
-            <td style="padding: 12px; font-weight: bold">
-              {{ reg.user.get_full_name|default:reg.user.username }}
-            </td>
-            <td style="padding: 12px">{{ reg.event.title }}</td>
-            <td
-              style="
-                padding: 12px;
-                text-align: right;
-                color: #4f46e5;
-                font-weight: bold;
-              "
-            >
-              {% if reg.final_price_cents %} ${{
-              reg.final_price_cents|stringformat:"d"|slice:":-2" }}.{{
-              reg.final_price_cents|stringformat:"d"|slice:"-2:" }} {% else %}
-              $0.00 {% endif %}
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td
-              colspan="4"
-              style="padding: 20px; text-align: center; color: #999"
-            >
-              No pending household registrations found.
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+{% load static %}
 
-    <div style="text-align: right">
-      <button
-        type="submit"
-        style="
-          background-color: #4f46e5;
-          color: white;
-          padding: 12px 24px;
-          border: none;
-          border-radius: 6px;
-          font-size: 1rem;
-          font-weight: bold;
-          cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        "
-      >
-        Proceed to Secure Checkout
-      </button>
+{% block content %}
+  <div class="container">
+    <!-- Personal Upcoming Events -->
+    <h2>My Upcoming Schedule</h2>
+    {% for reg in personal_registrations %}
+      <div class="event-card">
+        <div class="card-information">
+          <h3 class="event-title">{{ reg.event.title }}</h3>
+          <p class="event-time">
+            Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{
+            reg.arrival_time|date:"g:i A" }}
+          </p>
+        </div>
+        <div class="card-payment">
+          {% if reg.is_paid %}
+            <span class="badge badge-complete">COMPLETE</span>
+          {% else %}
+            <span class="badge badge-incomplete">INCOMPLETE</span>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <p>You are not registered for any upcoming events.</p>
+    {% endfor %}
+    <!-- Child Upcoming Events -->
+    {% if has_children %}
+      <h2>Household & Child Registrations</h2>
+      {% for reg in child_registrations %}
+        <div class="event-card">
+          <div class="card-information">
+            <small class="attendee-tag">For: {{ reg.user.get_full_name|default:reg.user.username }}</small>
+            <h3 class="event-title">{{ reg.event.title }}</h3>
+            <p class="event-time">
+              Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{
+              reg.arrival_time|date:"g:i A" }}
+            </p>
+          </div>
+          <div class="card-payment">
+            {% if reg.is_paid %}
+              <span class="badge badge-complete">COMPLETE</span>
+            {% else %}
+              <span class="badge badge-incomplete">INCOMPLETE</span>
+            {% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <p>No child accounts are currently registered for upcoming events.</p>
+      {% endfor %}
+    {% endif %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="card-title mb-1 fw-bold">Account Billing</h5>
+          <p class="card-text text-muted small mb-0">View statements, invoices, and outstanding balances.</p>
+        </div>
+        <a href="{% url 'accounts:outstanding_balance' %}"
+           class="btn btn-outline-primary btn-sm">Manage Billing</a>
+      </div>
     </div>
-  </form>
-</div>
-{% endblock %}
+  </div>
+{% endblock content %}

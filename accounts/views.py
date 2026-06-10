@@ -29,6 +29,7 @@ def upcoming_events_view(request):
     context = {
         "title": "Upcoming Events",
         "personal_registrations": personal_registrations,
+        "has_children": len(child_ids) > 0,
         "child_registrations": child_registrations,
     }
     return render(request, "accounts/upcoming_events.html", context)
@@ -55,10 +56,11 @@ def outstanding_balance_view(request):
 
     # Calculate total balance due across all actionable items
     total_balance_cents = sum(reg.final_price_cents for reg in outstanding_registrations)
+    total_balance = total_balance_cents / 100.0
 
     context = {
         "title": "Outstanding Household Balance",
         "outstanding_registrations": outstanding_registrations,
-        "total_balance_cents": total_balance_cents,
+        "total_balance": total_balance,
     }
     return render(request, "accounts/outstanding_balance.html", context)
