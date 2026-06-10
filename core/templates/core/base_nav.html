@@ -92,7 +92,9 @@
                data-bs-toggle="dropdown">{{ user.username }}</a>
             <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="accountDropdown">
-              <li class="dropdown-item" href="{% url 'accounts:upcoming_events' %}">My Account</li>
+              <li>
+                <a class="dropdown-item" href="{% url 'accounts:upcoming_events' %}">My Account</a>
+              </li>
               <li>
                 <hr class="dropdown-divider" />
               </li>
