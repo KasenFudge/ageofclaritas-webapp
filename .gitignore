@@ -26,6 +26,7 @@ db.sqlite3-journal
 .env
 .env.*
 .dockerignore
+certbot/
 
 # ==========================================
 # Operating System Files
