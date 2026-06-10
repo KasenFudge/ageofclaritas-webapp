@@ -1,97 +1,83 @@
-{% extends "core/base.html" %} {% load static %} {% block content %}
-<div class="container my-5 d-flex justify-content-center">
-  <div
-    class="card shadow border-light p-4 p-md-5"
-    style="max-width: 500px; width: 100%; border-radius: 12px"
-  >
-    <div class="text-center mb-4">
-      <h1 class="h3 fw-bold text-dark">Event Registration</h1>
-      <p class="text-muted mt-1 small">
-        Confirming details for <strong>{{ event.display_title }}</strong>
-      </p>
-    </div>
+{% extends "core/base.html" %}
 
-    {% if messages %} {% for message in messages %}
-    <div
-      class="alert alert-info alert-dismissible fade show border-0 shadow-sm"
-      role="alert"
-    >
-      <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="alert"
-        aria-label="Close"
-      ></button>
-    </div>
-    {% endfor %} {% endif %}
+{% load static %}
 
-    <form method="POST" class="needs-validation" novalidate>
-      {% csrf_token %}
-
-      <div
-        class="bg-light p-4 rounded-3 border border-light mb-4 bootstrap-form-wrapper"
-      >
-        {% for field in form %}
-        <div class="mb-3">
-          {% if field.field.widget.input_type == 'radio' %}
-          <label class="form-label d-block fw-semibold mb-2"
-            >{{ field.label }}</label
-          >
-          <div class="d-flex flex-column gap-2">
-            {% for radio in field %}
-            <div class="form-check d-flex align-items-center text-nowrap">
-              <span class="me-2">{{ radio.tag }}</span>
-              <label
-                class="form-check-label cursor-pointer"
-                for="{{ radio.id_for_label }}"
-              >
-                {{ radio.choice_label }}
-              </label>
-            </div>
-            {% endfor %}
-          </div>
-          {% if field.help_text %}
-          <div class="form-text mt-1">{{ field.help_text }}</div>
-          {% endif %} {% else %}
-          <label
-            class="form-label fw-semibold mb-1"
-            for="{{ field.id_for_label }}"
-            >{{ field.label }}</label
-          >
-
-          {# Automatically apply the bootstrap class dynamically #} {% if
-          field.field.widget.input_type == 'checkbox' %}
-          <div class="form-check">{{ field }}</div>
-          {% else %} {# Adds the required form-control class to inputs #} {{
-          field }} {% endif %} {% if field.help_text %}
-          <div class="form-text mt-1">{{ field.help_text }}</div>
-          {% endif %} {% endif %} {# Field-specific error logging if validations
-          fail #} {% if field.errors %}
-          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
-          {% endif %}
-        </div>
-        {% endfor %}
+{% block content %}
+  <div class="container my-5 d-flex justify-content-center">
+    <div class="card shadow border-light p-4 p-md-5"
+         style="max-width: 500px;
+                width: 100%;
+                border-radius: 12px">
+      <div class="text-center mb-4">
+        <h1 class="h3 fw-bold text-dark">Event Registration</h1>
+        <p class="text-muted mt-1 small">
+          Confirming details for <strong>{{ event.display_title }}</strong>
+        </p>
       </div>
-
-      <button
-        type="submit"
-        class="btn btn-success btn-lg w-100 fw-bold shadow-sm"
-      >
-        Confirm & Calculate Pricing
-      </button>
-    </form>
-
-    <div class="text-center mt-4">
-      <p class="text-muted small mb-0" style="font-size: 0.75rem">
-        <i class="bi bi-shield-lock me-1"></i> Age category filters and matrices
-        run securely on submission.
-      </p>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm"
+               role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="bg-light p-4 rounded-3 border border-light mb-4 bootstrap-form-wrapper">
+          {% for field in form %}
+            <div class="mb-3">
+              {% if field.field.widget.input_type == 'radio' %}
+                <label class="form-label d-block fw-semibold mb-2">{{ field.label }}</label>
+                <div class="d-flex flex-column gap-2">
+                  {% for radio in field %}
+                    <div class="form-check d-flex align-items-center text-nowrap">
+                      <span class="me-2">{{ radio.tag }}</span>
+                      <label class="form-check-label cursor-pointer"
+                             for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                  {% endfor %}
+                </div>
+                {% if field.help_text %}
+                  <div class="form-text mt-1">{{ field.help_text }}</div>
+                {% endif %}
+              {% else %}
+                <label class="form-label fw-semibold mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {# Automatically apply the bootstrap class dynamically #}
+                {% if
+                  field.field.widget.input_type == 'checkbox' %}
+                  <div class="form-check">{{ field }}</div>
+                {% else %}
+                  {# Adds the required form-control class to inputs #} {{
+                  field }}
+                {% endif %}
+                {% if field.help_text %}
+                  <div class="form-text mt-1">{{ field.help_text }}</div>
+                {% endif %}
+              {% endif %}
+              {# Field-specific error logging if validations
+fail #}
+              {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">Confirm & Calculate Pricing</button>
+      </form>
+      <div class="text-center mt-4">
+        <p class="text-muted small mb-0" style="font-size: 0.75rem">
+          <i class="bi bi-shield-lock me-1"></i> Age category filters and matrices
+          run securely on submission.
+        </p>
+      </div>
     </div>
   </div>
-</div>
-
-<style>
+  <style>
   .bootstrap-form-wrapper p {
     margin-bottom: 1.25rem;
     position: relative;
@@ -162,9 +148,8 @@
     margin-right: 0.5rem;
     vertical-align: middle;
   }
-</style>
-
-<script>
+  </style>
+  <script>
   document.addEventListener("DOMContentLoaded", function () {
     const arrivalInput =
       document.querySelector('input[name="arrival_time"]') ||
@@ -183,5 +168,5 @@
       arrivalInput.parentNode.appendChild(helperText);
     }
   });
-</script>
+  </script>
 {% endblock %}

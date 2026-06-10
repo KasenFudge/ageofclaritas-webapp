@@ -1,137 +1,99 @@
-{% extends "core/base.html" %} {% load static %} {% block content %}
-<div class="container-fluid text-dark bg-white">
-  <div class="row">
-    {% include 'rulebook/kin_sidebar.html' %}
+{% extends "core/base.html" %}
 
-    <main class="col-12 col-lg-9 py-4 px-md-4">
-      <h1
-        class="text-center kin-header mb-4 display-4 fw-bold text-uppercase tracking-wide text-dark"
-      >
-        {{ kin.name }}
-      </h1>
+{% load static %}
 
-      <div
-        class="p-3 mb-4 bg-light rounded border border-light-subtle shadow-sm"
-      >
-        <p class="mb-0 fs-5 text-dark">
-          <strong class="text-muted text-uppercase small tracking-wider me-2"
-            >Standard Size Category:</strong
-          >
-          <span>{{ kin.size }}</span>
-        </p>
-      </div>
-
-      <div class="lh-lg text-dark px-md-2 mb-5 fs-5">
-        {{ kin.description|safe }}
-      </div>
-
-      {% if kin.kin_images.all %}
-      <div class="row justify-content-center mb-5">
-        <div class="col-12 col-md-10">
-          <div
-            id="kinCarousel"
-            class="carousel slide border border-light-subtle rounded shadow bg-light overflow-hidden"
-            data-bs-ride="carousel"
-          >
-            <div class="carousel-inner">
-              {% for image in kin.kin_images.all %}
-              <div
-                class="carousel-item {% if forloop.first %}active{% endif %}"
-              >
-                <img
-                  src="{{ image.image.url }}"
-                  class="d-block mx-auto img-fluid"
-                  alt="Concept art illustrating {{ kin.name }} ancestry"
-                  style="max-height: 500px; object-fit: contain"
-                />
-              </div>
-              {% endfor %}
-            </div>
-
-            {% if kin.kin_images.all|length > 1 %}
-            <button
-              class="carousel-control-prev"
-              type="button"
-              data-bs-target="#kinCarousel"
-              data-bs-slide="prev"
-            >
-              <span
-                class="carousel-control-prev-icon filter-dark"
-                aria-hidden="true"
-                style="filter: invert(1)"
-              ></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button
-              class="carousel-control-next"
-              type="button"
-              data-bs-target="#kinCarousel"
-              data-bs-slide="next"
-            >
-              <span
-                class="carousel-control-next-icon filter-dark"
-                aria-hidden="true"
-                style="filter: invert(1)"
-              ></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-
-            <div class="carousel-indicators mb-2">
-              {% for image in kin.kin_images.all %}
-              <button
-                type="button"
-                data-bs-target="#kinCarousel"
-                data-bs-slide-to="{{ forloop.counter0 }}"
-                class="{% if forloop.first %}active{% endif %}"
-                style="background-color: #000"
-                aria-current="{% if forloop.first %}true{% endif %}"
-                aria-label="Slide {{ forloop.counter }}"
-              ></button>
-              {% endfor %}
-            </div>
-            {% endif %}
-          </div>
+{% block content %}
+  <div class="container-fluid text-dark bg-white">
+    <div class="row">
+      {% include 'rulebook/kin_sidebar.html' %}
+      <main class="col-12 col-lg-9 py-4 px-md-4">
+        <h1 class="text-center kin-header mb-4 display-4 fw-bold text-uppercase tracking-wide text-dark">{{ kin.name }}</h1>
+        <div class="p-3 mb-4 bg-light rounded border border-light-subtle shadow-sm">
+          <p class="mb-0 fs-5 text-dark">
+            <strong class="text-muted text-uppercase small tracking-wider me-2">Standard Size Category:</strong>
+            <span>{{ kin.size }}</span>
+          </p>
         </div>
-      </div>
-      {% endif %}
-
-      <div class="mt-5 border-top border-light-subtle pt-4">
-        <h2
-          class="text-center mb-4 text-uppercase tracking-wide fw-bold text-dark"
-        >
-          Kin Attributes
-        </h2>
-
-        <div class="row g-3">
-          {% for attribute in kin.attributes.all %}
-          <div class="col-12">
-            <div class="card bg-white border-light-subtle h-100 shadow-sm">
-              <div class="card-body p-4">
-                <h4 class="card-title fw-bold text-primary mb-2">
-                  {% if not attribute.can_start_with %}
-                  <span
-                    class="text-danger"
-                    title="Cannot be taken as a starting attribute"
-                    >*</span
-                  >
-                  {% endif %} {{ attribute.name }}
-                </h4>
-                <div
-                  class="card-text text-dark lh-lg ps-md-2 border-start border-primary border-opacity-25 mt-2"
-                >
-                  {{ attribute.description|safe }}
+        <div class="lh-lg text-dark px-md-2 mb-5 fs-5">{{ kin.description|safe }}</div>
+        {% if kin.kin_images.all %}
+          <div class="row justify-content-center mb-5">
+            <div class="col-12 col-md-10">
+              <div id="kinCarousel"
+                   class="carousel slide border border-light-subtle rounded shadow bg-light overflow-hidden"
+                   data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  {% for image in kin.kin_images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                      <img src="{{ image.image.url }}"
+                           class="d-block mx-auto img-fluid"
+                           alt="Concept art illustrating {{ kin.name }} ancestry"
+                           style="max-height: 500px;
+                                  object-fit: contain" />
+                    </div>
+                  {% endfor %}
+                </div>
+                {% if kin.kin_images.all|length > 1 %}
+                  <button class="carousel-control-prev"
+                          type="button"
+                          data-bs-target="#kinCarousel"
+                          data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon filter-dark"
+                          aria-hidden="true"
+                          style="filter: invert(1)"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next"
+                          type="button"
+                          data-bs-target="#kinCarousel"
+                          data-bs-slide="next">
+                    <span class="carousel-control-next-icon filter-dark"
+                          aria-hidden="true"
+                          style="filter: invert(1)"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                  <div class="carousel-indicators mb-2">
+                    {% for image in kin.kin_images.all %}
+                      <button type="button"
+                              data-bs-target="#kinCarousel"
+                              data-bs-slide-to="{{ forloop.counter0 }}"
+                              class="{% if forloop.first %}active{% endif %}"
+                              style="background-color: #000"
+                              aria-current="{% if forloop.first %}true{% endif %}"
+                              aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        <div class="mt-5 border-top border-light-subtle pt-4">
+          <h2 class="text-center mb-4 text-uppercase tracking-wide fw-bold text-dark">Kin Attributes</h2>
+          <div class="row g-3">
+            {% for attribute in kin.attributes.all %}
+              <div class="col-12">
+                <div class="card bg-white border-light-subtle h-100 shadow-sm">
+                  <div class="card-body p-4">
+                    <h4 class="card-title fw-bold text-primary mb-2">
+                      {% if not attribute.can_start_with %}
+                        <span class="text-danger" title="Cannot be taken as a starting attribute">*</span>
+                      {% endif %}
+                      {{ attribute.name }}
+                    </h4>
+                    <div class="card-text text-dark lh-lg ps-md-2 border-start border-primary border-opacity-25 mt-2">
+                      {{ attribute.description|safe }}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            {% empty %}
+              <div class="col-12 text-center text-danger italic py-3">
+                No unique attributes are registered for this kin database index.
+              </div>
+            {% endfor %}
           </div>
-          {% empty %}
-          <div class="col-12 text-center text-danger italic py-3">
-            No unique attributes are registered for this kin database index.
-          </div>
-          {% endfor %}
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
-</div>
 {% endblock %}

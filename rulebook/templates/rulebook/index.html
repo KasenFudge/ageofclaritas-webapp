@@ -1,54 +1,55 @@
-{% extends "core/base.html" %} {% load static %} {% block content %}
-<div class="d-block border border-dark table-of-contents-box">
-  <p class="contents-text m-0">
-    <span class="box-header-link"
-      ><a href="{% url 'rulebook:classes' %}">Classes</a> -
-    </span>
-    A character's Class determines most of the Talents they have access to and
-    influences their playstyle.
-  </p>
-</div>
-<div class="d-block border border-dark table-of-contents-box">
-  <p class="contents-text m-0">
-    <span class="box-header-link">
-      <a href="{% url 'rulebook:kin' %}">Kin</a>
-      <span class="d-none d-sm-inline"> - </span>
-      <!-- This span will be hidden on small screens -->
-    </span>
-    A character's Kin will decide their appearance and will influence how the
-    character will act.
-  </p>
-</div>
-<div class="d-block border border-dark table-of-contents-box">
-  <p class="contents-text m-0">
-    <span class="box-header-link"
-      ><a href="{% url 'rulebook:backgrounds' %}">Backgrounds</a> -
-    </span>
-    Utilize them to support your character's backstory or bolster your skills.
-    Most Backgrounds are either informative or role-played.
-  </p>
-</div>
-<div class="d-block border border-dark table-of-contents-box">
-  <p class="contents-text m-0">
-    <span class="box-header-link">
-      <a href="{% url 'rulebook:modifiers' %}">Modifiers</a> -
-    </span>
-    Modifiers represent some significant change to a player that typically has
-    some upside and downside.
-  </p>
-</div>
-<div class="d-block border border-dark table-of-contents-box">
-  <p class="contents-text m-0">
-    <span class="box-header-link"
-      ><a href="{% url 'rulebook:techniques' %}">Techniques</a> -
-    </span>
-    Techniques modify how another Talent operates. They are earned in game.
-  </p>
-</div>
-<div class="d-block border border-dark table-of-contents-box">
-  <p class="contents-text m-0">
-    <span class="box-header-link"><a href="#">Game Mechanics</a> - </span>
-    Game mechanics make up the baseline of gameplay for Age of Claritas.
-  </p>
-</div>
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="d-block border border-dark table-of-contents-box">
+    <p class="contents-text m-0">
+      <span class="box-header-link"><a href="{% url 'rulebook:classes' %}">Classes</a> -
+      </span>
+      A character's Class determines most of the Talents they have access to and
+      influences their playstyle.
+    </p>
+  </div>
+  <div class="d-block border border-dark table-of-contents-box">
+    <p class="contents-text m-0">
+      <span class="box-header-link">
+        <a href="{% url 'rulebook:kin' %}">Kin</a>
+        <span class="d-none d-sm-inline">-</span>
+        <!-- This span will be hidden on small screens -->
+      </span>
+      A character's Kin will decide their appearance and will influence how the
+      character will act.
+    </p>
+  </div>
+  <div class="d-block border border-dark table-of-contents-box">
+    <p class="contents-text m-0">
+      <span class="box-header-link"><a href="{% url 'rulebook:backgrounds' %}">Backgrounds</a> -
+      </span>
+      Utilize them to support your character's backstory or bolster your skills.
+      Most Backgrounds are either informative or role-played.
+    </p>
+  </div>
+  <div class="d-block border border-dark table-of-contents-box">
+    <p class="contents-text m-0">
+      <span class="box-header-link">
+        <a href="{% url 'rulebook:modifiers' %}">Modifiers</a> -
+      </span>
+      Modifiers represent some significant change to a player that typically has
+      some upside and downside.
+    </p>
+  </div>
+  <div class="d-block border border-dark table-of-contents-box">
+    <p class="contents-text m-0">
+      <span class="box-header-link"><a href="{% url 'rulebook:techniques' %}">Techniques</a> -
+      </span>
+      Techniques modify how another Talent operates. They are earned in game.
+    </p>
+  </div>
+  <div class="d-block border border-dark table-of-contents-box">
+    <p class="contents-text m-0">
+      <span class="box-header-link"><a href="#">Game Mechanics</a> - </span>
+      Game mechanics make up the baseline of gameplay for Age of Claritas.
+    </p>
+  </div>
 {% endblock %}

@@ -1,11 +1,14 @@
-{% extends "core/base.html" %} {% load static %} {% block content %}
-<div class="container-fluid text-dark bg-white">
-  <div class="row">
-    {% include 'rulebook/class_sidebar.html' %}
+{% extends "core/base.html" %}
 
-    <main class="col-12 col-lg-9 py-4 px-md-4">
-      {% block class_info %} {% endblock %}
-    </main>
+{% load static %}
+
+{% block content %}
+  <div class="container-fluid text-dark bg-white">
+    <div class="row">
+      {% include 'rulebook/class_sidebar.html' %}
+      <main class="col-12 col-lg-9 py-4 px-md-4">
+        {% block class_info %}{% endblock %}
+      </main>
+    </div>
   </div>
-</div>
 {% endblock %}

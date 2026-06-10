@@ -1,95 +1,68 @@
 {% load static %}
 
-<nav
-  class="navbar navbar-expand-lg bg-body-tertiary sticky-top"
-  data-bs-theme="dark"
->
+<nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top"
+     data-bs-theme="dark">
   <div class="container-fluid">
     <a class="navbar-brand me-4" href="{% url 'core:index' %}">
-      <img
-        class="navbar-logo"
-        src="{% static 'images/AgeOfClaritasLogo.png' %}"
-        alt="Age of Claritas Logo"
-      />
-      <img
-        class="navbar-title"
-        src="{% static 'images/AgeOfClaritasTitle.png' %}"
-        alt="Age of Claritas Title"
-      />
+      <img class="navbar-logo"
+           src="{% static 'core/images/AgeOfClaritasLogo.png' %}"
+           alt="Age of Claritas Logo" />
+      <img class="navbar-title"
+           src="{% static 'core/images/AgeOfClaritasTitle.png' %}"
+           alt="Age of Claritas Title" />
     </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="{% url 'rulebook:index' %}"
-            id="rulebookDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Rulebook
-          </a>
+          <a class="nav-link dropdown-toggle"
+             href="{% url 'rulebook:index' %}"
+             id="rulebookDropdown"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false">Rulebook</a>
           <ul class="dropdown-menu" aria-labelledby="rulebookDropdown">
             <li>
-              <a
-                class="dropdown-item"
-                href="{% url 'rulebook:character_creation' %}"
-                >Character Creation</a
-              >
+              <a class="dropdown-item" href="{% url 'rulebook:character_creation' %}">Character Creation</a>
             </li>
-            <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item" href="{% url 'rulebook:classes' %}"
-                >Classes</a
-              >
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'rulebook:classes' %}">Classes</a>
             </li>
             <li>
               <a class="dropdown-item" href="{% url 'rulebook:kin' %}">Kin</a>
             </li>
             <li>
-              <a class="dropdown-item" href="{% url 'rulebook:talents' %}"
-                >Talents</a
-              >
+              <a class="dropdown-item" href="{% url 'rulebook:talents' %}">Talents</a>
             </li>
-            <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item disabled" aria-disabled="true" href="#"
-                >Game Mechanics</a
-              >
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item disabled" aria-disabled="true" href="#">Game Mechanics</a>
             </li>
           </ul>
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link"
-            aria-disabled="true"
-            href="{% url 'events:index' %}"
-            >Events</a
-          >
+          <a class="nav-link" aria-disabled="true" href="{% url 'events:index' %}">Events</a>
         </li>
         <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="aboutDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            About
-          </a>
+          <a class="nav-link dropdown-toggle"
+             href="#"
+             id="aboutDropdown"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false">About</a>
           <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
             <li><a class="dropdown-item" href="#">Our Team</a></li>
             <li><a class="dropdown-item" href="#">FAQ</a></li>
@@ -104,40 +77,37 @@
           <a class="nav-link" href="https://age-of-claritas-shop.creator-spring.com/">Merch</a>
         </li> -->
         {% if user.is_staff %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'admin:index' %}">Admin Dashboard</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin:index' %}">Admin Dashboard</a>
+          </li>
         {% endif %}
       </ul>
       <ul class="navbar-nav">
         {% if user.is_authenticated %}
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="accountDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            >{{ user.username }}</a
-          >
-          <ul
-            class="dropdown-menu dropdown-menu-end"
-            aria-labelledby="accountDropdown"
-          >
-            <li class="dropdown-item" href="#">My Account</li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-              <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button class="dropdown-item" role="submit">Logout</button>
-              </form>
-            </li>
-          </ul>
-        </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="accountDropdown"
+               role="button"
+               data-bs-toggle="dropdown">{{ user.username }}</a>
+            <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="accountDropdown">
+              <li class="dropdown-item" href="#">My Account</li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button class="dropdown-item" role="submit">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
         {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
         {% endif %}
       </ul>
     </div>
