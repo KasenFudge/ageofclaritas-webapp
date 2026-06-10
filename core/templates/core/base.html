@@ -3,8 +3,8 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
   {% block header_block %}
-    {% include 'core/base_head.html' %}
-  {% endblock %}
+    {% include "core/base_head.html" %}
+  {% endblock header_block %}
   <body>
     <div class="wrapper">
       <!-- Navbar -->
@@ -12,7 +12,8 @@
       <!-- End of Navbar -->
       <!-- Page Content -->
       <div class="content">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock content %}
       </div>
       <!-- End of Page Content -->
       <!-- Footer -->

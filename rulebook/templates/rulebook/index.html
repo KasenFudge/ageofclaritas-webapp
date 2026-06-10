@@ -2,6 +2,9 @@
 
 {% load static %}
 
+{% block styles %}
+  <link href="{% static "rulebook/css/rulebook.css" %}" rel="stylesheet" />
+{% endblock styles %}
 {% block content %}
   <div class="d-block border border-dark table-of-contents-box">
     <p class="contents-text m-0">
@@ -24,7 +27,7 @@
   </div>
   <div class="d-block border border-dark table-of-contents-box">
     <p class="contents-text m-0">
-      <span class="box-header-link"><a href="{% url 'rulebook:backgrounds' %}">Backgrounds</a> -
+      <span class="box-header-link"><a href="{% 'rulebook:talents' %}#backgrounds">Backgrounds</a> -
       </span>
       Utilize them to support your character's backstory or bolster your skills.
       Most Backgrounds are either informative or role-played.
@@ -33,7 +36,7 @@
   <div class="d-block border border-dark table-of-contents-box">
     <p class="contents-text m-0">
       <span class="box-header-link">
-        <a href="{% url 'rulebook:modifiers' %}">Modifiers</a> -
+        <a href="{% url 'rulebook:talents' %}#modifiers">Modifiers</a> -
       </span>
       Modifiers represent some significant change to a player that typically has
       some upside and downside.
@@ -41,7 +44,7 @@
   </div>
   <div class="d-block border border-dark table-of-contents-box">
     <p class="contents-text m-0">
-      <span class="box-header-link"><a href="{% url 'rulebook:techniques' %}">Techniques</a> -
+      <span class="box-header-link"><a href="{% url 'rulebook:talents' %}#techniques">Techniques</a> -
       </span>
       Techniques modify how another Talent operates. They are earned in game.
     </p>
@@ -52,4 +55,4 @@
       Game mechanics make up the baseline of gameplay for Age of Claritas.
     </p>
   </div>
-{% endblock %}
+{% endblock content %}

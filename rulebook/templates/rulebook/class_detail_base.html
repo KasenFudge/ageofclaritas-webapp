@@ -2,13 +2,17 @@
 
 {% load static %}
 
+{% block styles %}
+  <link href="{% static 'rulebook/css/rulebook.css' %}" rel="stylesheet" />
+{% endblock styles %}
 {% block content %}
   <div class="container-fluid text-dark bg-white">
     <div class="row">
       {% include 'rulebook/class_sidebar.html' %}
       <main class="col-12 col-lg-9 py-4 px-md-4">
-        {% block class_info %}{% endblock %}
+        {% block class_info %}
+        {% endblock class_info %}
       </main>
     </div>
   </div>
-{% endblock %}
+{% endblock content %}

@@ -2,6 +2,9 @@
 
 {% load static %}
 
+{% block styles %}
+  <link href="{% static "rulebook/css/rulebook.css" %}" rel="stylesheet" />
+{% endblock styles %}
 {% block content %}
   <h1 class="text-center page-header">Definitions</h1>
   <p class="text-center">This is a list of commonly used terms and their definitions.</p>
@@ -360,7 +363,7 @@
   <p class=""></p>
   <p class="">
     <strong>Magic:</strong>
-    <a href="{% url 'rulebook:wizard_detail' %}">Magic</a> is any form of Spell
+    <a href="{% url 'rulebook:class_detail' class_slug='wizard' %}">Magic</a> is any form of Spell
     used by a wizard or certain creatures.
   </p>
   <p class=""></p>
@@ -395,7 +398,7 @@
   <p class=""></p>
   <p class="">
     <strong>Wizard:</strong> The respectful title for a
-    <a href="{% url 'rulebook:wizard_detail' %}">magic</a> user.
+    <a href="{% url 'rulebook:class_detail' class_slug="wizard" %}">magic</a> user.
   </p>
   <p class=""></p>
   <p class="">
@@ -750,4 +753,4 @@
     period. There are 3 watches per rest.
   </p>
   <p class=""></p>
-{% endblock %}
+{% endblock content %}

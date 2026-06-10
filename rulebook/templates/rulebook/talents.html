@@ -2,6 +2,9 @@
 
 {% load static %}
 
+{% block styles %}
+  <link href="{% static "rulebook/css/rulebook.css" %}" rel="stylesheet" />
+{% endblock styles %}
 {% block content %}
   <h1 class="text-center page-header">Talents</h1>
   <p class="text-center">
@@ -10,11 +13,9 @@
     earned through gameplay or purchased with XP, such as Techniques or Abilities.
     Listed below are each type of Talent and a description of them.
   </p>
-  {% include 'rulebook/skills_and_abilities.html' %}
-  {% include
-  'rulebook/attributes.html' %}
-  {% include 'rulebook/techniques.html' %}
-  {%
-  include 'rulebook/modifiers.html' %}
-  {% include 'rulebook/backgrounds.html' %}
-{% endblock %}
+  {% include "rulebook/skills_and_abilities.html" %}
+  {% include "rulebook/attributes.html" %}
+  {% include "rulebook/techniques.html" %}
+  {% include "rulebook/modifiers.html" %}
+  {% include "rulebook/backgrounds.html" %}
+{% endblock content %}

@@ -59,8 +59,7 @@
                   <div class="form-text mt-1">{{ field.help_text }}</div>
                 {% endif %}
               {% endif %}
-              {# Field-specific error logging if validations
-fail #}
+              {# Field-specific error logging if validations fail #}
               {% if field.errors %}
                 <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
               {% endif %}
@@ -169,4 +168,4 @@ fail #}
     }
   });
   </script>
-{% endblock %}
+{% endblock content %}

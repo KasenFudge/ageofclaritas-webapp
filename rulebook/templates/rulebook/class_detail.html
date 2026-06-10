@@ -2,8 +2,10 @@
 
 {% load static %}
 
-{% block
-  class_info %}
+{% block styles %}
+  <link href="{% static 'rulebook/css/rulebook.css' %}" rel="stylesheet" />
+{% endblock styles %}
+{% block class_info %}
   <h1 id="{{ guild.slug }}"
       class="text-center class-header border-bottom pb-2 mb-4 text-dark fw-bold text-uppercase tracking-wide">
     {{ guild.name }}
@@ -170,8 +172,7 @@
       </div>
     {% endfor %}
   {% endif %}
-  {% if weapon_titles or armor_titles or support_titles
-    or misc_titles %}
+  {% if weapon_titles or armor_titles or support_titles or misc_titles %}
     <div class="warrior-titles-section mt-5 pt-4 border-top border-secondary">
       <h1 id="warrior-titles"
           class="text-center class-header my-4 text-uppercase tracking-wide text-dark fw-bold">Warrior Titles</h1>
@@ -230,4 +231,4 @@
       {% endif %}
     </div>
   {% endif %}
-{% endblock %}
+{% endblock class_info %}

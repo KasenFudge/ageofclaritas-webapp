@@ -2,6 +2,9 @@
 
 {% load static %}
 
+{% block styles %}
+  <link href="{% static 'rulebook/css/rulebook.css' %}" rel="stylesheet" />
+{% endblock styles %}
 {% block content %}
   <div class="container-fluid text-dark bg-white">
     <div class="row">
@@ -59,4 +62,4 @@
       </main>
     </div>
   </div>
-{% endblock %}
+{% endblock content %}

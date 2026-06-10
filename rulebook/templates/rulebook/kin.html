@@ -2,23 +2,26 @@
 
 {% load static %}
 
+{% block styles %}
+  <link href="{% static "rulebook/css/rulebook.css" %}" rel="stylesheet" />
+{% endblock styles %}
 {% block content %}
   <div class="container-fluid text-dark bg-white">
     <div class="row">
-      {% include 'rulebook/kin_sidebar.html' %}
+      {% include "rulebook/kin_sidebar.html" %}
       <main class="col-12 col-lg-9 py-4 px-md-4">
         <h1 class="text-center page-header mb-3 display-4 fw-bold text-uppercase tracking-wide text-dark">Kin</h1>
         <div class="row justify-content-center text-center mb-5">
           <div class="col-xl-10 lead text-dark">
             <p class="mb-3">
-              A Kin is the ancestry of a character. A character's Kin will decide
+              A Kin is the ancestry of a character. A character"s Kin will decide
               their appearance and will influence how the character will act.
             </p>
             <div class="p-3 my-4 bg-light rounded border border-secondary-subtle shadow-sm text-start fs-6 lh-lg text-dark">
               <h5 class="text-primary fw-bold mb-2 text-uppercase tracking-wider small">
                 <i class="bi bi-shield-shaded me-1"></i> Kin Attributes
               </h5>
-              Every Kin has unique Attributes (listed within each Kin's Page).
+              Every Kin has unique Attributes (listed within each Kin"s Page).
               Players may select one to start with and may learn two more by
               completing Kin Quests during the course of an event.
               <span class="text-danger fw-semibold d-block mt-1">
@@ -53,4 +56,4 @@
       </main>
     </div>
   </div>
-{% endblock %}
+{% endblock content %}
