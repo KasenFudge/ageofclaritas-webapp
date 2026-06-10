@@ -67,52 +67,52 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         "payment_status_display",
         "checked_in",
     ]
-    list_filter = ["event", "checked_in", WeaponRentalFilter, "arrival_time"]
+    list_filter = ["event", "checked_in", WeaponRentalFilter, "declared_arrival_time"]
     search_fields = ["user__username", "user__first_name", "user__last_name", "event__title"]
-    ordering = ["arrival_time", "user__last_name", "user__first_name"]
+    ordering = ["declared_arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
     list_select_related = ("event", "user", "order")
 
-    readonly_fields = ["arrival_time", "base_price_cents", "discounts", "additional_items"]
+    readonly_fields = ["declared_arrival_time", "base_price_cents", "discounts", "additional_items"]
 
     fieldsets = (
         (
             "Attendance",
             {
-                "fields": ("checked_in", "arrival_time"),
+                "fields": ["checked_in", "declared_arrival_time"],
                 "description": "Core check-in utility for game masters managing player check-ins at the gate.",
             },
         ),
         (
             "Registration Context",
             {
-                "fields": ("user", "event"),
+                "fields": ["user", "event"],
                 "description": "The specific player account and timeline anchor linked to this ticket.",
             },
         ),
         (
             "Financial & Transaction Ledger",
             {
-                "fields": (
+                "fields": [
                     "final_price_cents",
                     "base_price_cents",
-                ),
+                ],
                 "description": "Pricing information for this registration.",
             },
         ),
         (
             "Payload Data",
             {
-                "fields": ("discounts", "additional_items"),
+                "fields": ["discounts", "additional_items"],
                 "classes": ("collapse",),
                 "description": "Raw JSON configurations detailing applied discount arrays and additional items.",
             },
         ),
     )
 
-    @admin.display(ordering="arrival_time", description="Scheduled Arrival")
+    @admin.display(ordering="declared_arrival_time", description="Scheduled Arrival")
     def formatted_arrival_time(self, obj):
-        return obj.arrival_time.strftime("%a, %b %d — %I:%M %p")
+        return obj.declared_arrival_time.strftime("%a, %b %d — %I:%M %p")
 
     @admin.display(ordering="final_price_cents", description="Price Paid")
     def formatted_final_price(self, obj):
