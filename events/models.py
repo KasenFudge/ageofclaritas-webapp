@@ -131,8 +131,8 @@ class EventRegistration(models.Model):
     additional_items = models.JSONField(default=list, blank=True)
 
     # Information for making payments
-    order = models.ForeignKey(
-        "payments.Order",
+    transaction = models.ForeignKey(
+        "payments.Transaction",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
@@ -143,7 +143,7 @@ class EventRegistration(models.Model):
     # A helper property to check if this ticket is cleared to enter
     @property
     def is_paid(self) -> bool:
-        return self.order is not None and self.order.payment_status == "complete"
+        return self.transaction is not None and self.transaction.payment_status == "complete"
 
     # Helper properties used in displaying pricing information in templates
     @property

@@ -44,7 +44,7 @@ classDiagram
         +PositiveIntegerField final_price_cents
         +JSONField discounts
         +JSONField additional_items
-        +ForeignKey order
+        +ForeignKey transaction
         +is_paid* bool
         +save(*args, **kwargs)
         +str()
@@ -60,7 +60,7 @@ classDiagram
     class CustomUser {
         <<external>>
     }
-    class Order {
+    class Transaction {
         <<external>>
     }
     class Survey {
@@ -76,8 +76,8 @@ classDiagram
     Event "1" <-- "0..*" EventRegistration : registrations (event)
     
     %% Cross-app Hooks
-    CustomUser "1" <-- "0..*" EventRegistration : registrations (user)
-    Order "0..1" o-- "1..*" EventRegistration : registrations (order)
+    CustomUser "1" <-- "0..*" EventRegistration : user (registrations)
+    Transaction "0..1" o-- "1..*" EventRegistration : transaction (registrations)
     Survey "0..*" --o "0..1" Event : surveys (event)
 
     %% STYLING: Nordic Minimalist
@@ -90,5 +90,5 @@ classDiagram
 
     %% External App Blocks (Light Charcoal / Gray Border)
     style CustomUser fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
-    style Order fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
+    style Transaction fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff
     style Survey fill:#4a5759,stroke:#354f52,stroke-width:1px,color:#fff

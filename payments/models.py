@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 
 
@@ -14,8 +13,7 @@ class PaymentMethod(models.TextChoices):
     IN_PERSON = "in_person", "In Person at Event"
 
 
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+class Transaction(models.Model):
     total_amount_cents = models.PositiveIntegerField()
     payment_status = models.CharField(
         max_length=15,
@@ -25,10 +23,10 @@ class Order(models.Model):
     payment_method = models.CharField(
         max_length=10,
         choices=PaymentMethod.choices,
-        default=PaymentMethod.ONLINE,  # Defaults to Online since users generate orders most often
+        default=PaymentMethod.ONLINE,  # Defaults to Online since users generate payments most often
     )
     stripe_session_id = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order #{self.id} - {self.user.username} ({self.payment_status})"
+        return f"Transaction #{self.id} - {self.user.username} ({self.payment_status})"

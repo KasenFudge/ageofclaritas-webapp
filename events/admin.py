@@ -71,7 +71,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     search_fields = ["user__username", "user__first_name", "user__last_name", "event__title"]
     ordering = ["declared_arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
-    list_select_related = ("event", "user", "order")
+    list_select_related = ("event", "user", "transaction")
 
     readonly_fields = ["declared_arrival_time", "base_price_cents", "discounts", "additional_items"]
 
