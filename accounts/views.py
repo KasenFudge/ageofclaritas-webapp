@@ -18,7 +18,7 @@ def upcoming_events_view(request):
     # 2. Query for all future event registrations in the household
     household_pool = (
         EventRegistration.objects.filter(event__start_time__gte=now)
-        .select_related("user", "event", "order")
+        .select_related("user", "event", "transaction")
         .order_by("event__start_time")
     )
 
@@ -44,11 +44,11 @@ def outstanding_balance_view(request):
     household_ids = [user.id] + child_ids
 
     # The Precise Balance Logic:
-    # 1. Must be INCOMPLETE or have no order attached.
+    # 1. Must be INCOMPLETE or have no transaction attached.
     # 2. Must either be a FUTURE event, OR a PAST event where they actually checked in.
     outstanding_registrations = (
         EventRegistration.objects.filter(user_id__in=household_ids)
-        .filter(Q(order__isnull=True) | Q(order__payment_status=PaymentStatus.INCOMPLETE))
+        .filter(Q(transaction__isnull=True) | Q(transaction__payment_status=PaymentStatus.INCOMPLETE))
         .filter(Q(event__start_time__gte=now) | Q(checked_in=True))
         .select_related("user", "event")
         .order_by("event__start_time")
