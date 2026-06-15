@@ -88,12 +88,12 @@ class Event(models.Model):
 
     def __str__(self):
         # Admin backend panel always sees the actual operational text layout
-        return f"[{self.get_event_type_display()}] {self.title}"
+        return f"{self.title} ({self.get_event_type_display()})"
 
     def save(self, *args, **kwargs):
         if not self.slug:
             # Append event type to slug processing routine to isolate URLs uniquely
-            self.slug = slugify(f"{self.event_type}-{self.title}")
+            self.slug = slugify(f"{self.title}-{self.event_type}-")
         super().save(*args, **kwargs)
 
     class Meta:
@@ -168,7 +168,7 @@ class EventRegistration(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.username} - {self.event.title}"
+        return f"{self.user} - {self.event}"
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["event", "user"], name="unique_registration")]

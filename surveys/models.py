@@ -34,7 +34,7 @@ class Survey(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.title and self.event:
-            self.title = f"{self.event.get_event_type_display()} Survey: {self.event.title}"
+            self.title = f"Survey: {self.event}"
         super().save(*args, **kwargs)
 
     def clean(self):
