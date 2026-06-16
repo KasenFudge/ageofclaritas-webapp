@@ -36,7 +36,7 @@ class EventRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = EventRegistration
-        fields = ["declared_arrival_time", "weapon_rental", "payment_method"]
+        fields = ["declared_arrival_time", "weapon_rental"]
 
     def __init__(self, *args, event=None, user=None, **kwargs):
         self.event = event
@@ -45,18 +45,22 @@ class EventRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        arrival_time = cleaned_data.get("declared_arrival_time")
+        declared_arrival_time = cleaned_data.get("declared_arrival_time")
 
         # Bounds Validation: Verify the entire timestamp fits cleanly inside the event window
-        if arrival_time and self.event:
+        if declared_arrival_time and self.event:
             # Safely handle timezone boundaries if the input is naive
-            if timezone.is_naive(arrival_time):
-                arrival_time = timezone.make_aware(arrival_time, timezone.get_current_timezone())
+            if timezone.is_naive(declared_arrival_time):
+                declared_arrival_time = timezone.make_aware(declared_arrival_time, timezone.get_current_timezone())
 
-            if arrival_time < self.event.start_time:
-                self.add_error("arrival_time", "Your arrival time cannot be before the event officially begins.")
+            if declared_arrival_time < self.event.start_time:
+                self.add_error(
+                    "declared_arrival_time", "Your arrival time cannot be before the event officially begins."
+                )
 
-            if self.event.end_time and arrival_time > self.event.end_time:
-                self.add_error("arrival_time", "Your arrival time cannot be after the event has already ended.")
+            if self.event.end_time and declared_arrival_time > self.event.end_time:
+                self.add_error(
+                    "declared_arrival_time", "Your arrival time cannot be after the event has already ended."
+                )
 
         return cleaned_data
