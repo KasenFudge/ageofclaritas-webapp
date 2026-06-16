@@ -72,6 +72,9 @@ def checkout_page(request):
         # Update all the outstanding registrations to point to this transaction
         outstanding_registrations.update(transaction=transaction)
 
+        # Drop a temporary security token into the user's browser session
+        request.session["payment_intent_authorized"] = intent.id
+
         context = {
             "client_secret": intent.client_secret,
             "stripe_publishable_key": settings.STRIPE_PUBLISHABLE_KEY,
@@ -125,3 +128,19 @@ def stripe_webhook(request):
 
     # Always return a 200 OK response to let Stripe know you safely received the message
     return HttpResponse(status=200)
+
+
+@login_required
+def payment_success_page(request):
+    """
+    Payment landing view that only allows people from a checkout session.
+    """
+
+    # Check if they have the active authorization token in their browser session from the checkout page.
+    if "payment_intent_authorized" not in request.session:
+        return redirect("accounts:outstanding_balance")
+
+    # POP the token out of the session (If we decide to use it later)
+    authorized_intent_id = request.session.pop("payment_intent_authorized")  # noqa: F841
+
+    return render(request, "payments/success.html")

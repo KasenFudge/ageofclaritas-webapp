@@ -9,28 +9,27 @@
   <div class="container my-5" style="max-width: 600px;">
     <div class="card shadow-sm p-4">
       <h2 class="h4 mb-3 text-center">Secure Checkout</h2>
-
       <div class="alert alert-light border mb-4">
         <h6 class="text-muted text-uppercase small font-weight-bold">Settlement Summary</h6>
         <p class="mb-1 font-weight-bold">Total Due: ${{ amount_display }}</p>
         <small class="text-muted">Clearing outstanding registration balances.</small>
       </div>
-
       <form id="payment-form">
         <div id="payment-element" class="mb-3"></div>
-
-        <div id="error-message" class="alert alert-danger d-none mb-3" role="alert"></div>
-
+        <div id="error-message"
+             class="alert alert-danger d-none mb-3"
+             role="alert"></div>
         <button id="submit-button" class="btn btn-primary btn-block w-100 py-2">
           <span id="button-text">Pay ${{ amount_display }} Now</span>
-          <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+          <span id="spinner"
+                class="spinner-border spinner-border-sm d-none"
+                role="status"
+                aria-hidden="true"></span>
         </button>
       </form>
     </div>
   </div>
-
   <script src="https://js.stripe.com/v3/"></script>
-
   <script>
     // 1. Pass the configuration tokens compiled by your Django view context layer securely
     const stripeKey = "{{ stripe_publishable_key }}";
