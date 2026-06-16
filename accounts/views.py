@@ -27,7 +27,6 @@ def upcoming_events_view(request):
     child_registrations = household_pool.filter(user_id__in=child_ids)
 
     context = {
-        "title": "Upcoming Events",
         "personal_registrations": personal_registrations,
         "has_children": len(child_ids) > 0,
         "child_registrations": child_registrations,
@@ -59,7 +58,6 @@ def outstanding_balance_view(request):
     total_balance = total_balance_cents / 100.0
 
     context = {
-        "title": "Outstanding Household Balance",
         "outstanding_registrations": outstanding_registrations,
         "total_balance": total_balance,
     }

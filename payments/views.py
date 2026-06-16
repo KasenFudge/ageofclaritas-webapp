@@ -1,10 +1,12 @@
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db import transaction as db_transaction
 from django.db.models import Q, Sum
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 
 from events.models import EventRegistration
 
@@ -80,3 +82,46 @@ def checkout_page(request):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    """
+    Listens for signals from stripe to capture completed transactions in real time
+    """
+    payload = request.body
+    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+
+    event = None
+
+    try:
+        # Construct and verify the event using Stripe's official library.
+        # This prevents malicious actors from spoofing fake payments to the server.
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except ValueError:
+        # Invalid payload layout
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError:
+        # Cryptographic signature matching verification failed
+        return HttpResponse(status=400)
+    # Handle the specific payment intent success signal
+    if event["type"] == "payment_intent.succeeded":
+        payment_intent = event["data"]["object"]
+        stripe_id = payment_intent["id"]
+
+        with db_transaction.atomic():
+            try:
+                # Find the local transaction matching Stripe's unique intent identifier
+                local_transaction = Transaction.objects.select_for_update().get(stripe_session_id=stripe_id)
+
+                # If it's already marked complete (e.g., from a duplicate hook), we can skip safely
+                if local_transaction.payment_status != PaymentStatus.COMPLETE:
+                    local_transaction.payment_status = PaymentStatus.COMPLETE
+                    local_transaction.save()
+            except Transaction.DoesNotExist:
+                # Log this error if a payment succeeded on Stripe but has no matching row in your system
+                pass
+
+    # Always return a 200 OK response to let Stripe know you safely received the message
+    return HttpResponse(status=200)

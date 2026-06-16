@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Age of Claritas
-    {% if title %}- {{ title }}{% endif %}
+  <title>
+    {% block title_tag %}Age of Claritas{% endblock title_tag %}
   </title>
   <!---->
   <link rel="icon"

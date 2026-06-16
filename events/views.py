@@ -11,16 +11,6 @@ from .forms import EventRegistrationForm
 from .models import Event, EventRegistration, EventType
 
 
-# Macro to set the current app
-def SetCurrentApp(context):
-    context["current_app"] = "events"
-
-
-# Macro to set the title of the page
-def SetPageTitle(context, title):
-    context["title"] = title
-
-
 # Create your views here.
 class IndexView(ListView):
     model = Event
@@ -45,9 +35,6 @@ class IndexView(ListView):
         context["feast_events"] = events.filter(event_type=EventType.FEAST)
         context["other_events"] = events.filter(event_type=EventType.OTHER)
 
-        SetCurrentApp(context)
-        SetPageTitle(context, "Events")
-
         return context
 
 
@@ -58,13 +45,9 @@ class EventDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = self.object
 
         # Give Context EventType for Comparison
         context["EventType"] = EventType
-
-        SetCurrentApp(context)
-        SetPageTitle(context, event.title)
 
         return context
 
@@ -149,5 +132,5 @@ def event_registration_view(request, slug):
         # Build empty display form instance on safe GET request methods
         form = EventRegistrationForm(event=event, user=user)
 
-    context = {"form": form, "event": event, "title": f"Register for {event.title}"}
+    context = {"form": form, "event": event}
     return render(request, "events/event_registration.html", context)

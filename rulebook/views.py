@@ -5,27 +5,9 @@ from django.views.generic import DetailView, ListView, TemplateView
 from .models import Class, ClassType, Kin, Talent, TalentType
 
 
-# Macro to set the current app
-def SetCurrentApp(context):
-    context["current_app"] = "rulebook"
-
-
-# Macro to set the title of the page
-def SetPageTitle(context, title):
-    context["title"] = title
-
-
 # Create your views here.
 class IndexView(TemplateView):
     template_name = "rulebook/index.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        SetCurrentApp(context)
-        SetPageTitle(context, "Rulebook")
-
-        return context
 
 
 class ClassesView(ListView):
@@ -48,9 +30,6 @@ class ClassesView(ListView):
 
         context["sidebar_guilds"] = self.object_list
         context["classless_record"] = Class.objects.filter(class_type=ClassType.CLASSLESS).first()
-
-        SetCurrentApp(context)
-        SetPageTitle(context, "Classes")
 
         return context
 
@@ -156,10 +135,6 @@ class ClassDetailView(DetailView):
         context["support_titles"] = _grab_talent_type(TalentType.SUPPORT_WARRIOR_TITLE, talents)
         context["misc_titles"] = _grab_talent_type(TalentType.MISC_WARRIOR_TITLE, talents)
 
-        # Overarching Page Information
-        SetCurrentApp(context)
-        SetPageTitle(context, guild.name)
-
         return context
 
 
@@ -170,14 +145,6 @@ class KinView(ListView):
 
     def get_queryset(self):
         return Kin.objects.prefetch_related("attributes", "kin_images")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        SetCurrentApp(context)
-        SetPageTitle(context, "Kin")
-
-        return context
 
 
 class KinDetailView(DetailView):
@@ -195,12 +162,6 @@ class KinDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Self.object is already the cached target row from get_object()!
-        kin = self.object
-
-        SetCurrentApp(context)
-        SetPageTitle(context, kin.name)
-
         # Uses default model metadata sorting rules automatically
         context["kin_list"] = Kin.objects.all()
 
@@ -210,34 +171,10 @@ class KinDetailView(DetailView):
 class CharacterCreationView(TemplateView):
     template_name = "rulebook/character_creation.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        SetCurrentApp(context)
-        SetPageTitle(context, "Character Creation")
-
-        return context
-
 
 class TalentsView(TemplateView):
     template_name = "rulebook/talents.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        SetCurrentApp(context)
-        SetPageTitle(context, "Talents")
-
-        return context
-
 
 class DefinitionsView(TemplateView):
     template_name = "rulebook/definitions.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        SetCurrentApp(context)
-        SetPageTitle(context, "Definitions")
-
-        return context

@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block title_tag %}
+  Age of Claritas - {{ event.display_title }}
+{% endblock title_tag %}
+
 {% block content %}
   <div class="container my-5">
     <div class="card shadow border-0 mx-auto"
