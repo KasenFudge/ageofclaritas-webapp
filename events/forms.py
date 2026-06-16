@@ -5,8 +5,7 @@ from .models import EventRegistration
 
 
 class EventRegistrationForm(forms.ModelForm):
-    # CHANGED: Swapped to DateTimeField with explicit date + time processing support
-    arrival_time = forms.DateTimeField(
+    declared_arrival_time = forms.DateTimeField(
         input_formats=[
             "%Y-%m-%dT%H:%M",  # Standard HTML5 datetime-local format (e.g., 2026-05-23T15:30)
             "%m/%d/%Y %I:%M %p",  # Standard text input format (e.g., 05/23/2026 03:30 PM)
@@ -37,7 +36,7 @@ class EventRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = EventRegistration
-        fields = ["arrival_time", "weapon_rental", "payment_method"]
+        fields = ["declared_arrival_time", "weapon_rental", "payment_method"]
 
     def __init__(self, *args, event=None, user=None, **kwargs):
         self.event = event
@@ -46,7 +45,7 @@ class EventRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        arrival_time = cleaned_data.get("arrival_time")
+        arrival_time = cleaned_data.get("declared_arrival_time")
 
         # Bounds Validation: Verify the entire timestamp fits cleanly inside the event window
         if arrival_time and self.event:
