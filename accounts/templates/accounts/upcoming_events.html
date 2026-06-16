@@ -14,8 +14,7 @@
         <div class="card-information">
           <h3 class="event-title">{{ reg.event.title }}</h3>
           <p class="event-time">
-            Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{
-            reg.arrival_time|date:"g:i A" }}
+            Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{ reg.arrival_time|date:"g:i A" }}
           </p>
         </div>
         <div class="card-payment">
@@ -38,8 +37,7 @@
             <small class="attendee-tag">For: {{ reg.user.get_full_name|default:reg.user.username }}</small>
             <h3 class="event-title">{{ reg.event.title }}</h3>
             <p class="event-time">
-              Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{
-              reg.arrival_time|date:"g:i A" }}
+              Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{ reg.arrival_time|date:"g:i A" }}
             </p>
           </div>
           <div class="card-payment">

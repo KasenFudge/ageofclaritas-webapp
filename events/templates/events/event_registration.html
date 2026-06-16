@@ -51,8 +51,7 @@
               {% else %}
                 <label class="form-label fw-semibold mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {# Automatically apply the bootstrap class dynamically #}
-                {% if
-                  field.field.widget.input_type == 'checkbox' %}
+                {% if field.field.widget.input_type == 'checkbox' %}
                   <div class="form-check">{{ field }}</div>
                 {% else %}
                   {# Adds the required form-control class to inputs #} {{ field }}
