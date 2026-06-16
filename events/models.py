@@ -121,7 +121,6 @@ class EventRegistration(models.Model):
     # Day of Event Administration
     checked_in = models.BooleanField(default=False)
     declared_arrival_time = models.DateTimeField()
-    # TODO: How to handle validating when user actually arrives at event for late arrival discounts.
     actual_arrival_time = models.DateTimeField(blank=True, null=True)
 
     # Ticket Pricing Information

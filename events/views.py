@@ -90,9 +90,9 @@ def event_registration_view(request, slug):
         form = EventRegistrationForm(request.POST, event=event, user=user)
 
         if form.is_valid():
-            arrival_time = form.cleaned_data.get("arrival_time") or event.start_time
+            declared_arrival_time = form.cleaned_data.get("arrival_time") or event.start_time
             weapon_rental = form.cleaned_data.get("weapon_rental", False)
-            payment_method = form.cleaned_data.get("payment_method", "cash")
+            payment_method = form.cleaned_data.get("payment_method", "in_person")
 
             # Compute transaction parameters
             registration_time = timezone.now()
@@ -100,7 +100,7 @@ def event_registration_view(request, slug):
                 event=event,
                 user=user,
                 registration_time=registration_time,
-                arrival_time=arrival_time,
+                arrival_time=declared_arrival_time,
                 student_discount=student_discount,
                 weapon_rental=weapon_rental,
             )
@@ -109,7 +109,7 @@ def event_registration_view(request, slug):
             registration = form.save(commit=False)
             registration.event = event
             registration.user = user
-            registration.arrival_time = arrival_time
+            registration.declared_arrival_time = declared_arrival_time
 
             # Apply calculated invoice rows
             registration.base_price_cents = quote.base_cents
