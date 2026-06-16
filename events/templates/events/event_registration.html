@@ -55,8 +55,7 @@
                   field.field.widget.input_type == 'checkbox' %}
                   <div class="form-check">{{ field }}</div>
                 {% else %}
-                  {# Adds the required form-control class to inputs #} {{
-                  field }}
+                  {# Adds the required form-control class to inputs #} {{ field }}
                 {% endif %}
                 {% if field.help_text %}
                   <div class="form-text mt-1">{{ field.help_text }}</div>
