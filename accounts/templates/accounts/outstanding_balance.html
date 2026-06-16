@@ -4,71 +4,96 @@
   Age of Claritas - Outstanding Balance
 {% endblock title_tag %}
 {% block content %}
-  <h2>Outstanding Balance</h2>
-  {% if outstanding_registrations %}
-    <p>The following registrations are currently unpaid - either pay now online or bring payment in person the day of the event:</p>
-    <div class="unpaid-items-list">
-      {% for reg in outstanding_registrations %}
-        <div class="billing-card">
-          <div class="billing-header">
-            <h3 class="event-title">{{ reg.event.title }}</h3>
-            <p class="event-time">Starts: {{ reg.event.start_time|date:"g:i A" }}</p>
-          </div>
-          <div class="billing-breakdown">
-            <!-- Base Price -->
-            <div class="line-item base-line">
-              <span>Base Price</span>
-              <span>${{ reg.base_price|floatformat:2 }}</span>
+  <div class="container py-4">
+    <h2 class="mb-3 fw-bold text-dark border-bottom pb-2">Outstanding Balance</h2>
+    {% if outstanding_registrations %}
+      <p class="text-muted mb-4">
+        The following registrations are currently unpaid—you can securely pay online now or bring your payment in person on the day of the event.
+      </p>
+      <div class="row g-4">
+        {% for reg in outstanding_registrations %}
+          <div class="col-12 col-lg-8 mx-auto">
+            <div class="card shadow-sm border-0 bg-white mb-3">
+              <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                <div>
+                  <h3 class="h5 mb-1 fw-bold text-truncate" style="max-width: 350px;">{{ reg.event.title }}</h3>
+                  <small class="text-light-50"><i class="bi bi-clock me-1"></i> Starts: {{ reg.event.start_time|date:"g:i A" }}</small>
+                </div>
+                <span class="badge bg-warning text-dark px-2.5 py-1.5 fw-semibold shadow-sm">UNPAID</span>
+              </div>
+              <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                    <span class="text-dark fw-medium">Base Price</span>
+                    <span class="text-dark fw-bold">${{ reg.base_price|floatformat:2 }}</span>
+                  </li>
+                  {% for discount in reg.formatted_discounts %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-2 bg-success-subtle text-success-emphasis border-0">
+                      <span class="small"><i class="bi bi-tag-fill me-1"></i> {{ discount.reason }}</span>
+                      <span class="small fw-semibold">-${{ discount.amount|floatformat:2 }}</span>
+                    </li>
+                  {% endfor %}
+                  {% for item in reg.formatted_additional_items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-2 bg-light text-muted border-0">
+                      <span class="small"><i class="bi bi-plus-circle me-1"></i> {{ item.reason }}</span>
+                      <span class="small fw-semibold">+${{ item.amount|floatformat:2 }}</span>
+                    </li>
+                  {% endfor %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3 bg-light border-top border-2">
+                    <span class="text-secondary fw-semibold">Registration Subtotal:</span>
+                    <span class="text-dark h5 mb-0 fw-bold">${{ reg.final_price|floatformat:2 }}</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <!-- Discount Information -->
-            {% for discount in reg.formatted_discounts %}
-              <div class="line-item text-success small">
-                <span>- {{ discount.reason }}</span>
-                <span>-${{ discount.amount|floatformat:2 }}</span>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="col-12 col-lg-8 mx-auto mt-4">
+        <div class="card shadow-sm border-0 bg-white border-top border-primary border-4">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h4 class="h5 text-secondary fw-bold mb-0">Total Amount Due</h4>
+                <small class="text-muted">Combined outstanding balance for your active registrations</small>
               </div>
-            {% endfor %}
-            <!-- Additional Item Information -->
-            {% for item in reg.formatted_additional_items %}
-              <div class="line-item text-muted small">
-                <span>+ {{ item.reason }}</span>
-                <span>+${{ item.amount|floatformat:2 }}</span>
+              <div class="text-end">
+                <span class="display-6 fw-bold text-primary">${{ total_balance|floatformat:2 }}</span>
               </div>
-            {% endfor %}
-            <!-- Final Price -->
-            <hr class="billing-divider" />
-            <div class="line-item item-total fw-bold">
-              <span>Registration Subtotal:</span>
-              <span>${{ reg.final_price|floatformat:2 }}</span>
+            </div>
+            <hr class="text-muted" />
+            <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-3 mt-3">
+              <span class="text-muted small d-flex align-items-center gap-1 order-2 order-md-1">
+                <i class="bi bi-shield-lock-fill text-success"></i> Secure, encrypted checkout
+              </span>
+              <form action="{% url 'payments:checkout' %}"
+                    method="post"
+                    class="w-100 w-md-auto order-1 order-md-2">
+                {% csrf_token %}
+                {% for reg in outstanding_registrations %}
+                  <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
+                {% endfor %}
+                <button type="submit"
+                        class="btn btn-success btn-lg w-100 px-5 fw-bold shadow-sm">
+                  Pay Now Online <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </form>
             </div>
           </div>
         </div>
-      {% endfor %}
-    </div>
-    <div class="payment-summary-box mt-4 p-4 border rounded bg-light">
-      <div class="line-item final-total">
-        <h3 class="mb-0 fw-bold">Total Amount Due</h3>
-        <div class="text-end">
-          <span>${{ total_balance|floatformat:2 }}</span>
+      </div>
+    {% else %}
+      <div class="row mt-5">
+        <div class="col-12 col-md-8 mx-auto text-center py-5 bg-white rounded shadow-sm">
+          <i class="bi bi-check-circle fs-1 text-success d-block mb-3"></i>
+          <h3 class="fw-bold text-dark mb-2">Account Fully Cleared</h3>
+          <p class="text-muted mb-4">You have no outstanding charges at this time. All schedules are paid up!</p>
+          <a href="{% url 'accounts:upcoming_events' %}"
+             class="btn btn-primary px-4 fw-semibold shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i> Return to My Schedule
+          </a>
         </div>
       </div>
-      <hr />
-      <div class="payment-actions d-flex justify-content-end gap-3 align-items-center">
-        <span class="text-muted small">
-          <i class="bi bi-lock-fill"></i> Secure, encrypted checkout
-        </span>
-        <form action="{% url 'payments:payment_start' %}" method="post">
-          {% csrf_token %}
-          {% for reg in outstanding_registrations %}
-            <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
-          {% endfor %}
-          <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">Pay Now Online</button>
-        </form>
-      </div>
-    </div>
-  {% else %}
-    <div class="success-state text-center py-5">
-      <h3>You have no outstanding charges at this time.</h3>
-      <a href="{% url 'accounts:upcoming_events' %}" class="btn btn-primary">Return to My Schedule</a>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock content %}

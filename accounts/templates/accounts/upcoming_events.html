@@ -6,60 +6,93 @@
   Age of Claritas - Upcoming Registered Events
 {% endblock title_tag %}
 {% block content %}
-  <div class="container">
-    <!-- Personal Upcoming Events -->
-    <h2>My Upcoming Schedule</h2>
-    {% for reg in personal_registrations %}
-      <div class="event-card">
-        <div class="card-information">
-          <h3 class="event-title">{{ reg.event.title }}</h3>
-          <p class="event-time">
-            Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{ reg.arrival_time|date:"g:i A" }}
-          </p>
-        </div>
-        <div class="card-payment">
-          {% if reg.is_paid %}
-            <span class="badge badge-complete">COMPLETE</span>
-          {% else %}
-            <span class="badge badge-incomplete">INCOMPLETE</span>
-          {% endif %}
-        </div>
-      </div>
-    {% empty %}
-      <p>You are not registered for any upcoming events.</p>
-    {% endfor %}
-    <!-- Child Upcoming Events -->
-    {% if has_children %}
-      <h2>Household & Child Registrations</h2>
-      {% for reg in child_registrations %}
-        <div class="event-card">
-          <div class="card-information">
-            <small class="attendee-tag">For: {{ reg.user.get_full_name|default:reg.user.username }}</small>
-            <h3 class="event-title">{{ reg.event.title }}</h3>
-            <p class="event-time">
-              Starts: {{ reg.event.start_time|date:"g:i A" }} | Arriving: {{ reg.arrival_time|date:"g:i A" }}
-            </p>
-          </div>
-          <div class="card-payment">
-            {% if reg.is_paid %}
-              <span class="badge badge-complete">COMPLETE</span>
-            {% else %}
-              <span class="badge badge-incomplete">INCOMPLETE</span>
-            {% endif %}
+  <div class="container py-4">
+    <h2 class="mb-4 fw-bold text-dark border-bottom pb-2">My Upcoming Schedule</h2>
+    <div class="row g-3 mb-5">
+      {% for reg in personal_registrations %}
+        <div class="col-12">
+          <div class="card h-100 shadow-sm border-0 bg-white">
+            <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4">
+              <div>
+                <h3 class="h5 card-title fw-bold text-primary mb-2">{{ reg.event.title }}</h3>
+                <p class="card-text text-muted small mb-0 d-flex align-items-center gap-2">
+                  <i class="bi bi-calendar3"></i>
+                  <span>Starts: <strong>{{ reg.event.start_time|date:"g:i A" }}</strong></span>
+                  <span class="text-secondary">|</span>
+                  <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
+                </p>
+              </div>
+              <div class="mt-3 mt-md-0">
+                {% if reg.is_paid %}
+                  <span class="badge bg-success px-3 py-2 fs-6 shadow-sm"><i class="bi bi-check-circle-fill me-1"></i> COMPLETE</span>
+                {% else %}
+                  <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm"><i class="bi bi-exclamation-triangle-fill me-1"></i> INCOMPLETE</span>
+                {% endif %}
+              </div>
+            </div>
           </div>
         </div>
       {% empty %}
-        <p>No child accounts are currently registered for upcoming events.</p>
+        <div class="col-12">
+          <div class="alert alert-info border-0 shadow-sm p-4 text-center"
+               role="alert">
+            <i class="bi bi-calendar-x fs-3 d-block mb-2 text-info"></i>
+            <span class="fw-semibold">You are not registered for any upcoming events.</span>
+          </div>
+        </div>
       {% endfor %}
+    </div>
+    {% if has_children %}
+      <h2 class="mb-4 fw-bold text-dark border-bottom pb-2">Household & Child Registrations</h2>
+      <div class="row g-3 mb-5">
+        {% for reg in child_registrations %}
+          <div class="col-12">
+            <div class="card h-100 shadow-sm border-0 bg-white border-start border-info border-4">
+              <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4">
+                <div>
+                  <span class="badge bg-info text-dark mb-2 px-2 py-1 fw-bold text-uppercase tracking-wider small shadow-sm">
+                    <i class="bi bi-person-fill"></i> For: {{ reg.user.get_full_name|default:reg.user.username }}
+                  </span>
+                  <h3 class="h5 card-title fw-bold text-dark mb-2">{{ reg.event.title }}</h3>
+                  <p class="card-text text-muted small mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar3"></i>
+                    <span>Starts: <strong>{{ reg.event.start_time|date:"g:i A" }}</strong></span>
+                    <span class="text-secondary">|</span>
+                    <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
+                  </p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                  {% if reg.is_paid %}
+                    <span class="badge bg-success px-3 py-2 fs-6 shadow-sm"><i class="bi bi-check-circle-fill me-1"></i> COMPLETE</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm"><i class="bi bi-exclamation-triangle-fill me-1"></i> INCOMPLETE</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="alert alert-light border border-dashed p-4 text-center"
+                 role="alert">
+              <p class="text-muted mb-0">No child accounts are currently registered for upcoming events.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
-    <div class="card mb-4 shadow-sm">
-      <div class="card-body d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="card-title mb-1 fw-bold">Account Billing</h5>
+    <div class="card mb-4 shadow-sm border-0 bg-light-subtle border-start border-primary border-4">
+      <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center p-4">
+        <div class="mb-3 mb-sm-0">
+          <h5 class="card-title mb-1 fw-bold text-dark d-flex align-items-center gap-2">
+            <i class="bi bi-credit-card-2-front text-primary"></i> Account Billing
+          </h5>
           <p class="card-text text-muted small mb-0">View statements, invoices, and outstanding balances.</p>
         </div>
         <a href="{% url 'accounts:outstanding_balance' %}"
-           class="btn btn-outline-primary btn-sm">Manage Billing</a>
+           class="btn btn-outline-primary btn-md px-4 fw-semibold shadow-sm text-nowrap">
+          Manage Billing <i class="bi bi-arrow-right-short ms-1"></i>
+        </a>
       </div>
     </div>
   </div>
