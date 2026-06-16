@@ -173,8 +173,8 @@ class EventRegistration(models.Model):
         constraints = [models.UniqueConstraint(fields=["event", "user"], name="unique_registration")]
 
     def save(self, *args, **kwargs):
-        if not self.arrival_time and self.event:
-            self.arrival_time = self.event.start_time
+        if not self.declared_arrival_time and self.event:
+            self.declared_arrival_time = self.event.start_time
         super().save(*args, **kwargs)
 
 
