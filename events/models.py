@@ -139,10 +139,15 @@ class EventRegistration(models.Model):
         help_text="The parent transaction cart used to clear this registration online.",
     )
 
-    # A helper property to check if this ticket is cleared to enter
     @property
     def is_paid(self) -> bool:
+        """Returns True if the linked transaction exists and is marked complete"""
         return self.transaction is not None and self.transaction.payment_status == "complete"
+
+    @property
+    def is_refunded(self) -> bool:
+        """Returns True if the linked transaction exists and is marked refunded"""
+        return self.transaction is not None and self.transaction.payment_status == "refunded"
 
     # Helper properties used in displaying pricing information in templates
     @property
