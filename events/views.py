@@ -120,9 +120,26 @@ def event_registration_view(request, slug):
             # Commit record to db tables
             registration.save()
 
+            # Auto clear $0.00 Tickets (First-Time Discount) via creating a dummy inline Transaction that is complete.
+            if quote.final_cents == 0:
+                from payments.models import Transaction
+
+                # Build the $0.00 Transaction marked complete.
+                zero_dollar_transaction = Transaction.objects.create(
+                    total_amount_cents=0,
+                    payment_status="complete",
+                    payment_method="online" if payment_method == "online" else "in_person",
+                )
+
+                registration.transaction = zero_dollar_transaction
+                registration.save()
+
+                messages.success(request, f"Successfully registered for {event.title} (Free for First-Time Attendees)!")
+                return redirect("accounts:upcoming_events")
+
             # Dynamic checkout rerouting
             if payment_method == "online":
-                return redirect("payments:payment_start", registration_id=registration.id)
+                return redirect("payments:checkout")
 
             messages.success(request, f"Successfully registered for {event.title}!")
             return redirect("accounts:upcoming_events")
