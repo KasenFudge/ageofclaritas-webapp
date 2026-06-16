@@ -1,5 +1,17 @@
-.event-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Custom Purple Interaction Buttons */
+.btn-purple {
+  color: #8957e5;
+  border-color: #8957e5;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-purple:hover,
+.btn-purple:active,
+.btn-purple:focus {
+  color: #ffffff !important;
+  background-color: #8957e5 !important;
+  border-color: #8957e5 !important;
+  /* Clean subtle shadow to match your bootstrap design depth */
+  box-shadow: 0 0.125rem 0.25rem rgba(137, 87, 229, 0.4) !important;
 }

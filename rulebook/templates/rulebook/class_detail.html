@@ -1,10 +1,5 @@
-{% extends 'rulebook/class_detail_base.html' %}
-
 {% load static %}
 
-{% block styles %}
-  <link href="{% static 'rulebook/css/rulebook.css' %}" rel="stylesheet" />
-{% endblock styles %}
 {% block class_info %}
   <h1 id="{{ guild.slug }}"
       class="text-center class-header border-bottom pb-2 mb-4 text-dark fw-bold text-uppercase tracking-wide">
