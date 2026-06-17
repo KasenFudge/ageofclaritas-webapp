@@ -96,13 +96,22 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     list_per_page = 50
     list_select_related = ("event", "user", "transaction")
 
-    readonly_fields = ["declared_arrival_time", "base_price_cents", "discounts", "additional_items"]
+    readonly_fields = [
+        "declared_arrival_time",
+        "actual_arrival_time",
+        "base_price_cents",
+        "discounts",
+        "additional_items",
+    ]
 
     fieldsets = (
         (
             "Attendance",
             {
-                "fields": [("checked_in", "in_person_payment_received"), "declared_arrival_time"],
+                "fields": [
+                    ("checked_in", "in_person_payment_received"),
+                    ("declared_arrival_time", "actual_arrival_time"),
+                ],
                 "description": "Core check-in utility for game masters managing player check-ins at the gate.",
             },
         ),
