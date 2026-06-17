@@ -29,29 +29,30 @@
                   <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
                 </p>
               </div>
-              {# --- Column 2: Account Financial Status --- #}
-              <div class="text-md-end" style="min-width: 140px;">
-                <small class="text-muted d-block mb-1 text-uppercase fw-bold text-xs">Payment Status</small>
-                {% if reg.is_refunded %}
-                  <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i> REFUNDED
-                  </span>
-                {% elif reg.is_paid %}
-                  <span class="badge bg-success px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                    <i class="bi bi-check-circle-fill me-1"></i> COMPLETE
-                  </span>
-                {% else %}
-                  <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i> INCOMPLETE
-                  </span>
-                {% endif %}
-              </div>
-              {# --- Column 3: Event Interaction Utilities --- #}
-              <div class="text-md-end pt-2 pt-md-0">
-                <a href="#"
-                   class="btn btn-purple btn-md px-3 fw-semibold shadow-sm d-inline-flex align-items-center gap-2">
-                  <i class="bi bi-clipboard2-check"></i> Event Surveys
-                </a>
+              <div class="d-flex align-items-center gap-3">
+                {# --- Column 2: Account Financial Status --- #}
+                <div class="text-center">
+                  <small class="text-uppercase text-muted fw-bold d-block mb-1"
+                         style="font-size: 0.7rem;
+                                tracking-wide">Payment Status</small>
+                  {% if event.payment_complete %}
+                    <span class="badge bg-success px-3 py-2 text-uppercase fw-bold">
+                      <i class="bi bi-check-circle-fill me-1"></i> Complete
+                    </span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold">
+                      <i class="bi bi-exclaim-triangle-fill me-1"></i> Incomplete
+                    </span>
+                  {% endif %}
+                </div>
+                {# --- Column 3: Event Surveys --- #}
+                <div>
+                  <a href="#"
+                     class="btn btn-purple d-flex align-items-center gap-2 shadow-sm">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Event Surveys</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -76,7 +77,7 @@
           <div class="col-12">
             <div class="card h-100 shadow-sm border-0 bg-white border-start border-info border-4">
               <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4 gap-3">
-                {# --- Dependent Meta & Logistical Info --- #}
+                {# --- Column 1: Core Event Metrics --- #}
                 <div class="flex-grow-1">
                   <span class="badge bg-info text-dark mb-2 px-2 py-1 fw-bold text-uppercase tracking-wider small shadow-sm">
                     <i class="bi bi-person-fill"></i> For: {{ reg.user.get_full_name|default:reg.user.username }}
@@ -89,10 +90,14 @@
                     <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
                   </p>
                 </div>
-                {# --- Dependent Ledger Clearance --- #}
+                {# --- Column 2: Account Financial Status --- #}
                 <div class="text-md-end" style="min-width: 140px;">
                   <small class="text-muted d-block mb-1 text-uppercase fw-bold text-xs">Payment Status</small>
-                  {% if reg.is_paid %}
+                  {% if reg.is_refunded %}
+                    <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm w-100 text-center">
+                      <i class="bi bi-arrow-counterclockwise me-1"></i> REFUNDED
+                    </span>
+                  {% elif reg.is_paid %}
                     <span class="badge bg-success px-3 py-2 fs-6 shadow-sm w-100 text-center">
                       <i class="bi bi-check-circle-fill me-1"></i> COMPLETE
                     </span>
@@ -101,13 +106,6 @@
                       <i class="bi bi-exclamation-triangle-fill me-1"></i> INCOMPLETE
                     </span>
                   {% endif %}
-                </div>
-                {# --- Dependent Event Survey Placeholder --- #}
-                <div class="text-md-end pt-2 pt-md-0">
-                  <a href="#"
-                     class="btn btn-outline-secondary btn-md px-3 fw-semibold shadow-sm d-inline-flex align-items-center gap-2">
-                    <i class="bi bi-clipboard2-check"></i> Event Survey
-                  </a>
                 </div>
               </div>
             </div>
