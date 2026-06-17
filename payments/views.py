@@ -48,43 +48,66 @@ def checkout_page(request):
     # Sum up the exact outstanding cents from the unpaid registrations
     transaction_amount_cents = outstanding_registrations.aggregate(total=Sum("final_price_cents"))["total"] or 0
 
-    # Build a human readable transaction description
-    event_titles = ", ".join(list(set([str(reg.event) for reg in outstanding_registrations])))
-    stripe_description = f"Event Registration Payment: {user} - {event_titles}"
+    # -------------------------------------------------------------
+    # Check if an incomplete transaction already covers this exact batch
+    # -------------------------------------------------------------
+    # Check the first registration to see if it already points to an active, incomplete transaction
+    first_reg = outstanding_registrations.first()
+    existing_transaction = None
 
-    try:
-        # Initialize the Payment Intent with Stripe
-        intent = stripe.PaymentIntent.create(
-            amount=transaction_amount_cents,
-            currency="usd",
-            description=stripe_description,
-            metadata={"user_id": request.user.id},
-        )
+    if first_reg.transaction and first_reg.transaction.payment_status == PaymentStatus.INCOMPLETE:
+        # Verify it matches the exact amount we expect to charge right now
+        if first_reg.transaction.total_amount_cents == transaction_amount_cents:
+            existing_transaction = first_reg.transaction
 
-        # Create the local tracking Transaction model.
-        transaction = Transaction.objects.create(
-            total_amount_cents=transaction_amount_cents,
-            payment_status=PaymentStatus.INCOMPLETE,
-            payment_method=PaymentMethod.ONLINE,
-            stripe_session_id=intent.id,
-        )
+    if existing_transaction:
+        # Reuse the existing intent to avoid cluttering the database or Stripe logs
+        # We retrieve the active intent from Stripe to grab its fresh client_secret
+        try:
+            intent = stripe.PaymentIntent.retrieve(existing_transaction.stripe_session_id)
+            transaction = existing_transaction
+        except Exception:
+            # Fallback if the intent expired on Stripe's end over time
+            existing_transaction = None
 
-        # Update all the outstanding registrations to point to this transaction
-        outstanding_registrations.update(transaction=transaction)
+    # If no valid existing transaction was found, create a brand new one
+    if not existing_transaction:
+        event_titles = ", ".join(list(set([str(reg.event) for reg in outstanding_registrations])))
+        stripe_description = f"Event Registration Payment: {user} - {event_titles}"
 
-        # Drop a temporary security token into the user's browser session
-        request.session["payment_intent_authorized"] = intent.id
+        try:
+            intent = stripe.PaymentIntent.create(
+                amount=transaction_amount_cents,
+                currency="usd",
+                description=stripe_description,
+                metadata={"user_id": request.user.id},
+            )
 
-        context = {
-            "client_secret": intent.client_secret,
-            "stripe_publishable_key": settings.STRIPE_PUBLISHABLE_KEY,
-            "transaction_id": transaction.id,
-            "amount_display": f"{transaction_amount_cents / 100:.2f}",
-        }
-        return render(request, "payments/checkout.html", context)
+            transaction = Transaction.objects.create(
+                total_amount_cents=transaction_amount_cents,
+                payment_status=PaymentStatus.INCOMPLETE,
+                payment_method=PaymentMethod.ONLINE,
+                stripe_session_id=intent.id,
+            )
 
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+            # Link this new transaction to the current registrations batch
+            outstanding_registrations.update(transaction=transaction)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    # -------------------------------------------------------------
+    # Common Execution path for both fresh and reused sessions
+    # -------------------------------------------------------------
+    request.session["payment_intent_authorized"] = intent.id
+
+    context = {
+        "client_secret": intent.client_secret,
+        "stripe_publishable_key": settings.STRIPE_PUBLISHABLE_KEY,
+        "transaction_id": transaction.id,
+        "amount_display": f"{transaction_amount_cents / 100:.2f}",
+    }
+    return render(request, "payments/checkout.html", context)
 
 
 @csrf_exempt
