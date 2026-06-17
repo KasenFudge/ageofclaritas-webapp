@@ -109,19 +109,32 @@ def stripe_webhook(request):
         # Cryptographic signature matching verification failed
         return HttpResponse(status=400)
 
-    # Handle the specific payment intent success signal
+    stripe_id = None
+    target_status = None
+
+    # 1. Handle Successful Payments
     if event["type"] == "payment_intent.succeeded":
         payment_intent = event["data"]["object"]
         stripe_id = payment_intent["id"]
+        target_status = PaymentStatus.COMPLETE
 
+    # 2. Handle System Refunds
+    elif event["type"] == "charge.refunded":
+        charge = event["data"]["object"]
+        # Stripe links the original payment_intent ID directly to the charge object
+        stripe_id = charge.get("payment_intent")
+        target_status = PaymentStatus.REFUNDED
+
+    # 3. Execute Database Updates
+    if stripe_id and target_status:
         with db_transaction.atomic():
             try:
                 # Find the local transaction matching Stripe's unique intent identifier
                 local_transaction = Transaction.objects.select_for_update().get(stripe_session_id=stripe_id)
 
-                # If it's already marked complete (e.g., from a duplicate hook), we can skip safely
-                if local_transaction.payment_status != PaymentStatus.COMPLETE:
-                    local_transaction.payment_status = PaymentStatus.COMPLETE
+                # Update the status dynamically based on the event type
+                if local_transaction.payment_status != target_status:
+                    local_transaction.payment_status = target_status
                     local_transaction.save()
             except Transaction.DoesNotExist:
                 # Log this error if a payment succeeded on Stripe but has no matching row in your system
