@@ -5,6 +5,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
+from payments.models import PaymentMethod, PaymentStatus, Transaction
+
 
 # --- Events ---
 class EventType(models.TextChoices):
@@ -142,18 +144,15 @@ class EventRegistration(models.Model):
     # Helper properties used in displaying the pay
     @property
     def is_paid(self) -> bool:
-        """Returns True if the linked transaction exists and is marked succeeded"""
-        return self.transaction is not None and self.transaction.payment_status == "succeeded"
+        return getattr(self.transaction, "payment_status", None) == PaymentStatus.SUCCEEDED
 
     @property
     def is_failed(self) -> bool:
-        """Returns True if the linked transaction exists and is marked failed"""
-        return self.transaction is not None and self.transaction.payment_status == "failed"
+        return getattr(self.transaction, "payment_status", None) == PaymentStatus.FAILED
 
     @property
     def is_refunded(self) -> bool:
-        """Returns True if the linked transaction exists and is marked refunded"""
-        return self.transaction is not None and self.transaction.payment_status == "refunded"
+        return getattr(self.transaction, "payment_status", None) == PaymentStatus.REFUNDED
 
     # Helper properties used in displaying pricing information in templates
     @property
@@ -190,8 +189,6 @@ class EventRegistration(models.Model):
 
         # Check-in Automation (Triggered when flipped to True)
         if self.checked_in:
-            from payments.models import PaymentMethod, PaymentStatus, Transaction
-
             if not self.actual_arrival_time:
                 self.actual_arrival_time = timezone.now()
 
@@ -199,8 +196,6 @@ class EventRegistration(models.Model):
             is_paid_in_person = getattr(self, "in_person_payment_received", False)
 
             if is_paid_in_person:
-                from payments.models import PaymentMethod, PaymentStatus, Transaction
-
                 # If they paid cash/check at the door, create a succeeded In Person transaction
                 completed_transaction = Transaction.objects.create(
                     total_amount_cents=self.final_price_cents,

@@ -87,9 +87,9 @@
                   <h3 class="h5 card-title fw-bold text-dark mb-2">{{ reg.event.title }}</h3>
                   <p class="card-text text-muted small mb-0 d-flex align-items-center gap-2">
                     <i class="bi bi-calendar3"></i>
-                    <span>Starts: <strong>{{ reg.event.start_time|date:"g:i A" }}</strong></span>
+                    <span>Starts: <strong>{{ reg.event.start_time|date:"M d — g:i A" }}</strong></span>
                     <span class="text-secondary">|</span>
-                    <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
+                    <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"M d — g:i A" }}</strong></span>
                   </p>
                 </div>
                 {# --- Column 2: Account Financial Status --- #}
