@@ -121,8 +121,7 @@ def stripe_webhook(request):
     # 2. Handle System Refunds
     elif event["type"] == "charge.refunded":
         charge = event["data"]["object"]
-        # Stripe links the original payment_intent ID directly to the charge object
-        stripe_id = charge.get("payment_intent")
+        stripe_id = charge["payment_intent"]
         target_status = PaymentStatus.REFUNDED
 
     # 3. Execute Database Updates
