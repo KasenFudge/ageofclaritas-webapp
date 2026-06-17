@@ -1,6 +1,26 @@
+from django import forms
 from django.contrib import admin
 
 from .models import Event, EventMedia, EventPriceTier, EventRegistration
+
+# ==========================================
+# CUSTOM FORMS FOR GATE PAYMENTS
+# ==========================================
+
+
+class EventRegistrationAdminForm(forms.ModelForm):
+    # Interactive, non-database field to let gate workers collect payment instantly
+    in_person_payment_received = forms.BooleanField(
+        required=False,
+        initial=False,
+        label="Payment Received at Gate?",
+        help_text="Check this box if the user handed you cash/check right now. Leave unchecked if they will pay later.",
+    )
+
+    class Meta:
+        model = EventRegistration
+        fields = "__all__"
+
 
 # ==========================================
 # INLINES
@@ -17,8 +37,9 @@ class PriceTierInline(admin.StackedInline):
 
 class EventRegistrationInline(admin.StackedInline):
     model = EventRegistration
+    form = EventRegistrationAdminForm
     extra = 0
-    fields = ["user", "checked_in"]
+    fields = ["user", "checked_in", "in_person_payment_received"]
     # Explicitly set user as read-only to prevent administrative accidents
     readonly_fields = ["user"]
 
@@ -58,6 +79,8 @@ class WeaponRentalFilter(admin.SimpleListFilter):
 
 @admin.register(EventRegistration)
 class EventRegistrationAdmin(admin.ModelAdmin):
+    form = EventRegistrationAdminForm
+
     list_display = [
         "user",
         "event",
@@ -79,7 +102,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         (
             "Attendance",
             {
-                "fields": ["checked_in", "declared_arrival_time"],
+                "fields": [("checked_in", "in_person_payment_received"), "declared_arrival_time"],
                 "description": "Core check-in utility for game masters managing player check-ins at the gate.",
             },
         ),
@@ -130,6 +153,24 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     @admin.display(boolean=True, description="Cleared/Paid")
     def payment_status_display(self, obj):
         return obj.is_paid
+
+    # Intercept saving via the Standalone registration dashboard view
+    def save_model(self, request, obj, form, change):
+        obj.in_person_payment_received = form.cleaned_data.get("in_person_payment_received", False)
+        super().save_model(request, obj, form, change)
+
+    # Intercept saving when saved from inside the Inline event view
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for instance in instances:
+            if isinstance(instance, EventRegistration):
+                # Look into the form elements to retrieve the inline checked value
+                for f in formset.forms:
+                    if f.instance == instance:
+                        instance.in_person_payment_received = f.cleaned_data.get("in_person_payment_received", False)
+                        break
+            instance.save()
+        formset.save_m2m()
 
 
 @admin.register(Event)

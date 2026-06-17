@@ -195,16 +195,18 @@ class EventRegistration(models.Model):
             if not self.actual_arrival_time:
                 self.actual_arrival_time = timezone.now()
 
-            # Automatically clear outstanding balances via an offline/manual transaction
-            if not self.is_paid:
-                # Create a completed, offline transaction for this registration amount
+            # Check if staff explicitly confirmed payment at the gate
+            is_paid_in_person = getattr(self, "in_person_payment_received", False)
+
+            if is_paid_in_person:
+                from payments.models import PaymentMethod, PaymentStatus, Transaction
+
+                # If they paid cash/check at the door, create a succeeded In Person transaction
                 completed_transaction = Transaction.objects.create(
                     total_amount_cents=self.final_price_cents,
                     payment_status=PaymentStatus.SUCCEEDED,
                     payment_method=PaymentMethod.IN_PERSON,
                 )
-
-                # Link this registration to the newly created complete transaction
                 self.transaction = completed_transaction
 
         super().save(*args, **kwargs)
