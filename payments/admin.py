@@ -39,19 +39,16 @@ class TransactionAdmin(admin.ModelAdmin):
     search_fields = ("id", "stripe_session_id")
     ordering = ("-created_at",)
 
-    readonly_fields = (
-        "stripe_session_id",
-        "total_amount_cents",
-        "payment_status",
-        "payment_method",
-        "created_at",
-    )
     inlines = [EventRegistrationInline]
 
     # Convert cents to a human-readable dollar format for the overview table
     @admin.display(description="Total Amount")
     def total_amount_display(self, obj):
         return f"${obj.total_amount_cents / 100:.2f}"
+
+    # Force all fields to be read-only when viewing an individual record detail page
+    def get_readonly_fields(self, request, obj=None):
+        return [field.name for field in self.model._meta.fields]
 
     # Strictly block manual entry creation buttons
     def has_add_permission(self, request):

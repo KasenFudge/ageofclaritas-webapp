@@ -29,4 +29,8 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Transaction #{self.id} - {self.user.username} ({self.payment_status})"
+        # Safely grab the first registration if it exists
+        first_reg = self.registrations.first()
+        user_display = first_reg.user.username if first_reg else "No User"
+
+        return f"Transaction #{self.id} - {user_display} ({self.get_payment_status_display()})"
