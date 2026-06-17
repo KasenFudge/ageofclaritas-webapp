@@ -108,6 +108,7 @@ def stripe_webhook(request):
     except stripe.error.SignatureVerificationError:
         # Cryptographic signature matching verification failed
         return HttpResponse(status=400)
+
     # Handle the specific payment intent success signal
     if event["type"] == "payment_intent.succeeded":
         payment_intent = event["data"]["object"]
