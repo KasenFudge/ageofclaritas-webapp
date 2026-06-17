@@ -4,7 +4,8 @@ from django.db import models
 # Create your models here.
 class PaymentStatus(models.TextChoices):
     INCOMPLETE = "incomplete", "Incomplete"
-    COMPLETE = "complete", "Complete"
+    SUCCEEDED = "succeeded", "Succeeded"
+    FAILED = "failed", "Failed"
     REFUNDED = "refunded", "Refunded"
 
 

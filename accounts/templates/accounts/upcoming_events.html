@@ -39,7 +39,7 @@
                     </span>
                   {% elif reg.is_paid %}
                     <span class="badge bg-success px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-check-circle-fill me-1"></i> COMPLETE
+                      <i class="bi bi-check-circle-fill me-1"></i> SUCCEEDED
                     </span>
                   {% else %}
                     <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm w-100 text-center">
@@ -99,9 +99,13 @@
                     <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm w-100 text-center">
                       <i class="bi bi-arrow-counterclockwise me-1"></i> REFUNDED
                     </span>
+                  {% elif reg.is_failed %}
+                    <span class="badge bg-danger px-3 py-2 fs-6 shadow-sm w-100 text-center">
+                      <i class="bi bi-x-circle-fill me-1"></i> FAILED
+                    </span>
                   {% elif reg.is_paid %}
                     <span class="badge bg-success px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-check-circle-fill me-1"></i> COMPLETE
+                      <i class="bi bi-check-circle-fill me-1"></i> SUCCEEDED
                     </span>
                   {% else %}
                     <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm w-100 text-center">

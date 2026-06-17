@@ -30,11 +30,15 @@ def checkout_page(request):
     # Gather the user's incomplete event registrations that need paid.
     # If they choose to pay online during registration process, this will just be the newly created registration.
     # The Precise Balance Logic:
-    # 1. Must be INCOMPLETE or have no transaction attached.
+    # 1. Must be INCOMPLETE/FAILED or have no transaction attached.
     # 2. Must either be a FUTURE event, OR a PAST event where they actually checked in.
     outstanding_registrations = (
         EventRegistration.objects.filter(user_id__in=household_ids)
-        .filter(Q(transaction__isnull=True) | Q(transaction__payment_status=PaymentStatus.INCOMPLETE))
+        .filter(
+            Q(transaction__isnull=True)
+            | Q(transaction__payment_status=PaymentStatus.INCOMPLETE)
+            | Q(transaction__payment_status=PaymentStatus.FAILED)
+        )
         .filter(Q(event__start_time__gte=now) | Q(checked_in=True))
         .select_related("user", "event")
         .order_by("event__start_time")
@@ -139,15 +143,21 @@ def stripe_webhook(request):
     if event["type"] == "payment_intent.succeeded":
         payment_intent = event["data"]["object"]
         stripe_id = payment_intent["id"]
-        target_status = PaymentStatus.COMPLETE
+        target_status = PaymentStatus.SUCCEEDED
 
-    # 2. Handle System Refunds
+    # 2. Handle Failed Payments
+    elif event["type"] == "payment_intent.payment_failed":
+        payment_intent = event["data"]["object"]
+        stripe_id = payment_intent["id"]
+        target_status = PaymentStatus.FAILED
+
+    # 3. Handle System Refunds
     elif event["type"] == "charge.refunded":
         charge = event["data"]["object"]
         stripe_id = charge["payment_intent"]
         target_status = PaymentStatus.REFUNDED
 
-    # 3. Execute Database Updates
+    # 4. Execute Database Updates
     if stripe_id and target_status:
         with db_transaction.atomic():
             try:

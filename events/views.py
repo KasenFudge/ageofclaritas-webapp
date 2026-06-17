@@ -120,14 +120,14 @@ def event_registration_view(request, slug):
             # Commit record to db tables
             registration.save()
 
-            # Auto clear $0.00 Tickets (First-Time Discount) via creating a dummy inline Transaction that is complete.
+            # Auto clear $0.00 Tickets (First-Time Discount) via creating a dummy inline Transaction that has succeeded.
             if quote.final_cents == 0:
                 from payments.models import Transaction
 
-                # Build the $0.00 Transaction marked complete.
+                # Build the $0.00 Transaction marked succeeded.
                 zero_dollar_transaction = Transaction.objects.create(
                     total_amount_cents=0,
-                    payment_status="complete",
+                    payment_status="succeeded",
                     payment_method="online" if payment_method == "online" else "in_person",
                 )
 

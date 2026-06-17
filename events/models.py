@@ -139,10 +139,16 @@ class EventRegistration(models.Model):
         help_text="The parent transaction cart used to clear this registration online.",
     )
 
+    # Helper properties used in displaying the pay
     @property
     def is_paid(self) -> bool:
-        """Returns True if the linked transaction exists and is marked complete"""
-        return self.transaction is not None and self.transaction.payment_status == "complete"
+        """Returns True if the linked transaction exists and is marked succeeded"""
+        return self.transaction is not None and self.transaction.payment_status == "succeeded"
+
+    @property
+    def is_failed(self) -> bool:
+        """Returns True if the linked transaction exists and is marked failed"""
+        return self.transaction is not None and self.transaction.payment_status == "failed"
 
     @property
     def is_refunded(self) -> bool:
@@ -178,8 +184,29 @@ class EventRegistration(models.Model):
         constraints = [models.UniqueConstraint(fields=["event", "user"], name="unique_registration")]
 
     def save(self, *args, **kwargs):
+        # Auto-fill declared arrival time to the event start time if missing
         if not self.declared_arrival_time and self.event:
             self.declared_arrival_time = self.event.start_time
+
+        # Check-in Automation (Triggered when flipped to True)
+        if self.checked_in:
+            from payments.models import PaymentMethod, PaymentStatus, Transaction
+
+            if not self.actual_arrival_time:
+                self.actual_arrival_time = timezone.now()
+
+            # Automatically clear outstanding balances via an offline/manual transaction
+            if not self.is_paid:
+                # Create a completed, offline transaction for this registration amount
+                completed_transaction = Transaction.objects.create(
+                    total_amount_cents=self.final_price_cents,
+                    payment_status=PaymentStatus.SUCCEEDED,
+                    payment_method=PaymentMethod.IN_PERSON,
+                )
+
+                # Link this registration to the newly created complete transaction
+                self.transaction = completed_transaction
+
         super().save(*args, **kwargs)
 
 
