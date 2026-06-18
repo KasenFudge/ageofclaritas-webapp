@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top"
+<nav class="navbar navbar-expand-lg sticky-top bg-dark border-bottom border-secondary"
      data-bs-theme="dark">
   <div class="container-fluid">
     <a class="navbar-brand me-4" href="{% url 'core:index' %}">
@@ -93,15 +93,18 @@
             <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="accountDropdown">
               <li>
-                <a class="dropdown-item" href="{% url 'accounts:upcoming_events' %}">My Account</a>
+                <h6 class="dropdown-header">Account Overview</h6>
               </li>
+              <li><a class="dropdown-item" href="{% url 'accounts:upcoming_events' %}">Registered Events</a></li>
+              <li><a class="dropdown-item" href="#">My Surveys</a></li>
+              <li><a class="dropdown-item" href="#">View Waivers</a></li>
               <li>
                 <hr class="dropdown-divider" />
               </li>
               <li>
                 <form method="post" action="{% url 'logout' %}">
                   {% csrf_token %}
-                  <button class="dropdown-item" role="submit">Logout</button>
+                  <button class="dropdown-item" type="submit">Logout</button>
                 </form>
               </li>
             </ul>
