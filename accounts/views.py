@@ -1,10 +1,20 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.views.generic import CreateView
 
 from events.models import EventRegistration
 from payments.models import PaymentStatus
+
+from .forms import CustomUserCreationForm
+
+
+class UserRegistrationView(CreateView):
+    form_class = CustomUserCreationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("login")
 
 
 @login_required
