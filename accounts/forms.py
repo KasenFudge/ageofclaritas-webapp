@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from .models import CustomUser
@@ -15,3 +16,11 @@ class CustomUserCreationForm(UserCreationForm):
             "email",
             "date_of_birth",
         )
+        widgets = {
+            "date_of_birth": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",  # This forces the native browser date picker
+                }
+            ),
+        }
