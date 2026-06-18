@@ -4,9 +4,21 @@
   Age of Claritas - Register
 {% endblock title_tag %}
 {% block content %}
-  <form method="post">
+  <form method="post" class="needs-validation" novalidate>
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
+    {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}"
+               class="form-label fw-bold text-uppercase">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div class="form-text text-muted small">{{ field.help_text }}</div>
+        {% endif %}
+        {% for error in field.errors %}
+          <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary w-100 mt-3">Register Account</button>
   </form>
 {% endblock content %}
