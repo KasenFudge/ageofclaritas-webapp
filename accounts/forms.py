@@ -14,6 +14,8 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = UserCreationForm.Meta.fields + (
             "email",
+            "first_name",
+            "last_name",
             "date_of_birth",
         )
         widgets = {
