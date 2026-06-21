@@ -113,7 +113,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # DIRS only needs folders that sit OUTSIDE of your local apps, of which we have none.
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         # APP_DIRS=True tells Django to auto-discover "app_name/templates/" automatically
         "APP_DIRS": True,
         "OPTIONS": {

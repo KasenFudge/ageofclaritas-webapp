@@ -1,0 +1,11 @@
+<div class="mb-3">
+  <label for="{{ field.id_for_label }}"
+         class="form-label fw-bold text-uppercase">{{ field.label }}</label>
+  {{ field }}
+  {% if field.help_text %}
+    <div class="form-text text-muted small">{{ field.help_text }}</div>
+  {% endif %}
+  {% for error in field.errors %}
+    <div class="text-danger small">{{ error }}</div>
+  {% endfor %}
+</div>

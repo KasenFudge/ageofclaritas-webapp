@@ -1,4 +1,4 @@
-{% extends "core/base.html" %}
+{% extends "base.html" %}
 
 {% block title_tag %}
   Age of Claritas - Register
@@ -12,19 +12,20 @@
             <h2 class="card-title text-center fw-bold mb-4 text-uppercase tracking-wide">Register</h2>
             <form method="post" class="needs-validation" novalidate>
               {% csrf_token %}
-              {% for field in form %}
-                <div class="mb-3">
-                  <label for="{{ field.id_for_label }}"
-                         class="form-label fw-bold text-uppercase">{{ field.label }}</label>
-                  {{ field }}
-                  {% if field.help_text %}
-                    <div class="form-text text-muted small">{{ field.help_text }}</div>
-                  {% endif %}
-                  {% for error in field.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                  {% endfor %}
-                </div>
-              {% endfor %}
+              <!-- Account Credentials -->
+              {% include 'includes/field_render.html' with field=form.username %}
+              {% include 'includes/field_render.html' with field=form.email %}
+              <!-- Password Fields -->
+              <div class="row">
+                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.password %}</div>
+                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.confirm_password %}</div>
+              </div>
+              <!-- Personal Information -->
+              <div class="row">
+                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.first_name %}</div>
+                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.last_name %}</div>
+              </div>
+              {% include 'includes/field_render.html' with field=form.date_of_birth %}
               <button type="submit" class="btn btn-primary w-100 mt-3">Register Account</button>
             </form>
           </div>

@@ -15,3 +15,6 @@ max_line_length = 120
 close_void_tags = true
 blank_line_after_tag = "load,extends"
 line_break_after_multiline_tag = false
+
+# Disable rules with bad formatting
+ignore = "T002"
