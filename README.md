@@ -27,11 +27,13 @@ If you are setting up the project for the first time or performing a fresh datab
 
 ## Maintenance Commands
 
+To make a backup/dump of your database, run this command:
+`docker exec aoc_db pg_dump -U <YOUR_DB_USER> -d <YOUR_DB> > db_backup_$(date +%F).sql`
+
 ### Accessing Database
 
 In the case the database needs to be accessed, run:
-`docker exec -it aoc_db psql -U aocdb_admin -d aoc_db`
-NOTE: if your database configuration is different than the example provided below in Environment Files, this will need modified.
+`docker exec -it <aoc_db> psql -U <YOUR_DB_USER> -d <YOUR_DB>`
 
 ### Static Files
 

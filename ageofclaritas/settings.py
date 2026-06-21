@@ -135,11 +135,11 @@ TEMPLATES = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT"),
+        "NAME": os.getenv("POSTGRES_DB", "ageofclaritas"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "your_local_db_password"),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -176,10 +176,15 @@ STATICFILES_FINDERS = [
 ]
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.getenv("STATIC_ROOT", "/var/www/static/aoc")
+STATIC_ROOT = os.getenv("STATIC_ROOT", BASE_DIR / "data" / "static")
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.getenv("MEDIA_ROOT", "/var/www/media/aoc")
+MEDIA_ROOT = os.getenv("MEDIA_ROOT", BASE_DIR / "data" / "media")
+
 
 # Production static delivery wrapper (Intercepts fallback delivery if Nginx drops asset threads)
 # Docs: https://warehouse.python.org/project/whitenoise/
