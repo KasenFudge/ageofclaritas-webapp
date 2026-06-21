@@ -13,13 +13,10 @@
             <form method="post" class="needs-validation" novalidate>
               {% csrf_token %}
               <!-- Account Credentials -->
-              {% include 'includes/field_render.html' with field=form.username %}
               {% include 'includes/field_render.html' with field=form.email %}
-              <!-- Password Fields -->
-              <div class="row">
-                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.password1 %}</div>
-                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.password2 %}</div>
-              </div>
+              {% include 'includes/field_render.html' with field=form.username %}
+              {% include 'includes/field_render.html' with field=form.password1 %}
+              {% include 'includes/field_render.html' with field=form.password2 %}
               <!-- Personal Information -->
               <div class="row">
                 <div class="col-md-6">{% include 'includes/field_render.html' with field=form.first_name %}</div>
