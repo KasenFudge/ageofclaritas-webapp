@@ -49,10 +49,13 @@ ehthumbs.db
 *.swp
 
 # ==========================================
-# Frontend and Node (if applicable later)
+# Frontend and Node
 # ==========================================
 node_modules/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
 # ==========================================
 # Obsidian Note Vault Tracking

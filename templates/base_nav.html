@@ -1,120 +1,198 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg sticky-top bg-dark border-bottom border-secondary"
-     data-bs-theme="dark">
-  <div class="container-fluid">
-    <a class="navbar-brand me-4" href="{% url 'core:index' %}">
-      <img class="navbar-logo"
-           src="{% static 'images/AgeOfClaritasLogo.png' %}"
-           alt="Age of Claritas Logo" />
-      <img class="navbar-title"
-           src="{% static 'images/AgeOfClaritasTitle.png' %}"
-           alt="Age of Claritas Title" />
-    </a>
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="{% url 'rulebook:index' %}"
-             id="rulebookDropdown"
-             role="button"
-             data-bs-toggle="dropdown"
-             aria-expanded="false">Rulebook</a>
-          <ul class="dropdown-menu" aria-labelledby="rulebookDropdown">
-            <li>
-              <a class="dropdown-item" href="{% url 'rulebook:character_creation' %}">Character Creation</a>
-            </li>
-            <li>
-              <hr class="dropdown-divider" />
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'rulebook:classes' %}">Classes</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'rulebook:kin' %}">Kin</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'rulebook:talents' %}">Talents</a>
-            </li>
-            <li>
-              <hr class="dropdown-divider" />
-            </li>
-            <li>
-              <a class="dropdown-item disabled" aria-disabled="true" href="#">Game Mechanics</a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-disabled="true" href="{% url 'events:index' %}">Events</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="#"
-             id="aboutDropdown"
-             role="button"
-             data-bs-toggle="dropdown"
-             aria-expanded="false">About</a>
-          <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
-            <li><a class="dropdown-item" href="#">Our Team</a></li>
-            <li><a class="dropdown-item" href="#">FAQ</a></li>
-          </ul>
-        </li>
-        <!-- TODO: Disabled until I decide how to present pictures
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Media</a>
-        </li> -->
-        <!-- Decide how to do Merch later
-        <li class="nav-item">
-          <a class="nav-link" href="https://age-of-claritas-shop.creator-spring.com/">Merch</a>
-        </li> -->
-        {% if user.is_staff %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}">Admin Dashboard</a>
-          </li>
-        {% endif %}
-      </ul>
-      <ul class="navbar-nav">
-        {% if user.is_authenticated %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle"
-               href="#"
-               id="accountDropdown"
-               role="button"
-               data-bs-toggle="dropdown">{{ user.username }}</a>
-            <ul class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="accountDropdown">
-              <li>
-                <h6 class="dropdown-header">Account Overview</h6>
-              </li>
-              <li><a class="dropdown-item" href="{% url 'accounts:upcoming_events' %}">Registered Events</a></li>
-              <li><a class="dropdown-item" href="#">My Surveys</a></li>
-              <li><a class="dropdown-item" href="#">View Waivers</a></li>
-              <li>
-                <hr class="dropdown-divider" />
-              </li>
-              <li>
-                <form method="post" action="{% url 'logout' %}">
-                  {% csrf_token %}
-                  <button class="dropdown-item" type="submit">Logout</button>
-                </form>
-              </li>
+{# Main Navbar Wrapper #}
+<nav x-data="{ mobileMenuOpen: false }" class="sticky top-0 z-50 bg-gray-900 border-b border-gray-700 text-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      {# Brand Logos #}
+      <div class="flex items-center">
+        <a href="{% url 'core:index' %}" class="flex items-center gap-4 hover:opacity-90 transition-opacity">
+          <img src="{% static 'images/AgeOfClaritasLogo.png' %}" alt="Age of Claritas Logo" class="h-10 w-10 object-contain" width="573" height="573" />
+          <img src="{% static 'images/AgeOfClaritasTitle.png' %}" alt="Age of Claritas Title" class="h-10 w-auto object-contain" width="546" height="91" />
+        </a>
+      </div>
+
+      {# Desktop Navigation Menu (Large Screens) #}
+      <div class="hidden lg:flex items-center justify-between flex-1 ml-8">
+        <ul class="flex items-center gap-x-6 text-sm font-semibold">
+
+          {# Rulebook Dropdown #}
+          <li x-data="{ rulebookOpen: false }" @click.outside="rulebookOpen = false" class="relative">
+            <button @click="rulebookOpen = !rulebookOpen" class="flex items-center gap-1 border-b border-transparent hover:border-white hover:text-white transition-all focus:outline-none">
+              Rulebook
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   stroke-width="2"
+                   stroke-linecap="round"
+                   stroke-linejoin="round"
+                   class="w-4 h-4 transform transition-transform duration-200"
+                   :class="rulebookOpen ? 'rotate-180' : ''">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <ul x-show="rulebookOpen" x-cloak x-transition class="absolute left-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-50 text-gray-300">
+              <li><a href="{% url 'rulebook:character_creation' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Character Creation</a></li>
+              <li class="border-t border-gray-700 my-1"></li>
+              <li><a href="{% url 'rulebook:classes' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Classes</a></li>
+              <li><a href="{% url 'rulebook:kin' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Kin</a></li>
+              <li><a href="{% url 'rulebook:talents' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Talents</a></li>
+              <li class="border-t border-gray-700 my-1"></li>
+              <li><span class="block px-4 py-2 text-gray-500 cursor-not-allowed">Game Mechanics</span></li>
             </ul>
           </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Login</a>
+
+          {# Events Link #}
+          <li>
+            <a href="{% url 'events:index' %}" class="border-b border-transparent hover:border-white hover:text-white transition-all focus:outline-none">Events</a>
           </li>
-        {% endif %}
-      </ul>
+
+          {# About Dropdown #}
+          <li x-data="{ aboutOpen: false }" @click.outside="aboutOpen = false" class="relative">
+            <button @click="aboutOpen = !aboutOpen" class="flex items-center gap-1 border-b border-transparent hover:border-white hover:text-white transition-all focus:outline-none">
+              About
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   stroke-width="2"
+                   stroke-linecap="round"
+                   stroke-linejoin="round"
+                   class="w-4 h-4 transform transition-transform duration-200"
+                   :class="aboutOpen ? 'rotate-180' : ''">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <ul x-show="aboutOpen" x-cloak x-transition class="absolute left-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-50 text-gray-300">
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">FAQ</a></li>
+              <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Our Team</a></li>
+            </ul>
+          </li>
+
+          {# Admin Dashboard Link #}
+          {% if user.is_staff %}
+            <li>
+              <a href="{% url 'admin:index' %}" class="text-yellow-400 hover:text-yellow-300 border-b border-transparent hover:border-yellow-300 transition-all focus:outline-none">Admin Dashboard</a>
+            </li>
+          {% endif %}
+        </ul>
+
+        {# Right Side: Authentication Controls #}
+        <ul class="flex items-center text-sm font-semibold">
+          {% if user.is_authenticated %}
+            <li x-data="{ accountOpen: false }" @click.outside="accountOpen = false" class="relative">
+              <button @click="accountOpen = !accountOpen" class="flex items-center gap-1 border-b border-transparent hover:border-white hover:text-white transition-all focus:outline-none">
+                {{ user.username }}
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     class="w-4 h-4 transform transition-transform duration-200"
+                     :class="accountOpen ? 'rotate-180' : ''">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <ul x-show="accountOpen" x-cloak x-transition class="absolute right-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-50 text-gray-300">
+                <li class="px-4 py-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Account Overview</li>
+                <li><a href="{% url 'accounts:upcoming_events' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Registered Events</a></li>
+                <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">My Surveys</a></li>
+                <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">View Waivers</a></li>
+                <li class="border-t border-gray-700 my-1"></li>
+                <li>
+                  <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="block w-full text-left px-4 py-2 text-red-400 hover:bg-red-900/20 hover:text-red-300 active:bg-red-900/40 active:text-red-100 transition-colors">Logout</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          {% else %}
+            <li>
+              <a href="{% url 'login' %}" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 active:scale-95 px-4 py-2 rounded-md text-white transition-all">Login</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+
+      {# Mobile Navbar Toggle Button #}
+      <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="lg:hidden flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition-colors duration-200" aria-label="Toggle navigation">
+
+        {# Hamburger Icon (Visible when menu is closed) #}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 transition-opacity duration-200" :class="mobileMenuOpen ? 'hidden' : 'block'">
+          <path d="M4 5h16" />
+          <path d="M4 12h16" />
+          <path d="M4 19h16" />
+        </svg>
+
+        {# Close/X Icon (Visible when menu is open) #}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 transition-opacity duration-200" :class="mobileMenuOpen ? 'block' : 'hidden'">
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
+
     </div>
+  </div>
+
+  {# Mobile Dropdown Drawer Menu #}
+  <div x-show="mobileMenuOpen"
+       x-cloak
+       x-transition:enter="transition-opacity ease-out duration-200"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition-opacity ease-in duration-150"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       class="lg:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-gray-900/95 backdrop-blur-sm overflow-y-auto border-t border-gray-700">
+    <ul class="px-2 pt-2 pb-3 space-y-1 text-base font-medium">
+
+      {# Mobile Rulebook Section #}
+      <li class="border-b border-gray-700 pb-2">
+        <span class="block px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider">Rulebook</span>
+        <a href="{% url 'rulebook:character_creation' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Character Creation</a>
+        <a href="{% url 'rulebook:classes' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Classes</a>
+        <a href="{% url 'rulebook:kin' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Kin</a>
+        <a href="{% url 'rulebook:talents' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Talents</a>
+      </li>
+
+      {# Mobile Events Link #}
+      <li class="border-b border-gray-700 py-2">
+        <a href="{% url 'events:index' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Events</a>
+      </li>
+
+      {# Mobile About Section #}
+      <li class="border-b border-gray-700 py-2">
+        <span class="block px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider">About</span>
+        <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">FAQ</a>
+        <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Our Team</a>
+      </li>
+
+      {# Mobile Admin Dashboard Link #}
+      {% if user.is_staff %}
+        <li class="border-b border-gray-700 py-2">
+          <a href="{% url 'admin:index' %}" class="block px-3 py-2 rounded-md text-yellow-400 active:bg-yellow-900/30 active:text-yellow-200 transition-colors">Admin Dashboard</a>
+        </li>
+      {% endif %}
+
+      <li class="pt-2">
+        {% if user.is_authenticated %}
+          <span class="block px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider">Account ({{ user.username }})</span>
+          <a href="{% url 'accounts:upcoming_events' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Registered Events</a>
+          <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">My Surveys</a>
+          <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">View Waivers</a>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="w-full text-left block px-3 py-2 text-red-400 font-bold active:bg-red-900/30 active:text-red-200 rounded-md transition-colors">Logout</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="block text-center bg-blue-600 active:bg-blue-700 active:scale-[0.98] px-4 py-2 rounded-md text-white font-bold transition-all">Login</a>
+        {% endif %}
+      </li>
+    </ul>
   </div>
 </nav>

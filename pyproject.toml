@@ -1,20 +1,47 @@
 [project]
+name = "age-of-claritas"
+version = "0.1.0"
 requires-python = ">=3.13"
 
+# ==============================================================================
+# RUFF CONFIGURATION (Python Linter & Formatter)
+# ==============================================================================
 [tool.ruff]
 line-length = 120
+target-version = "py313" # Explicitly locks Ruff features to Python 3.13 enhancements
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I"]
+# E: Pycodestyle errors, W: Pycodestyle warnings, F: Pyflakes, I: Isort
+# UP: Pyupgrade (Highly recommended for Python 3.13 to keep syntax modern!)
+# B: Bugbear (Catches sneaky, design-based Python bugs)
+select = ["E", "W", "F", "I", "UP", "B"]
 ignore = []
 
+[tool.ruff.lint.isort]
+combine-as-imports = true # Cleaner multi-line import statements in Python
+
+# ==============================================================================
+# DJLINT CONFIGURATION (Django Template Linter & Formatter)
+# ==============================================================================
 [tool.djlint]
 profile = "django"
 indent = 2
-max_line_length = 120
-close_void_tags = true
-blank_line_after_tag = "load,extends"
-line_break_after_multiline_tag = false
+max_line_length = 250
+max_attribute_length = 250
 
-# Disable rules with bad formatting
-ignore = "T002"
+# VS Code & Alpine.js Formatting Enhancements
+format_attribute_js_json = true        # Essential for Alpine.js! Formats JS expressions nicely inside x-data
+line_break_after_multiline_tag = false # Prevents djlint from splitting tags up weirdly after layout blocks
+close_void_tags = true                 # Keeps HTML clean (e.g., <img /> instead of <img>)
+
+# Template Spacing Rules
+max_blank_lines = 1
+blank_line_after_tag = "load,extends"
+
+# Ignored Linter Rules
+# T002: Double quotes should be used in tags (Disabled to prevent conflicts with complex template attributes)
+# H031: HTML tags should include meta keywords (Disabled because keywords are obsolete)
+ignore = "T002,H031"
+
+# Exclude virtual environments from CLI/terminal audits to speed up execution time
+exclude = ".venv,venv,env,node_modules"

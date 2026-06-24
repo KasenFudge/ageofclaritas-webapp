@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Tells Tailwind where to look for Django Templates */
+@source "../../templates/**/*.html";
+@source "../../**/templates/**/*.html";
+
+/* Prevents hidden elements from flickering before Alpine.js loads */
+[x-cloak] {
+  display: none !important;
+}
+
+/* Removes automatic mobile feedback when pressing buttons and links */
+@layer base {
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}

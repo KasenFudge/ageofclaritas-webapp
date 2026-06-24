@@ -1,39 +1,66 @@
 {% load static %}
 
-{% block styles %}
-{% endblock styles %}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
-  {# Static structural include - no wrapper blocks needed #}
-  {% include 'base_head.html' %}
-  <body>
-    <div class="wrapper">
-      {% include 'base_nav.html' %}
-      <main class="content">
-        {# Global Django Session Messages Banner Portal #}
-        {% if messages %}
-          <div class="container mt-3">
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm"
-                   role="alert">
-                {{ message }}
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        {# Primary View injection slot #}
-        {% block content %}
-        {% endblock content %}
-      </main>
-      {% include 'base_footer.html' %}
-    </div>
-    {# Global Bootstrap JS bundle #}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {# Information Displayed in the Tab for the Page. Override the title_tag block on specific pages for targeted titles. #}
+    <link rel="icon" type="image/png" href="{% static 'images/AgeOfClaritasLogo.png' %}" />
+    <title>{% block title_tag %}Age of Claritas{% endblock title_tag %}</title>
+
+    {# Global SEO description snippet for search results. Override this block on specific pages for targeted SEO. #}
+    <meta name="description" content="{% block meta_description %}Welcome to Age of Claritas.{% endblock meta_description %}" />
+
+    {# TailwindCSS Output File #}
+    <link href="{% static 'dist/output.css' %}" rel="stylesheet" />
+
+    {# Alpine.js #}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
+    {# Top Navigation Bar #}
+    {% include 'base_nav.html' %}
+
+    {# Main Content Area #}
+    <main class="grow">
+
+      {# Global Django Session Messages Banner Portal #}
+      {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
+          {% for message in messages %}
+            <div x-data="{ show: true }"
+                 x-show="show"
+                 x-transition.duration.300ms
+                 class="relative p-4 rounded-lg border shadow-sm flex items-center justify-between {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-800 {% elif message.tags == 'error' or message.tags == 'danger' %}bg-red-50 border-red-200 text-red-800 {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-200 text-yellow-800 {% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %}"
+                 role="alert">
+
+              <span class="text-sm font-medium">{{ message }}</span>
+
+              {# Alpine Dismiss Button #}
+              <button type="button" @click="show = false" class="p-1 rounded-md hover:bg-black/5 transition-colors text-current" aria-label="Close message">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {# Primary View injection slot #}
+      {% block content %}
+      {% endblock content %}
+
+    </main>
+
+    {# Main Footer #}
+    {% include 'base_footer.html' %}
+
   </body>
 </html>
