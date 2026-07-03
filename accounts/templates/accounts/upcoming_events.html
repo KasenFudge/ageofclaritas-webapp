@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% load static %}
 
@@ -50,8 +50,7 @@
                 </div>
                 {# --- Column 3: Event Surveys --- #}
                 <div>
-                  <a href="#"
-                     class="btn btn-purple d-flex align-items-center gap-2 shadow-sm">
+                  <a href="#" class="btn btn-purple d-flex align-items-center gap-2 shadow-sm">
                     <i class="bi bi-clipboard-check"></i>
                     <span>Event Surveys</span>
                   </a>
@@ -62,8 +61,7 @@
         </div>
       {% empty %}
         <div class="col-12">
-          <div class="alert alert-info border-0 shadow-sm p-4 text-center"
-               role="alert">
+          <div class="alert alert-info border-0 shadow-sm p-4 text-center" role="alert">
             <i class="bi bi-calendar-x fs-3 d-block mb-2 text-info"></i>
             <span class="fw-semibold">You are not registered for any upcoming events.</span>
           </div>
@@ -119,8 +117,7 @@
           </div>
         {% empty %}
           <div class="col-12">
-            <div class="alert alert-light border border-dashed p-4 text-center"
-                 role="alert">
+            <div class="alert alert-light border border-dashed p-4 text-center" role="alert">
               <p class="text-muted mb-0">No child accounts are currently registered for upcoming events.</p>
             </div>
           </div>
@@ -138,8 +135,7 @@
           </h5>
           <p class="card-text text-muted small mb-0">View statements, invoices, and outstanding balances.</p>
         </div>
-        <a href="{% url 'accounts:outstanding_balance' %}"
-           class="btn btn-outline-primary btn-md px-4 fw-semibold shadow-sm text-nowrap">
+        <a href="{% url 'accounts:outstanding_balance' %}" class="btn btn-outline-primary btn-md px-4 fw-semibold shadow-sm text-nowrap">
           Manage Billing <i class="bi bi-arrow-right-short ms-1"></i>
         </a>
       </div>

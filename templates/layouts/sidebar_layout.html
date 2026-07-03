@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block layout %}
+  <div class="flex items-start w-full relative">
+
+    {# Sidebar navigation #}
+    {% block sidebar %}
+    {% endblock sidebar %}
+
+    {# Primary page content #}
+    <main class="flex-1 p-4 lg:p-10 bg-white lg:bg-transparent min-w-0">
+      {# Embedded System Messages #}
+      {% include 'components/messages.html' %}
+
+      {% block content %}
+      {% endblock content %}
+    </main>
+
+  </div>
+{% endblock layout %}

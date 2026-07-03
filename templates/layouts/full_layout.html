@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block layout %}
+  {# Primary page content #}
+  <main class="w-full max-w-7xl mx-auto p-4 lg:p-10">
+    {% include 'components/messages.html' %}
+
+    {% block content %}
+    {% endblock content %}
+  </main>
+{% endblock layout %}

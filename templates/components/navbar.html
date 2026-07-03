@@ -7,7 +7,7 @@
 
       {# Brand Logos #}
       <div class="flex items-center">
-        <a href="{% url 'core:index' %}" class="flex items-center gap-4 hover:opacity-90 transition-opacity">
+        <a href="{% url 'core:index' %}" class="flex items-center gap-2 hover:opacity-90 transition-opacity">
           <img src="{% static 'images/AgeOfClaritasLogo.png' %}" alt="Age of Claritas Logo" class="h-10 w-10 object-contain" width="573" height="573" />
           <img src="{% static 'images/AgeOfClaritasTitle.png' %}" alt="Age of Claritas Title" class="h-10 w-auto object-contain" width="546" height="91" />
         </a>
@@ -38,8 +38,8 @@
               <li class="border-t border-gray-700 my-1"></li>
               <li><a href="{% url 'rulebook:classes' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Classes</a></li>
               <li><a href="{% url 'rulebook:kin' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Kin</a></li>
-              <li><a href="{% url 'rulebook:talents' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Talents</a></li>
               <li class="border-t border-gray-700 my-1"></li>
+              <li><a href="{% url 'rulebook:talents' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Talents</a></li>
               <li><span class="block px-4 py-2 text-gray-500 cursor-not-allowed">Game Mechanics</span></li>
             </ul>
           </li>
@@ -157,7 +157,6 @@
         <a href="{% url 'rulebook:character_creation' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Character Creation</a>
         <a href="{% url 'rulebook:classes' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Classes</a>
         <a href="{% url 'rulebook:kin' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Kin</a>
-        <a href="{% url 'rulebook:talents' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Talents</a>
       </li>
 
       {# Mobile Events Link #}

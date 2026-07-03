@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title_tag %}
   Age of Claritas - Outstanding Balance
@@ -7,9 +7,7 @@
   <div class="container py-4">
     <h2 class="mb-3 fw-bold text-dark border-bottom pb-2">Outstanding Balance</h2>
     {% if outstanding_registrations %}
-      <p class="text-muted mb-4">
-        The following registrations are currently unpaid—you can securely pay online now or bring your payment in person on the day of the event.
-      </p>
+      <p class="text-muted mb-4">The following registrations are currently unpaid—you can securely pay online now or bring your payment in person on the day of the event.</p>
       <div class="row g-4">
         {% for reg in outstanding_registrations %}
           <div class="col-12 col-lg-8 mx-auto">
@@ -66,15 +64,12 @@
               <span class="text-muted small d-flex align-items-center gap-1 order-2 order-md-1">
                 <i class="bi bi-shield-lock-fill text-success"></i> Secure, encrypted checkout
               </span>
-              <form action="{% url 'payments:checkout' %}"
-                    method="post"
-                    class="w-100 w-md-auto order-1 order-md-2">
+              <form action="{% url 'payments:checkout' %}" method="post" class="w-100 w-md-auto order-1 order-md-2">
                 {% csrf_token %}
                 {% for reg in outstanding_registrations %}
                   <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
                 {% endfor %}
-                <button type="submit"
-                        class="btn btn-success btn-lg w-100 px-5 fw-bold shadow-sm">
+                <button type="submit" class="btn btn-success btn-lg w-100 px-5 fw-bold shadow-sm">
                   Pay Now Online <i class="bi bi-arrow-right ms-1"></i>
                 </button>
               </form>
@@ -88,8 +83,7 @@
           <i class="bi bi-check-circle fs-1 text-success d-block mb-3"></i>
           <h3 class="fw-bold text-dark mb-2">Account Fully Cleared</h3>
           <p class="text-muted mb-4">You have no outstanding charges at this time. All schedules are paid up!</p>
-          <a href="{% url 'accounts:upcoming_events' %}"
-             class="btn btn-primary px-4 fw-semibold shadow-sm">
+          <a href="{% url 'accounts:upcoming_events' %}" class="btn btn-primary px-4 fw-semibold shadow-sm">
             <i class="bi bi-arrow-left me-1"></i> Return to My Schedule
           </a>
         </div>

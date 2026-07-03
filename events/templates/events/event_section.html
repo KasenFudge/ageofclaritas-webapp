@@ -1,0 +1,35 @@
+{% comment %}
+Expects: title, subtitle, events, accent_bar, accent_text, always_show
+accent_bar / accent_text must be full literal Tailwind classes (e.g. "bg-red-500" / "text-red-600")
+so Tailwind's scanner can find them here at the call site.
+{% endcomment %}
+{% if always_show or events %}
+  <section>
+    <div class="flex items-center gap-2 mb-4">
+      <span class="w-1.5 h-6 rounded-full {{ accent_bar }} shrink-0"></span>
+      <h2 class="text-xl sm:text-2xl font-serif font-bold {{ accent_text }}">{{ title }}</h2>
+      {% if subtitle %}
+        <span class="text-slate-400 text-sm font-medium">{{ subtitle }}</span>
+      {% endif %}
+    </div>
+
+    {% if events %}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for event in events %}
+          <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5 flex flex-col justify-between transition-all hover:shadow-md hover:border-slate-300">
+            <div>
+              <h3 class="font-bold text-slate-900 mb-1">{{ event.display_title }}</h3>
+              <p class="text-slate-500 text-sm mb-3">{{ event.start_time|date:"F d, Y @ g:i A" }}</p>
+              <p class="text-slate-600 text-sm leading-relaxed line-clamp-3">{{ event.description|default:"No description provided." }}</p>
+            </div>
+            <a href="{% url 'events:detail' event.slug %}" class="mt-4 block text-center bg-indigo-700 hover:bg-indigo-900 text-white font-semibold text-sm rounded-lg py-2.5 transition-colors">View Event Details</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="bg-slate-50 rounded-xl border border-dashed border-slate-300 p-8 text-center">
+        <p class="text-slate-500">Check back soon for more Events in Claritas.</p>
+      </div>
+    {% endif %}
+  </section>
+{% endif %}

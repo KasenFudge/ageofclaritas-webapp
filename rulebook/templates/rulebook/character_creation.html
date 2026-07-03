@@ -1,213 +1,220 @@
-{% extends "base.html" %}
+{% extends 'layouts/full_layout.html' %}
 
 {% load static %}
 
 {% block title_tag %}
   Age of Claritas - Character Creation
 {% endblock title_tag %}
+
 {% block content %}
-  <!-- Sidebar -->
-  {% include 'rulebook/class_sidebar.html' %}
-  <h1 class="text-center page-header">Character Creation</h1>
-  <p class="text-center">
-    In Age of Claritas, players assume the role of "Adventurer." This is an
-    unofficial title granted to those with heroic potential. Both skill and
-    judgment are tested as characters face various trials in unique situations.
-    This role-playing system presents challenges that are built to support and
-    reward players' individual strengths as well as their ability to work as a
-    team.
-  </p>
-  <h2 class="text-center">How to Use the Character Creation Guide</h2>
-  <p class="text-center">For the best experience, utilize this guide on a tablet or computer.</p>
-  <ol>
-    <li>
-      Make a copy of the
-      <a href="https://docs.google.com/document/d/1E5zoR2A1v8prJreC5J-ATIp97lMksiOl4dGM-1642dU/edit?usp=sharing">Online Character Sheet Template</a>
-      or
-      <a href="{% static 'docs//AoC Character Sheet Template.docx' %}"
-         download>Download a Word Document</a>
-      version.
-    </li>
-    <li>
-      Keep this page open, work alongside it, and fill in each field unless
-      prompted not to.
-    </li>
-    <li>
-      Use the popup links on the page for quick access to relevant information for
-      each field.
-      <ul>
+  <div class="max-w-4xl mx-auto space-y-10 pb-16">
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900">Character Creation</h1>
+      <p class="text-slate-600 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto">
+        In Age of Claritas, players assume the role of "Adventurer." This is an
+        unofficial title granted to those with heroic potential. Both skill and
+        judgment are tested as characters face various trials in unique situations.
+        This role-playing system presents challenges that are built to support and
+        reward players' individual strengths as well as their ability to work as a
+        team.
+      </p>
+    </header>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-serif font-bold text-indigo-700 text-center">How to Use the Character Creation Guide</h2>
+      <p class="text-slate-600 text-center">For the best experience, utilize this guide on a tablet or computer.</p>
+      <ol class="list-decimal list-outside pl-6 space-y-2 text-slate-700 max-w-2xl mx-auto">
         <li>
-          If you would rather not view this information in a popup link, you can
-          navigate through the "Rulebook" menu and select the desired page.
+          Make a copy of the
+          <a href="https://docs.google.com/document/d/1E5zoR2A1v8prJreC5J-ATIp97lMksiOl4dGM-1642dU/edit?usp=sharing" class="text-indigo-700 underline decoration-indigo-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">Online Character Sheet Template</a>
+          or
+          <a href="{% static 'docs//AoC Character Sheet Template.docx' %}" download class="text-indigo-700 underline decoration-indigo-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">Download a Word Document</a>
+          version.
         </li>
-      </ul>
-    </li>
-    <li>Complete all fields.</li>
-    <li>
-      Once finished,
-      <a href="mailto:info@ageofclaritas.com"
-         title="Character Sheet Email Link"
-         data-popup-processed="true">submit it</a>
-      via the email link and print a copy to bring with you to the event.
-    </li>
-    <li>
-      Congratulations! You just made a brand new character in the world of
-      Claritas. We are excited to meet them!
-    </li>
-  </ol>
-  <div class="character-creation-table border border-black p-4">
-    <h1 class="text-center">Character Creation Guide</h1>
-    <table class="table p-1">
-      <tr>
-        <th style="width: 85%">Player Name:</th>
-        <th style="width: 15%">Age:</th>
-      </tr>
-      <tr>
-        <td>Your name goes here.</td>
-        <td></td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th style="width: 85%">Character Name:</th>
-        <th style="width: 15%">Age:</th>
-      </tr>
-      <tr>
-        <td>
-          Select a name for your character. Pick a Kin first, as it may help you
-          decide.
-        </td>
-        <td></td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th style="width: 60%"><a href="#">HP:</a></th>
-        <th style="width: 20%"><a href="#">XP:</a></th>
-        <th style="width: 20%"><a href="#">Copper:</a></th>
-      </tr>
-      <tr>
-        <td>Start with 3 HP. More HP may be acquired.</td>
-        <td>Buy talents with XP.</td>
-        <td>100 copper.</td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th>
-          <a href="{% url 'rulebook:kin' %}"
-             onclick="openMiniWindow(event, this.href)">Kin:</a>
-        </th>
-      </tr>
-      <tr>
-        <td>Your Kin primarily determines how your character will look and behave.</td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th style="width: 50%">
-          <a href="{% url 'rulebook:classes' %}"
-             onclick="openMiniWindow(event, this.href)">Class:</a>
-        </th>
-        <th style="width: 50%"></th>
-      </tr>
-      <tr>
-        <td>Select a base Class.</td>
-        <td></td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th>
-          <a href="{% url 'rulebook:talents' %}#modifiers"
-             onclick="openMiniWindow(event, this.href)">Modifier:</a>
-        </th>
-      </tr>
-      <tr>
-        <td>Players typically do not start with a Modifier.</td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th>
-          <a href="{% url 'rulebook:talents' %}#backgrounds"
-             onclick="openMiniWindow(event, this.href)">Backgrounds:</a>
-        </th>
-        <th></th>
-      </tr>
-      <tr>
-        <td>Choose two backgrounds for your character.</td>
-        <td></td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th style="width: 33.33%">
-          <a href="{% url 'rulebook:kin' %}"
-             onclick="openMiniWindow(event, this.href)">Attributes:</a>
-        </th>
-        <th style="width: 33.33%"></th>
-        <th style="width: 33.33%"></th>
-      </tr>
-      <tr>
-        <td>This will be decided by your Kin.</td>
-        <td>Choose one you can start with.</td>
-        <td></td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th>
-          <a href="{% url 'rulebook:talents' %}#techniques"
-             onclick="openMiniWindow(event, this.href)">Techniques:</a>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          Techniques are earned in game. Most classes start with none, but
-          Warriors start with a
-          <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles"
-             onclick="openMiniWindow(event, this.href)">Title</a>.
-        </td>
-      </tr>
-    </table>
-    <table class="table p-1">
-      <tr>
-        <th style="width: 50%">
-          <a href="{% url 'rulebook:talents' %}#skills-and-abiliites"
-             onclick="openMiniWindow(event, this.href)">Skills:</a>
-        </th>
-        <th style="width: 50%">
-          <a href="{% url 'rulebook:talents' %}#skills-and-abiliites"
-             onclick="openMiniWindow(event, this.href)">Abilities:</a>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          Choose 1 free
-          <a href="{% url 'rulebook:class_detail' 'classless' %}#weapon-dexterity"
-             onclick="openMiniWindow(event, this.href)">Weapon Dexterity</a>.
-        </td>
-        <td>
-          Select
-          <a href="{% url 'rulebook:class_detail' 'wizard' %}"
-             onclick="openMiniWindow(event, this.href)">Magic Spells</a>
-          if you are a Wizard.
-        </td>
-      </tr>
-      <tr>
-        <td>With 15 XP, select up to 3 R1 Skills and Abilities.</td>
-        <td>Wizards get 1 R1 spell in 1 School of Magic.</td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-      </tr>
-    </table>
+        <li>
+          Keep this page open, work alongside it, and fill in each field unless
+          prompted not to.
+        </li>
+        <li>
+          Use the popup links on the page for quick access to relevant information for
+          each field.
+          <ul class="list-disc list-outside pl-6 mt-1 space-y-1 text-slate-600 text-sm">
+            <li>
+              If you would rather not view this information in a popup link, you can
+              navigate through the "Rulebook" menu and select the desired page.
+            </li>
+          </ul>
+        </li>
+        <li>Complete all fields.</li>
+        <li>
+          Once finished,
+          <a href="mailto:info@ageofclaritas.com" title="Character Sheet Email Link" data-popup-processed="true" class="text-indigo-700 underline decoration-indigo-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">submit it</a>
+          via the email link and print a copy to bring with you to the event.
+        </li>
+        <li>
+          Congratulations! You just made a brand new character in the world of
+          Claritas. We are excited to meet them!
+        </li>
+      </ol>
+    </section>
+
+    <section class="space-y-4">
+      <h1 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">Character Creation Guide</h1>
+
+      <div class="space-y-4">
+
+        {# Player Name / Age #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-4">
+            <div>
+              <h3 class="font-bold text-indigo-700">Player Name:</h3>
+              <p class="text-slate-600 text-sm mt-1">Your name goes here.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-indigo-700">Age:</h3>
+              <div class="mt-2 border-b border-slate-300 h-6"></div>
+            </div>
+          </div>
+        </div>
+
+        {# Character Name / Age #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-[1fr_120px] gap-4">
+            <div>
+              <h3 class="font-bold text-indigo-700">Character Name:</h3>
+              <p class="text-slate-600 text-sm mt-1">Select a name for your character. Pick a Kin first, as it may help you decide.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-indigo-700">Age:</h3>
+              <div class="mt-2 border-b border-slate-300 h-6"></div>
+            </div>
+          </div>
+        </div>
+
+        {# HP / XP / Copper #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <h3 class="font-bold text-indigo-700"><a href="#" class="hover:text-indigo-900 transition-colors">HP:</a></h3>
+              <p class="text-slate-600 text-sm mt-1">Start with 3 HP. More HP may be acquired.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-indigo-700"><a href="#" class="hover:text-indigo-900 transition-colors">XP:</a></h3>
+              <p class="text-slate-600 text-sm mt-1">Buy talents with XP.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-indigo-700"><a href="#" class="hover:text-indigo-900 transition-colors">Copper:</a></h3>
+              <p class="text-slate-600 text-sm mt-1">100 copper.</p>
+            </div>
+          </div>
+        </div>
+
+        {# Kin #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <h3 class="font-bold text-indigo-700">
+            <a href="{% url 'rulebook:kin' %}" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Kin:</a>
+          </h3>
+          <p class="text-slate-600 text-sm mt-1">Your Kin primarily determines how your character will look and behave.</p>
+        </div>
+
+        {# Class #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <h3 class="font-bold text-indigo-700">
+                <a href="{% url 'rulebook:classes' %}" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Class:</a>
+              </h3>
+              <p class="text-slate-600 text-sm mt-1">Select a base Class.</p>
+            </div>
+            <div class="flex items-end">
+              <div class="w-full border-b border-slate-300 h-6"></div>
+            </div>
+          </div>
+        </div>
+
+        {# Modifier #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <h3 class="font-bold text-indigo-700">
+            <a href="{% url 'rulebook:talents' %}#modifiers" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Modifier:</a>
+          </h3>
+          <p class="text-slate-600 text-sm mt-1">Players typically do not start with a Modifier.</p>
+        </div>
+
+        {# Backgrounds #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <h3 class="font-bold text-indigo-700">
+                <a href="{% url 'rulebook:talents' %}#backgrounds" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Backgrounds:</a>
+              </h3>
+              <p class="text-slate-600 text-sm mt-1">Choose two backgrounds for your character.</p>
+            </div>
+            <div class="flex items-end">
+              <div class="w-full border-b border-slate-300 h-6"></div>
+            </div>
+          </div>
+        </div>
+
+        {# Attributes #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <h3 class="font-bold text-indigo-700 mb-3">
+            <a href="{% url 'rulebook:kin' %}" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Attributes:</a>
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <p class="text-slate-600 text-sm">This will be decided by your Kin.</p>
+            <p class="text-slate-600 text-sm">Choose one you can start with.</p>
+            <div class="border-b border-slate-300 h-6"></div>
+          </div>
+        </div>
+
+        {# Techniques #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <h3 class="font-bold text-indigo-700">
+            <a href="{% url 'rulebook:talents' %}#techniques" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Techniques:</a>
+          </h3>
+          <p class="text-slate-600 text-sm mt-1">
+            Techniques are earned in game. Most classes start with none, but
+            Warriors start with a
+            <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" onclick="openMiniWindow(event, this.href)" class="text-indigo-700 underline hover:text-indigo-900 transition-colors">Title</a>.
+          </p>
+        </div>
+
+        {# Skills / Abilities #}
+        <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <h3 class="font-bold text-indigo-700">
+                <a href="{% url 'rulebook:talents' %}#skills-and-abilities" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Skills:</a>
+              </h3>
+              <p class="text-slate-600 text-sm">
+                Choose 1 free
+                <a href="{% url 'rulebook:class_detail' 'classless' %}#weapon-dexterity" onclick="openMiniWindow(event, this.href)" class="text-indigo-700 underline hover:text-indigo-900 transition-colors">Weapon Dexterity</a>.
+              </p>
+              <p class="text-slate-600 text-sm">With 15 XP, select up to 3 R1 Skills and Abilities.</p>
+              <div class="border-b border-slate-300 h-6 mt-4"></div>
+              <div class="border-b border-slate-300 h-6"></div>
+            </div>
+            <div class="space-y-2">
+              <h3 class="font-bold text-indigo-700">
+                <a href="{% url 'rulebook:talents' %}#skills-and-abilities" onclick="openMiniWindow(event, this.href)" class="hover:text-indigo-900 transition-colors">Abilities:</a>
+              </h3>
+              <p class="text-slate-600 text-sm">
+                Select
+                <a href="{% url 'rulebook:class_detail' 'wizard' %}" onclick="openMiniWindow(event, this.href)" class="text-indigo-700 underline hover:text-indigo-900 transition-colors">Magic Spells</a>
+                if you are a Wizard.
+              </p>
+              <p class="text-slate-600 text-sm">Wizards get 1 R1 spell in 1 School of Magic.</p>
+              <div class="border-b border-slate-300 h-6 mt-4"></div>
+              <div class="border-b border-slate-300 h-6"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </div>
+
   <script src="{% static 'js/miniwindow.js' %}"></script>
 {% endblock content %}

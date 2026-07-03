@@ -40,8 +40,9 @@ blank_line_after_tag = "load,extends"
 
 # Ignored Linter Rules
 # T002: Double quotes should be used in tags (Disabled to prevent conflicts with complex template attributes)
+# H006: Img tag should have height and width attributes. (Disabled as this is handled through Tailwind Classes)
 # H031: HTML tags should include meta keywords (Disabled because keywords are obsolete)
-ignore = "T002,H031"
+ignore = "T002,H006,H031"
 
 # Exclude virtual environments from CLI/terminal audits to speed up execution time
 exclude = ".venv,venv,env,node_modules"

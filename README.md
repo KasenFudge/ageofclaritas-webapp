@@ -40,6 +40,16 @@ In the case the database needs to be accessed, run:
 If CSS or images are not appearing correctly after an update, run:
 `docker exec -it aoc_webapp python manage.py collectstatic --noinput`
 
+### Tailwind CSS Compilation
+
+To recompile your utility classes and generate a fresh `output.css` file locally during development:
+
+* **One-time Build:**
+* `npx @tailwindcss/cli -i ./static/src/main.css -o ./static/dist/output.css`
+  
+* **Watch for changes to `main.css` file locally and regenerate on save:
+* `npx @tailwindcss/cli -i ./static/src/main.css -o ./static/dist/output.css --watch`
+
 ### Viewing Logs
 
 To troubleshoot a service (e.g., Nginx or Webapp):

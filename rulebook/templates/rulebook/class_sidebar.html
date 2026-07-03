@@ -1,104 +1,145 @@
-<div class="d-lg-none fixed-bottom bg-white p-3 border-top shadow-lg"
-     style="z-index: 1030">
-  <button class="btn btn-primary w-100 py-2 fw-bold d-flex align-items-center justify-content-center"
-          type="button"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#classSidebar">
-    <i class="bi bi-list fs-5 me-2"></i> View Classes List
-  </button>
-</div>
-<aside class="col-lg-3 d-none d-lg-block border-end py-4 bg-light">
-  <h5 class="text-muted text-uppercase small fw-bold tracking-wider mb-3">Class Navigation</h5>
-  <ul class="list-unstyled">
-    {% for guild_nav in sidebar_guilds %}
-      <li class="mb-3">
-        <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}"
-           class="text-dark text-decoration-none fw-bold d-block mb-1 py-1 px-2 rounded {% if guild_nav.id == guild.id %}text-primary bg-white border border-primary-subtle shadow-sm{% endif %}">
-          {{ guild_nav.name }}
-        </a>
-        {% if guild_nav.sidebar_factions %}
-          <ul class="ms-3 small ps-2 list-unstyled border-start border-2 border-light">
-            {% for faction_nav in guild_nav.sidebar_factions %}
-              <li class="my-1">
-                <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}"
-                   class="text-muted text-decoration-none d-block py-0.5 px-1 rounded hover-text-primary">
-                  {{ faction_nav.name }}
-                </a>
-              </li>
-            {% endfor %}
-            {% if guild_nav.slug == 'warrior' %}
-              <li class="my-1">
-                <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles"
-                   class="text-muted text-decoration-none d-block py-0.5 px-1 rounded hover-text-primary">
-                  Warrior Titles
-                </a>
-              </li>
-            {% endif %}
-          </ul>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-  <div class="mt-4 pt-3 border-top border-2 border-light">
-    {% if classless_record %}
-      <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
-         class="text-secondary text-decoration-none fw-semibold small {% if class_slug == classless_record.slug %}text-primary fw-bold{% endif %}">
-        <i class="bi bi-shield-split me-1"></i> {{ classless_record.name }}
-      </a>
+{# Wrapper for Alpine State - Now handles the sticky positioning on desktop, and mobile prev/next state #}
+<div x-data="{ mobileSidebarOpen: false, items: [
+  {% for guild_nav in sidebar_guilds %}
+    { name: '{{ guild_nav.name|escapejs }}', url: '{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}', active:
+    {% if guild_nav.id == guild.id %}
+      true
     {% else %}
-      <a href="{% url 'rulebook:class_detail' 'classless' %}"
-         class="text-secondary text-decoration-none fw-semibold small {% if class_slug == 'classless' %}text-primary fw-bold{% endif %}">
-        <i class="bi bi-shield-split me-1"></i> Classless Talents
-      </a>
+      false
     {% endif %}
+    },
+  {% endfor %}
+
+  {% if classless_record %}
+    { name: '{{ classless_record.name|escapejs }}', url: '{% url 'rulebook:class_detail' class_slug=classless_record.slug %}', active:
+    {% if classless_record.id == guild.id %}
+      true
+    {% else %}
+      false
+    {% endif %}
+    },
+  {% endif %}
+  ], currentIndex: 0 }" x-init="currentIndex = Math.max(items.findIndex(i => i.active), 0)" class="shrink-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] z-10">
+
+  {# Mobile Bottom Navigation Bar #}
+  <div class="lg:hidden fixed inset-x-0 bottom-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] flex items-center gap-1 px-2 py-2">
+    <a :href="items.length ? items[(currentIndex - 1 + items.length) % items.length].url : '#'" class="shrink-0 flex items-center justify-center w-11 h-11 rounded-full text-slate-500 hover:bg-slate-100 active:bg-slate-200 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+      <span class="sr-only">Previous Class</span>
+    </a>
+
+    <button @click="mobileSidebarOpen = true" type="button" class="flex-1 min-w-0 flex items-center justify-center gap-3 py-2 px-3 rounded-lg hover:bg-slate-50 active:bg-slate-100 transition-colors">
+      <div class="shrink-0 text-slate-400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-bottom-open">
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="M3 15h18" />
+          <path d="m9 10 3-3 3 3" />
+        </svg>
+      </div>
+
+      <div class="flex flex-col items-start min-w-0">
+        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-none">Class</span>
+        <span class="text-sm font-bold text-slate-800 truncate w-full" x-text="items.length ? items[currentIndex].name : 'Class'"></span>
+      </div>
+    </button>
+
+    <a :href="items.length ? items[(currentIndex + 1) % items.length].url : '#'" class="shrink-0 flex items-center justify-center w-11 h-11 rounded-full text-slate-500 hover:bg-slate-100 active:bg-slate-200 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+      <span class="sr-only">Next Class</span>
+    </a>
   </div>
-</aside>
-<div class="offcanvas offcanvas-bottom bg-light text-dark"
-     tabindex="-1"
-     id="classSidebar">
-  <div class="offcanvas-header border-bottom">
-    <h5 class="offcanvas-title fw-bold text-primary">Class Navigation</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body">
-    <ul class="list-unstyled">
-      {% for guild_nav in sidebar_guilds %}
-        <li class="mb-3">
-          <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}"
-             class="text-dark text-decoration-none fw-bold d-block mb-1 py-1 px-2 rounded {% if guild_nav.id == guild.id %}text-primary bg-white border{% endif %}">
-            {{ guild_nav.name }}
-          </a>
-          {% if guild_nav.sidebar_factions %}
-            <ul class="ms-3 small ps-2 list-unstyled border-start">
-              {% for faction_nav in guild_nav.sidebar_factions %}
-                <li class="my-1">
-                  <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}"
-                     class="text-muted text-decoration-none d-block py-0.5 px-1">{{ faction_nav.name }}</a>
-                </li>
-              {% endfor %}
-              {% if guild_nav.slug == 'warrior' %}
-                <li class="my-1">
-                  <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles"
-                     class="text-muted text-decoration-none d-block py-0.5 px-1">Warrior Titles</a>
-                </li>
-              {% endif %}
-            </ul>
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-    <div class="mt-4 pt-3 border-top">
-      {% if classless_record %}
-        <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
-           class="text-secondary text-decoration-none fw-semibold small {% if classname == classless_record.slug %}text-primary fw-bold{% endif %}">
-          <i class="bi bi-shield-split me-1"></i> {{ classless_record.name }}
-        </a>
-      {% else %}
-        <a href="{% url 'rulebook:class_detail' 'classless' %}"
-           class="text-secondary text-decoration-none fw-semibold small">
-          <i class="bi bi-shield-split me-1"></i> Classless Talents
-        </a>
-      {% endif %}
+
+  {# Desktop Sidebar Panel #}
+  <aside class="hidden lg:flex flex-col w-80 h-full py-6 border-r border-slate-200/60 bg-slate-50/50">
+    <h5 class="shrink-0 text-slate-400 uppercase text-xs font-bold tracking-wider mb-4 pb-2 px-6 border-b border-gray-200">Class Navigation</h5>
+
+    <div class="flex-1 overflow-y-auto pl-6 pr-2">
+      <ul class="space-y-2">
+        {% for guild_nav in sidebar_guilds %}
+          <li>
+            <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}"
+               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if guild_nav.id == guild.id %}text-indigo-700 bg-indigo-50/70 border border-indigo-100/80 shadow-sm{% endif %}">
+              {{ guild_nav.name }}
+            </a>
+
+            {% if guild_nav.sidebar_factions %}
+              <ul class="mt-1 ml-4 pl-3 space-y-1 border-l-2 border-slate-100 text-xs">
+                {% for faction_nav in guild_nav.sidebar_factions %}
+                  <li>
+                    <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" class="block py-1 px-2 rounded text-slate-500 hover:text-indigo-700 hover:bg-slate-50 transition-colors">{{ faction_nav.name }}</a>
+                  </li>
+                {% endfor %}
+                {% if guild_nav.slug == 'warrior' %}
+                  <li>
+                    <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="block py-1 px-2 rounded text-slate-500 hover:text-indigo-700 hover:bg-slate-50 transition-colors">Warrior Titles</a>
+                  </li>
+                {% endif %}
+              </ul>
+            {% endif %}
+          </li>
+        {% endfor %}
+
+        {% if classless_record %}
+          <li>
+            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
+               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if classless_record.id == guild.id %}text-indigo-700 bg-indigo-50/70 border border-indigo-100/80 shadow-sm{% endif %}">
+              {{ classless_record.name }}
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="shrink-0 mt-6 pt-4 px-6 border-t border-gray-200">
+      <a href="{% url 'rulebook:classes' %}" class="flex items-center text-gray-500 hover:text-indigo-600 font-semibold text-sm transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Class Index
+      </a>
+    </div>
+  </aside>
+
+  {# Mobile Drawer Backdrop (Fades in) #}
+  <div x-show="mobileSidebarOpen" x-cloak class="lg:hidden fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm" @click="mobileSidebarOpen = false"></div>
+
+  {# Mobile Slide-Up Drawer Menu #}
+  <div x-show="mobileSidebarOpen" x-cloak class="lg:hidden fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[75vh] flex flex-col border-t border-slate-200">
+    <div class="flex items-center justify-between px-4 py-4 border-b border-slate-100 shrink-0">
+      <h5 class="font-serif font-bold text-lg text-slate-800 tracking-wide">Class Navigation</h5>
+      <button @click="mobileSidebarOpen = false" type="button" class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-md transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="overflow-y-auto px-4 py-3 pb-20">
+      <ul class="space-y-1 text-base font-medium">
+        {% for guild_nav in sidebar_guilds %}
+          <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
+            <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if guild_nav.id == guild.id %}text-indigo-700 bg-indigo-50 font-bold{% endif %}">{{ guild_nav.name }}</a>
+            {% if guild_nav.sidebar_factions %}
+              <ul class="mt-1 ml-5 pl-3 space-y-1 border-l-2 border-slate-100 text-sm">
+                {% for faction_nav in guild_nav.sidebar_factions %}
+                  <li><a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" @click="mobileSidebarOpen = false" class="block py-1.5 px-2 text-slate-500 active:text-indigo-700 active:bg-slate-50 rounded-md">{{ faction_nav.name }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </li>
+        {% endfor %}
+        {% if classless_record %}
+          <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
+            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
+               class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if classless_record.id == guild.id %}text-indigo-700 bg-indigo-50 font-bold{% endif %}">{{ classless_record.name }}</a>
+          </li>
+        {% endif %}
+      </ul>
     </div>
   </div>
+
 </div>

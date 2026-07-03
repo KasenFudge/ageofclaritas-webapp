@@ -1,0 +1,22 @@
+{% if messages %}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
+    {% for message in messages %}
+      <div x-data="{ show: true }"
+           x-show="show"
+           x-transition.duration.300ms
+           class="relative p-4 rounded-lg border shadow-sm flex items-center justify-between {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-800 {% elif message.tags == 'error' or message.tags == 'danger' %}bg-red-50 border-red-200 text-red-800 {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-200 text-yellow-800 {% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %}"
+           role="alert">
+
+        <span class="text-sm font-medium">{{ message }}</span>
+
+        {# Alpine Dismiss Button #}
+        <button type="button" @click="show = false" class="p-1 rounded-md hover:bg-black/5 transition-colors text-current" aria-label="Close message">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% load static %}
 
@@ -16,15 +16,10 @@
       </div>
       <form id="payment-form">
         <div id="payment-element" class="mb-3"></div>
-        <div id="error-message"
-             class="alert alert-danger d-none mb-3"
-             role="alert"></div>
+        <div id="error-message" class="alert alert-danger d-none mb-3" role="alert"></div>
         <button id="submit-button" class="btn btn-primary btn-block w-100 py-2">
           <span id="button-text">Pay ${{ amount_display }} Now</span>
-          <span id="spinner"
-                class="spinner-border spinner-border-sm d-none"
-                role="status"
-                aria-hidden="true"></span>
+          <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
         </button>
       </form>
     </div>

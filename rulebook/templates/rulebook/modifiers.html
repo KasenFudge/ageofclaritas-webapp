@@ -1,20 +1,16 @@
 {% load static %}
 
-<div class="anchor-container">
-  <h2 class="text-center section-header">Modifiers</h2>
-  <a class="anchor" id="modifiers"></a>
-</div>
-<p>
-  Modifiers represent some significant change to a player that typically has
-  some upside and downside. Unlike many Talents, Modifiers aren"t associated
-  with any specific Class or Kin. During the course of the game, a player may
-  gain or lose certain Modifiers.
-</p>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-3"></div>
-    <div class="col-6 d-flex justify-content-center align-items-center">
-      <img src="{% static 'images/Modifiers.jpg' %}" class="page-image" />
-    </div>
-  </div>
-</div>
+<section id="modifiers" class="pt-8 border-t border-slate-200 space-y-6 scroll-mt-24">
+
+  <h2 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900">Modifiers</h2>
+
+  <p class="text-slate-600 leading-relaxed">
+    Modifiers represent some significant change to a player that typically has
+    some upside and downside. Unlike many Talents, Modifiers aren't associated
+    with any specific Class or Kin. During the course of the game, a player may
+    gain or lose certain Modifiers.
+  </p>
+
+  <img src="{% static 'images/Modifiers.jpg' %}" class="w-full max-w-2xl mx-auto rounded-xl border border-slate-200 shadow-sm" alt="Diagram illustrating character Modifiers." />
+
+</section>

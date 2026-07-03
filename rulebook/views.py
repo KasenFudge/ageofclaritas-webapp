@@ -6,10 +6,6 @@ from .models import Class, ClassType, Kin, Talent, TalentType
 
 
 # Create your views here.
-class IndexView(TemplateView):
-    template_name = "rulebook/index.html"
-
-
 class ClassesView(ListView):
     template_name = "rulebook/classes.html"
     context_object_name = "guilds"
