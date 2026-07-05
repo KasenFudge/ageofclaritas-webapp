@@ -2,6 +2,7 @@ from datetime import datetime, time, timedelta
 
 from django.conf import settings
 from django.db import models
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -57,6 +58,17 @@ class Event(models.Model):
     # Removed unique=True to support matching Junior and Senior named operations
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=60, blank=True, db_index=True)
+    description = models.TextField(
+        blank=True,
+        default="No event overview has been provided yet.",
+        help_text="A short overview shown on the event detail and index pages.",
+    )
+    location = models.CharField(
+        max_length=120,
+        blank=True,
+        default="No location has been provided yet.",
+        help_text="The primary venue or gathering location for this event.",
+    )
 
     event_type = models.CharField(max_length=10, choices=EventType.choices, default=EventType.OTHER)
     base_price_cents = models.IntegerField(help_text="Base price of a ticket for the event before discounts in cents.")
@@ -74,7 +86,12 @@ class Event(models.Model):
 
     attendees = models.ManyToManyField(settings.AUTH_USER_MODEL, through="EventRegistration", related_name="events")
 
-    event_image = models.ImageField(upload_to=upload_event_main, blank=True)
+    event_image = models.ImageField(
+        upload_to=upload_event_main,
+        blank=True,
+        default="images/AoCEventBackgroundDefault.png",
+        help_text="Primary banner shown on event pages when registration is open.",
+    )
     photographer = models.CharField(max_length=50, null=True, blank=True)
 
     # DYNAMIC INTERCEPT PROPERTY (TBA Layout handling)
@@ -87,6 +104,18 @@ class Event(models.Model):
         if not self.registration_available:
             return "To Be Announced"
         return self.title
+
+    @property
+    def display_image_url(self) -> str:
+        """
+        Show the default background image until registration opens, then use the
+        uploaded event image if one is available.
+        """
+        if not self.registration_available:
+            return static("images/AoCEventBackgroundDefault.png")
+        if self.event_image:
+            return self.event_image.url
+        return static("images/AoCEventBackgroundDefault.png")
 
     def __str__(self):
         # Admin backend panel always sees the actual operational text layout

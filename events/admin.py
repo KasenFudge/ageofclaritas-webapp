@@ -187,9 +187,16 @@ class EventAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     fieldsets = (
         (
-            "Event Info",
+            "Event Overview",
             {
                 "fields": [("title", "slug"), "event_type", "registration_available", "event_image"],
+            },
+        ),
+        (
+            "Event Details",
+            {
+                "fields": ["description", "location"],
+                "description": "The public-facing copy and primary location shown across the event pages.",
             },
         ),
         (
@@ -213,4 +220,4 @@ class EventAdmin(admin.ModelAdmin):
     )
     inlines = [PriceTierInline, EventRegistrationInline, EventMediaInline]
     list_filter = ["event_type", "start_time"]
-    search_fields = ["title"]
+    search_fields = ["title", "description", "location"]

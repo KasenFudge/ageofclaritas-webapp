@@ -3,6 +3,16 @@ from django.utils import timezone
 
 from .models import EventRegistration
 
+# Shared Tailwind widget styling. Defined once here so every widget stays visually
+# consistent without field_render.html needing to guess at or reach into rendered HTML.
+TEXT_INPUT_CLASSES = (
+    "block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm "
+    "text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 "
+    "focus:outline-none focus:ring-1 focus:ring-indigo-500"
+)
+CHECKBOX_CLASSES = "h-4 w-4 rounded accent-indigo-600"
+RADIO_CLASSES = "h-4 w-4 accent-indigo-600"
+
 
 class EventRegistrationForm(forms.ModelForm):
     declared_arrival_time = forms.DateTimeField(
@@ -12,10 +22,7 @@ class EventRegistrationForm(forms.ModelForm):
             "%m/%d/%Y %H:%M",  # 24hr text variant
         ],
         widget=forms.DateTimeInput(
-            attrs={
-                "type": "datetime-local",  # Triggers the native browser interactive calendar/clock picker
-                "class": "form-control",
-            }
+            attrs={"type": "datetime-local", "autocomplete": "off", "class": TEXT_INPUT_CLASSES}
         ),
         label="Expected Arrival Date & Time",
         required=False,
@@ -25,13 +32,16 @@ class EventRegistrationForm(forms.ModelForm):
     weapon_rental = forms.BooleanField(
         label="I need to rent weapons for this event",
         required=False,
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASSES}),
     )
 
     PAYMENT_CHOICES = [("online", "Pay online"), ("in_person", "Pay in person")]
 
     payment_method = forms.ChoiceField(
-        choices=PAYMENT_CHOICES, widget=forms.RadioSelect(attrs={"class": "form-check-input"}), initial="online"
+        choices=PAYMENT_CHOICES,
+        widget=forms.RadioSelect(attrs={"class": RADIO_CLASSES}),
+        initial="online",
+        help_text="Choose whether you'd like to pay online now or in person at the event.",
     )
 
     class Meta:

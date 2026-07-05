@@ -1,33 +1,44 @@
-{% extends 'base.html' %}
+{% extends 'layouts/full_layout.html' %}
 
 {% block title_tag %}
   Age of Claritas - Register
 {% endblock title_tag %}
+
 {% block content %}
-  <div class="container my-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6 col-lg-5">
-        <div class="card shadow border-0 rounded-3 text-dark">
-          <div class="card-body p-4 p-sm-5">
-            <h2 class="card-title text-center fw-bold mb-4 text-uppercase tracking-wide">Register</h2>
-            <form method="post" class="needs-validation" novalidate>
-              {% csrf_token %}
-              <!-- Account Credentials -->
-              {% include 'includes/field_render.html' with field=form.email %}
-              {% include 'includes/field_render.html' with field=form.username %}
-              {% include 'includes/field_render.html' with field=form.password1 %}
-              {% include 'includes/field_render.html' with field=form.password2 %}
-              <!-- Personal Information -->
-              <div class="row">
-                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.first_name %}</div>
-                <div class="col-md-6">{% include 'includes/field_render.html' with field=form.last_name %}</div>
-              </div>
-              {% include 'includes/field_render.html' with field=form.date_of_birth %}
-              <button type="submit" class="btn btn-primary w-100 mt-3">Register Account</button>
-            </form>
-          </div>
+  <div class="max-w-md mx-auto px-4 py-16">
+    <div class="rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-8 sm:p-10">
+      <h1 class="text-2xl font-serif font-bold text-center uppercase tracking-wide text-slate-900 mb-6">Register</h1>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'includes/field_render.html' with field=form.email %}
+        {% include 'includes/field_render.html' with field=form.username %}
+        {% include 'includes/field_render.html' with field=form.password1 %}
+        {% include 'includes/field_render.html' with field=form.password2 %}
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {% include 'includes/field_render.html' with field=form.first_name %}
+          {% include 'includes/field_render.html' with field=form.last_name %}
         </div>
-      </div>
+
+        {% include 'includes/field_render.html' with field=form.date_of_birth %}
+
+        <button type="submit" class="w-full rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-3 text-sm uppercase tracking-wide shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-2">
+          Register Account
+        </button>
+      </form>
+
+      <p class="text-center text-sm text-slate-600 mt-6">
+        Already have an account?
+        <a href="{% url 'login' %}" class="inline-flex items-center gap-1 font-bold text-indigo-700 hover:text-indigo-900 transition-colors">
+          Sign In
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in">
+            <path d="m10 17 5-5-5-5" />
+            <path d="M15 12H3" />
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          </svg>
+        </a>
+      </p>
     </div>
   </div>
 {% endblock content %}

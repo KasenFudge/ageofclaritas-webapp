@@ -1,93 +1,112 @@
-{% extends 'base.html' %}
+{% extends 'layouts/full_layout.html' %}
 
 {% block title_tag %}
   Age of Claritas - Outstanding Balance
 {% endblock title_tag %}
+
 {% block content %}
-  <div class="container py-4">
-    <h2 class="mb-3 fw-bold text-dark border-bottom pb-2">Outstanding Balance</h2>
+  <div class="max-w-3xl mx-auto space-y-6 pb-16">
+
+    <h1 class="text-3xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-4">Outstanding Balance</h1>
+
     {% if outstanding_registrations %}
-      <p class="text-muted mb-4">The following registrations are currently unpaid—you can securely pay online now or bring your payment in person on the day of the event.</p>
-      <div class="row g-4">
+      <p class="text-slate-600">The following registrations are currently unpaid — you can securely pay online now or bring your payment in person on the day of the event.</p>
+
+      <div class="space-y-4">
         {% for reg in outstanding_registrations %}
-          <div class="col-12 col-lg-8 mx-auto">
-            <div class="card shadow-sm border-0 bg-white mb-3">
-              <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-                <div>
-                  <h3 class="h5 mb-1 fw-bold text-truncate" style="max-width: 350px;">{{ reg.event.title }}</h3>
-                  <small class="text-light-50"><i class="bi bi-clock me-1"></i> Starts: {{ reg.event.start_time|date:"g:i A" }}</small>
-                </div>
-                <span class="badge bg-warning text-dark px-2.5 py-1.5 fw-semibold shadow-sm">UNPAID</span>
+          <div class="overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80">
+            <div class="flex items-center justify-between gap-4 bg-slate-900 px-6 py-4">
+              <div class="min-w-0">
+                <h3 class="font-serif font-bold text-white truncate">{{ reg.event.title }}</h3>
+                <p class="text-xs text-slate-300 flex items-center gap-1.5 mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock shrink-0">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Starts: {{ reg.event.start_time|date:"g:i A" }}
+                </p>
               </div>
-              <div class="card-body p-0">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
-                    <span class="text-dark fw-medium">Base Price</span>
-                    <span class="text-dark fw-bold">${{ reg.base_price|floatformat:2 }}</span>
-                  </li>
-                  {% for discount in reg.formatted_discounts %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-2 bg-success-subtle text-success-emphasis border-0">
-                      <span class="small"><i class="bi bi-tag-fill me-1"></i> {{ discount.reason }}</span>
-                      <span class="small fw-semibold">-${{ discount.amount|floatformat:2 }}</span>
-                    </li>
-                  {% endfor %}
-                  {% for item in reg.formatted_additional_items %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-2 bg-light text-muted border-0">
-                      <span class="small"><i class="bi bi-plus-circle me-1"></i> {{ item.reason }}</span>
-                      <span class="small fw-semibold">+${{ item.amount|floatformat:2 }}</span>
-                    </li>
-                  {% endfor %}
-                  <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3 bg-light border-top border-2">
-                    <span class="text-secondary fw-semibold">Registration Subtotal:</span>
-                    <span class="text-dark h5 mb-0 fw-bold">${{ reg.final_price|floatformat:2 }}</span>
-                  </li>
-                </ul>
-              </div>
+              <span class="shrink-0 inline-flex items-center rounded-full bg-amber-400 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-amber-950 shadow-sm">Unpaid</span>
             </div>
+
+            <ul class="divide-y divide-slate-100">
+              <li class="flex items-center justify-between px-6 py-3">
+                <span class="text-slate-700 font-medium">Base Price</span>
+                <span class="text-slate-900 font-bold">${{ reg.base_price|floatformat:2 }}</span>
+              </li>
+              {% for discount in reg.formatted_discounts %}
+                <li class="flex items-center justify-between px-6 py-2.5 bg-emerald-50 text-sm text-emerald-700">
+                  <span>{{ discount.reason }}</span>
+                  <span class="font-semibold">-${{ discount.amount|floatformat:2 }}</span>
+                </li>
+              {% endfor %}
+              {% for item in reg.formatted_additional_items %}
+                <li class="flex items-center justify-between px-6 py-2.5 bg-slate-50 text-sm text-slate-500">
+                  <span>{{ item.reason }}</span>
+                  <span class="font-semibold">+${{ item.amount|floatformat:2 }}</span>
+                </li>
+              {% endfor %}
+              <li class="flex items-center justify-between px-6 py-3 bg-slate-50 border-t-2 border-slate-200">
+                <span class="text-slate-600 font-semibold">Registration Subtotal</span>
+                <span class="text-slate-900 font-bold text-lg">${{ reg.final_price|floatformat:2 }}</span>
+              </li>
+            </ul>
           </div>
         {% endfor %}
       </div>
-      <div class="col-12 col-lg-8 mx-auto mt-4">
-        <div class="card shadow-sm border-0 bg-white border-top border-primary border-4">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <div>
-                <h4 class="h5 text-secondary fw-bold mb-0">Total Amount Due</h4>
-                <small class="text-muted">Combined outstanding balance for your active registrations</small>
-              </div>
-              <div class="text-end">
-                <span class="display-6 fw-bold text-primary">${{ total_balance|floatformat:2 }}</span>
-              </div>
-            </div>
-            <hr class="text-muted" />
-            <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-3 mt-3">
-              <span class="text-muted small d-flex align-items-center gap-1 order-2 order-md-1">
-                <i class="bi bi-shield-lock-fill text-success"></i> Secure, encrypted checkout
-              </span>
-              <form action="{% url 'payments:checkout' %}" method="post" class="w-100 w-md-auto order-1 order-md-2">
-                {% csrf_token %}
-                {% for reg in outstanding_registrations %}
-                  <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
-                {% endfor %}
-                <button type="submit" class="btn btn-success btn-lg w-100 px-5 fw-bold shadow-sm">
-                  Pay Now Online <i class="bi bi-arrow-right ms-1"></i>
-                </button>
-              </form>
-            </div>
+
+      <div class="rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 border-t-4 border-indigo-700 p-6">
+        <div class="flex items-center justify-between gap-4 mb-4">
+          <div>
+            <h2 class="font-bold text-slate-700">Total Amount Due</h2>
+            <p class="text-sm text-slate-500">Combined outstanding balance for your active registrations</p>
           </div>
+          <span class="text-3xl font-serif font-bold text-indigo-700 shrink-0">${{ total_balance|floatformat:2 }}</span>
+        </div>
+
+        <hr class="border-slate-200 mb-4" />
+
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3">
+          <span class="order-2 sm:order-1 text-xs text-slate-500 flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock text-emerald-600 shrink-0">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Secure, encrypted checkout
+          </span>
+          <form action="{% url 'payments:checkout' %}" method="post" class="order-1 sm:order-2 w-full sm:w-auto">
+            {% csrf_token %}
+            {% for reg in outstanding_registrations %}
+              <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
+            {% endfor %}
+            <button type="submit"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+              Pay Now Online
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </button>
+          </form>
         </div>
       </div>
     {% else %}
-      <div class="row mt-5">
-        <div class="col-12 col-md-8 mx-auto text-center py-5 bg-white rounded shadow-sm">
-          <i class="bi bi-check-circle fs-1 text-success d-block mb-3"></i>
-          <h3 class="fw-bold text-dark mb-2">Account Fully Cleared</h3>
-          <p class="text-muted mb-4">You have no outstanding charges at this time. All schedules are paid up!</p>
-          <a href="{% url 'accounts:upcoming_events' %}" class="btn btn-primary px-4 fw-semibold shadow-sm">
-            <i class="bi bi-arrow-left me-1"></i> Return to My Schedule
-          </a>
-        </div>
+      <div class="rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-10 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big mx-auto mb-3 text-emerald-600">
+          <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+          <path d="m9 11 3 3L22 4" />
+        </svg>
+        <h2 class="font-serif font-bold text-slate-900 text-xl mb-1">Account Fully Cleared</h2>
+        <p class="text-slate-500 mb-5">You have no outstanding charges at this time. All schedules are paid up!</p>
+        <a href="{% url 'accounts:upcoming_events' %}" class="inline-flex items-center gap-2 rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white font-semibold px-5 py-3 text-sm shadow-sm transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          Return to My Schedule
+        </a>
       </div>
     {% endif %}
+
   </div>
 {% endblock content %}

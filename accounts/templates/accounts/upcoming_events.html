@@ -1,144 +1,132 @@
-{% extends 'base.html' %}
+{% extends 'layouts/full_layout.html' %}
 
 {% load static %}
 
 {% block title_tag %}
   Age of Claritas - Upcoming Registered Events
 {% endblock title_tag %}
+
 {% block content %}
-  <div class="container py-4">
-    {# ========================================================================= #}
-    {# PERSONAL UPCOMING SCHEDULE SECTION                                        #}
-    {# ========================================================================= #}
-    <h2 class="mb-4 fw-bold text-dark border-bottom pb-2">My Upcoming Schedule</h2>
-    <div class="row g-3 mb-5">
-      {% for reg in personal_registrations %}
-        <div class="col-12">
-          <div class="card h-100 shadow-sm border-0 bg-white">
-            <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4 gap-3">
-              {# --- Column 1: Core Event Metrics --- #}
-              <div class="flex-grow-1">
-                <h3 class="h5 card-title fw-bold text-primary mb-2">{{ reg.event.title }}</h3>
-                <p class="card-text text-muted small mb-0 d-flex align-items-center gap-2">
-                  <i class="bi bi-calendar3"></i>
-                  <span>Starts: <strong>{{ reg.event.start_time|date:"g:i A" }}</strong></span>
-                  <span class="text-secondary">|</span>
-                  <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
-                </p>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                {# --- Column 2: Account Financial Status --- #}
-                <div class="text-md-end" style="min-width: 140px;">
-                  <small class="text-muted d-block mb-1 text-uppercase fw-bold text-xs">Payment Status</small>
-                  {% if reg.is_refunded %}
-                    <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-arrow-counterclockwise me-1"></i> REFUNDED
-                    </span>
-                  {% elif reg.is_failed %}
-                    <span class="badge bg-danger px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-x-circle-fill me-1"></i> FAILED
-                    </span>
-                  {% elif reg.is_paid %}
-                    <span class="badge bg-success px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-check-circle-fill me-1"></i> SUCCEEDED
-                    </span>
-                  {% else %}
-                    <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-exclamation-triangle-fill me-1"></i> INCOMPLETE
-                    </span>
-                  {% endif %}
-                </div>
-                {# --- Column 3: Event Surveys --- #}
-                <div>
-                  <a href="#" class="btn btn-purple d-flex align-items-center gap-2 shadow-sm">
-                    <i class="bi bi-clipboard-check"></i>
-                    <span>Event Surveys</span>
-                  </a>
-                </div>
-              </div>
+  <div class="max-w-4xl mx-auto space-y-10 pb-16">
+
+    <section>
+      <h1 class="text-3xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-4 mb-6">My Upcoming Schedule</h1>
+
+      <div class="space-y-4">
+        {% for reg in personal_registrations %}
+          <div class="rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="min-w-0">
+              <h3 class="font-serif font-bold text-indigo-700 text-lg mb-1">{{ reg.event.title }}</h3>
+              <p class="text-slate-500 text-sm flex flex-wrap items-center gap-x-2 gap-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar text-slate-400 shrink-0">
+                  <path d="M8 2v4" />
+                  <path d="M16 2v4" />
+                  <rect width="18" height="18" x="3" y="4" rx="2" />
+                  <path d="M3 10h18" />
+                </svg>
+                <span>Starts: <strong class="text-slate-700 font-semibold">{{ reg.event.start_time|date:"g:i A" }}</strong></span>
+                <span class="text-slate-300">|</span>
+                <span>Arriving: <strong class="text-slate-700 font-semibold">{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
+              </p>
             </div>
-          </div>
-        </div>
-      {% empty %}
-        <div class="col-12">
-          <div class="alert alert-info border-0 shadow-sm p-4 text-center" role="alert">
-            <i class="bi bi-calendar-x fs-3 d-block mb-2 text-info"></i>
-            <span class="fw-semibold">You are not registered for any upcoming events.</span>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-    {# ========================================================================= #}
-    {# CHILD ACCOUNTS REGISTRATION SECTION                                       #}
-    {# ========================================================================= #}
-    {% if has_children %}
-      <h2 class="mb-4 fw-bold text-dark border-bottom pb-2">Household & Child Registrations</h2>
-      <div class="row g-3 mb-5">
-        {% for reg in child_registrations %}
-          <div class="col-12">
-            <div class="card h-100 shadow-sm border-0 bg-white border-start border-info border-4">
-              <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center p-4 gap-3">
-                {# --- Column 1: Core Event Metrics --- #}
-                <div class="flex-grow-1">
-                  <span class="badge bg-info text-dark mb-2 px-2 py-1 fw-bold text-uppercase tracking-wider small shadow-sm">
-                    <i class="bi bi-person-fill"></i> For: {{ reg.user.get_full_name|default:reg.user.username }}
-                  </span>
-                  <h3 class="h5 card-title fw-bold text-dark mb-2">{{ reg.event.title }}</h3>
-                  <p class="card-text text-muted small mb-0 d-flex align-items-center gap-2">
-                    <i class="bi bi-calendar3"></i>
-                    <span>Starts: <strong>{{ reg.event.start_time|date:"M d — g:i A" }}</strong></span>
-                    <span class="text-secondary">|</span>
-                    <span>Arriving: <strong>{{ reg.declared_arrival_time|date:"M d — g:i A" }}</strong></span>
-                  </p>
-                </div>
-                {# --- Column 2: Account Financial Status --- #}
-                <div class="text-md-end" style="min-width: 140px;">
-                  <small class="text-muted d-block mb-1 text-uppercase fw-bold text-xs">Payment Status</small>
-                  {% if reg.is_refunded %}
-                    <span class="badge bg-primary text-white px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-arrow-counterclockwise me-1"></i> REFUNDED
-                    </span>
-                  {% elif reg.is_failed %}
-                    <span class="badge bg-danger px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-x-circle-fill me-1"></i> FAILED
-                    </span>
-                  {% elif reg.is_paid %}
-                    <span class="badge bg-success px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-check-circle-fill me-1"></i> SUCCEEDED
-                    </span>
-                  {% else %}
-                    <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm w-100 text-center">
-                      <i class="bi bi-exclamation-triangle-fill me-1"></i> INCOMPLETE
-                    </span>
-                  {% endif %}
-                </div>
+
+            <div class="flex items-center gap-3 shrink-0">
+              <div class="text-center sm:text-right min-w-[120px]">
+                <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">Payment Status</span>
+                {% if reg.is_refunded %}
+                  <span class="inline-flex items-center rounded-full bg-indigo-100 text-indigo-700 px-3 py-1 text-xs font-bold uppercase">Refunded</span>
+                {% elif reg.is_failed %}
+                  <span class="inline-flex items-center rounded-full bg-red-100 text-red-700 px-3 py-1 text-xs font-bold uppercase">Failed</span>
+                {% elif reg.is_paid %}
+                  <span class="inline-flex items-center rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-bold uppercase">Complete</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-amber-100 text-amber-700 px-3 py-1 text-xs font-bold uppercase">Incomplete</span>
+                {% endif %}
               </div>
+
+              <a href="#" class="inline-flex items-center gap-2 rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-semibold px-4 py-2.5 shadow-sm transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check shrink-0">
+                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                  <path d="m9 14 2 2 4-4" />
+                </svg>
+                Event Surveys
+              </a>
             </div>
           </div>
         {% empty %}
-          <div class="col-12">
-            <div class="alert alert-light border border-dashed p-4 text-center" role="alert">
-              <p class="text-muted mb-0">No child accounts are currently registered for upcoming events.</p>
-            </div>
+          <div class="rounded-3xl bg-indigo-50 ring-1 ring-indigo-100 p-6 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-x mx-auto mb-2 text-indigo-400">
+              <path d="M8 2v4" />
+              <path d="M16 2v4" />
+              <rect width="18" height="18" x="3" y="4" rx="2" />
+              <path d="M3 10h18" />
+              <path d="m17 16-5 5" />
+              <path d="m12 16 5 5" />
+            </svg>
+            <p class="text-indigo-700 font-semibold">You are not registered for any upcoming events.</p>
           </div>
         {% endfor %}
       </div>
-    {% endif %}
-    {# ========================================================================= #}
-    {# GLOBAL BILLING QUICK RECOVERY PORTAL                                      #}
-    {# ========================================================================= #}
-    <div class="card mb-4 shadow-sm border-0 bg-light-subtle border-start border-primary border-4">
-      <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-sm-center p-4">
-        <div class="mb-3 mb-sm-0">
-          <h5 class="card-title mb-1 fw-bold text-dark d-flex align-items-center gap-2">
-            <i class="bi bi-credit-card-2-front text-primary"></i> Account Billing
-          </h5>
-          <p class="card-text text-muted small mb-0">View statements, invoices, and outstanding balances.</p>
+    </section>
+
+    {% if has_children %}
+      <section>
+        <h2 class="text-2xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-4 mb-6">Household & Child Registrations</h2>
+
+        <div class="space-y-4">
+          {% for reg in child_registrations %}
+            <div class="rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 border-l-4 border-sky-400 p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="min-w-0">
+                <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide mb-2">For: {{ reg.user.get_full_name|default:reg.user.username }}</span>
+                <h3 class="font-serif font-bold text-slate-900 text-lg mb-1">{{ reg.event.title }}</h3>
+                <p class="text-slate-500 text-sm flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span>Starts: <strong class="text-slate-700 font-semibold">{{ reg.event.start_time|date:"M d — g:i A" }}</strong></span>
+                  <span class="text-slate-300">|</span>
+                  <span>Arriving: <strong class="text-slate-700 font-semibold">{{ reg.declared_arrival_time|date:"M d — g:i A" }}</strong></span>
+                </p>
+              </div>
+              <div class="text-center sm:text-right min-w-[120px] shrink-0">
+                <span class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">Payment Status</span>
+                {% if reg.is_refunded %}
+                  <span class="inline-flex items-center rounded-full bg-indigo-100 text-indigo-700 px-3 py-1 text-xs font-bold uppercase">Refunded</span>
+                {% elif reg.is_failed %}
+                  <span class="inline-flex items-center rounded-full bg-red-100 text-red-700 px-3 py-1 text-xs font-bold uppercase">Failed</span>
+                {% elif reg.is_paid %}
+                  <span class="inline-flex items-center rounded-full bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-bold uppercase">Succeeded</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-amber-100 text-amber-700 px-3 py-1 text-xs font-bold uppercase">Incomplete</span>
+                {% endif %}
+              </div>
+            </div>
+          {% empty %}
+            <div class="rounded-2xl border border-dashed border-slate-300 p-6 text-center">
+              <p class="text-slate-500">No child accounts are currently registered for upcoming events.</p>
+            </div>
+          {% endfor %}
         </div>
-        <a href="{% url 'accounts:outstanding_balance' %}" class="btn btn-outline-primary btn-md px-4 fw-semibold shadow-sm text-nowrap">
-          Manage Billing <i class="bi bi-arrow-right-short ms-1"></i>
-        </a>
+      </section>
+    {% endif %}
+
+    <div class="rounded-3xl bg-indigo-50 ring-1 ring-indigo-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-slate-900 flex items-center gap-2 mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card text-indigo-600 shrink-0">
+            <rect width="20" height="14" x="2" y="5" rx="2" />
+            <line x1="2" x2="22" y1="10" y2="10" />
+          </svg>
+          Account Billing
+        </h3>
+        <p class="text-slate-600 text-sm">View statements, invoices, and outstanding balances.</p>
       </div>
+      <a href="{% url 'accounts:outstanding_balance' %}" class="inline-flex items-center gap-2 rounded-xl bg-white border border-indigo-200 text-indigo-700 hover:bg-indigo-100 font-semibold px-5 py-3 text-sm shadow-sm transition-colors shrink-0">
+        Manage Billing
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right">
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
     </div>
+
   </div>
 {% endblock content %}

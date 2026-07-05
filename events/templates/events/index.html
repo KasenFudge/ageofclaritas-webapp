@@ -1,4 +1,4 @@
-{% extends 'layouts/sidebar_layout.html' %}
+{% extends 'layouts/full_layout.html' %}
 
 {% load static %}
 
@@ -7,19 +7,61 @@
 {% endblock title_tag %}
 
 {% block content %}
-  <div class="max-w-5xl mx-auto space-y-10 pb-16">
+  <div class="relative isolate overflow-hidden pb-20">
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-linear-to-b from-slate-900 via-slate-900 to-transparent"></div>
+    <div class="pointer-events-none absolute left-1/2 top-24 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-indigo-500/10 blur-3xl"></div>
+    <div class="pointer-events-none absolute right-8 top-44 -z-10 h-56 w-56 rounded-full bg-amber-400/10 blur-3xl"></div>
 
-    <header>
-      <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-4">Upcoming Events</h1>
-    </header>
+    <div class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+      <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/20">
+        <div class="grid gap-10 px-6 py-10 sm:px-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(20rem,0.7fr)] lg:px-12 lg:py-14">
+          <div class="max-w-3xl">
+            <p class="text-xs font-bold uppercase tracking-[0.3em] text-slate-400">Calendar</p>
+            <h1 class="mt-4 text-4xl font-serif font-bold tracking-tight text-white sm:text-5xl">Upcoming Events</h1>
+            <p class="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">See our upcoming events here at Claritas.</p>
+          </div>
 
-    {% include 'events/event_section.html' with title="Senior Events" subtitle="(Ages 18+)" events=senior_events accent_bar="bg-indigo-600" accent_text="text-indigo-700" always_show=True %}
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {% if next_senior_event %}
+              <a href="{% url 'events:detail' next_senior_event.slug %}"
+                 class="group rounded-2xl border border-white/10 bg-white/5 p-4 text-white shadow-lg backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-400/60">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 transition-colors group-hover:text-slate-300">Next Senior Event</p>
+                <p class="mt-2 text-xl font-serif font-bold">{{ next_senior_event.start_time|date:"M d, Y" }}</p>
+                <p class="mt-1 text-sm text-slate-300 transition-colors group-hover:text-white">{{ next_senior_event.display_title }}</p>
+              </a>
+            {% else %}
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-white shadow-lg backdrop-blur">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Next Senior Event</p>
+                <p class="mt-2 text-xl font-serif font-bold text-slate-200">No senior events scheduled</p>
+              </div>
+            {% endif %}
 
-    {% include 'events/event_section.html' with title="Junior Events" subtitle="(Ages 8-17)" events=junior_events accent_bar="bg-emerald-400" accent_text="text-green-500" always_show=True %}
+            {% if next_junior_event %}
+              <a href="{% url 'events:detail' next_junior_event.slug %}"
+                 class="group rounded-2xl border border-white/10 bg-white/5 p-4 text-white shadow-lg backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 transition-colors group-hover:text-slate-300">Next Junior Event</p>
+                <p class="mt-2 text-xl font-serif font-bold">{{ next_junior_event.start_time|date:"M d, Y" }}</p>
+                <p class="mt-1 text-sm text-slate-300 transition-colors group-hover:text-white">{{ next_junior_event.display_title }}</p>
+              </a>
+            {% else %}
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-white shadow-lg backdrop-blur">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Next Junior Event</p>
+                <p class="mt-2 text-xl font-serif font-bold text-slate-200">No junior events scheduled</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </section>
 
-    {% include 'events/event_section.html' with title="Feast & Social Events" subtitle="(All Ages Welcome)" events=feast_events accent_bar="bg-amber-500" accent_text="text-amber-600" always_show=True %}
+      <div class="mt-10 space-y-10">
+        {% include 'events/event_section.html' with title="Senior Events" subtitle="(Ages 18+)" events=senior_events accent_bar="bg-indigo-700" accent_text="text-indigo-800" button_classes="bg-indigo-700 hover:bg-indigo-800" ring_class="focus:ring-indigo-500" always_show=True %}
 
-    {% include 'events/event_section.html' with title="Other Gatherings" subtitle="" events=other_events accent_bar="bg-slate-400" accent_text="text-slate-600" always_show=False %}
+        {% include 'events/event_section.html' with title="Junior Events" subtitle="(Ages 8-17)" events=junior_events accent_bar="bg-emerald-600" accent_text="text-emerald-700" button_classes="bg-emerald-600 hover:bg-emerald-700" ring_class="focus:ring-emerald-500" always_show=True %}
 
+        {% include 'events/event_section.html' with title="Feast & Social Events" subtitle="(All Ages Welcome)" events=feast_events accent_bar="bg-amber-500" accent_text="text-amber-700" button_classes="bg-amber-600 hover:bg-amber-700" ring_class="focus:ring-amber-500" always_show=True %}
+
+        {% include 'events/event_section.html' with title="Other Events" subtitle="" events=other_events accent_bar="bg-zinc-500" accent_text="text-zinc-600" button_classes="bg-zinc-600 hover:bg-zinc-700" ring_class="focus:ring-zinc-500" always_show=False %}
+      </div>
+    </div>
   </div>
 {% endblock content %}

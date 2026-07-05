@@ -34,6 +34,8 @@ class IndexView(ListView):
         context["junior_events"] = events.filter(event_type=EventType.JUNIOR)
         context["feast_events"] = events.filter(event_type=EventType.FEAST)
         context["other_events"] = events.filter(event_type=EventType.OTHER)
+        context["next_senior_event"] = context["senior_events"].first()
+        context["next_junior_event"] = context["junior_events"].first()
 
         return context
 

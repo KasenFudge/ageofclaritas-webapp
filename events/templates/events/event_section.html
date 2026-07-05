@@ -1,34 +1,72 @@
 {% comment %}
-Expects: title, subtitle, events, accent_bar, accent_text, always_show
-accent_bar / accent_text must be full literal Tailwind classes (e.g. "bg-red-500" / "text-red-600")
-so Tailwind's scanner can find them here at the call site.
+Expects: title, subtitle, events, accent_bar, accent_text, button_classes, ring_class, always_show
+accent_bar / accent_text / button_classes / ring_class must be full literal Tailwind classes
+(e.g. "bg-red-500" / "text-red-600" / "bg-red-600 hover:bg-red-700" / "focus:ring-red-500") so
+Tailwind's scanner can find them here at the call site.
 {% endcomment %}
 {% if always_show or events %}
-  <section>
-    <div class="flex items-center gap-2 mb-4">
-      <span class="w-1.5 h-6 rounded-full {{ accent_bar }} shrink-0"></span>
-      <h2 class="text-xl sm:text-2xl font-serif font-bold {{ accent_text }}">{{ title }}</h2>
-      {% if subtitle %}
-        <span class="text-slate-400 text-sm font-medium">{{ subtitle }}</span>
-      {% endif %}
+  <section class="overflow-hidden rounded-4xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/50 ring-1 ring-slate-200/60">
+    <div class="border-b border-slate-200/80 bg-slate-50/70 px-5 py-5 sm:px-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div class="flex items-center gap-3">
+          <span class="h-8 w-1.5 rounded-full {{ accent_bar }} shrink-0"></span>
+          <div>
+            <h2 class="text-2xl font-serif font-bold tracking-tight {{ accent_text }} sm:text-3xl">{{ title }}</h2>
+            {% if subtitle %}
+              <span class="mt-1 block text-sm font-medium text-slate-500">{{ subtitle }}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 shadow-sm">
+          {% if events %}
+            {{ events|length }} upcoming
+          {% else %}
+            Coming soon
+          {% endif %}
+        </div>
+      </div>
     </div>
 
     {% if events %}
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 gap-4 px-5 py-5 md:grid-cols-2 xl:grid-cols-3 sm:px-6">
         {% for event in events %}
-          <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5 flex flex-col justify-between transition-all hover:shadow-md hover:border-slate-300">
-            <div>
-              <h3 class="font-bold text-slate-900 mb-1">{{ event.display_title }}</h3>
-              <p class="text-slate-500 text-sm mb-3">{{ event.start_time|date:"F d, Y @ g:i A" }}</p>
-              <p class="text-slate-600 text-sm leading-relaxed line-clamp-3">{{ event.description|default:"No description provided." }}</p>
+          <article class="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-slate-300 hover:shadow-2xl">
+            <div class="relative aspect-video overflow-hidden bg-slate-100">
+              <img src="{{ event.display_image_url }}" alt="{{ event.display_title }} banner" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+              <div class="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-slate-950/55 to-transparent"></div>
+              <div class="absolute left-4 top-4 inline-flex rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700 shadow-sm backdrop-blur">{{ event.start_time|date:"M d" }}</div>
             </div>
-            <a href="{% url 'events:detail' event.slug %}" class="mt-4 block text-center bg-indigo-700 hover:bg-indigo-900 text-white font-semibold text-sm rounded-lg py-2.5 transition-colors">View Event Details</a>
-          </div>
+
+            <div class="flex h-full flex-col p-5">
+              <div>
+                <h3 class="text-lg font-bold tracking-tight text-slate-900">{{ event.display_title }}</h3>
+                <p class="mt-2 text-sm text-slate-500">{{ event.start_time|date:"F d, Y @ g:i A" }}</p>
+                <p class="mt-4 line-clamp-3 text-sm leading-7 text-slate-600">{{ event.description }}</p>
+              </div>
+
+              <div class="mt-6 flex items-center justify-between gap-3">
+                {% if event.event_type == 'senior' %}
+                  <span class="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-800">Senior</span>
+                {% elif event.event_type == 'junior' %}
+                  <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700">Junior</span>
+                {% elif event.event_type == 'feast' %}
+                  <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-700">Feast</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-600">Other</span>
+                {% endif %}
+                <a href="{% url 'events:detail' event.slug %}"
+                   class="inline-flex items-center justify-center rounded-xl {{ button_classes }} px-4 py-3 text-sm font-semibold text-white transition-colors focus:outline-none focus:ring-2 {{ ring_class }} focus:ring-offset-2">View Details</a>
+              </div>
+            </div>
+          </article>
         {% endfor %}
       </div>
     {% else %}
-      <div class="bg-slate-50 rounded-xl border border-dashed border-slate-300 p-8 text-center">
-        <p class="text-slate-500">Check back soon for more Events in Claritas.</p>
+      <div class="px-5 py-8 sm:px-6">
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center">
+          <p class="text-slate-500">Check back soon for more Events in Claritas.</p>
+        </div>
       </div>
     {% endif %}
   </section>

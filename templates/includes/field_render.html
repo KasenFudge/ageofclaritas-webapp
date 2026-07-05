@@ -1,11 +1,29 @@
-<div class="mb-3">
-  <label for="{{ field.id_for_label }}"
-         class="form-label fw-bold text-uppercase">{{ field.label }}</label>
-  {{ field }}
-  {% if field.help_text %}
-    <div class="form-text text-muted small">{{ field.help_text }}</div>
+<div class="mb-5">
+  {% if field.field.widget.input_type == 'radio' %}
+    <span class="block text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">{{ field.label }}</span>
+    <div class="space-y-2">
+      {% for radio in field %}
+        <label for="{{ radio.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+          {{ radio.tag }}
+          {{ radio.choice_label }}
+        </label>
+      {% endfor %}
+    </div>
+  {% elif field.field.widget.input_type == 'checkbox' %}
+    <label for="{{ field.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+      {{ field }}
+      {{ field.label }}
+    </label>
+  {% else %}
+    <label for="{{ field.id_for_label }}" class="block text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">{{ field.label }}</label>
+    {{ field }}
   {% endif %}
+
+  {% if field.help_text %}
+    <p class="mt-2 text-sm leading-6 text-slate-500">{{ field.help_text }}</p>
+  {% endif %}
+
   {% for error in field.errors %}
-    <div class="text-danger small">{{ error }}</div>
+    <div class="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ error }}</div>
   {% endfor %}
 </div>

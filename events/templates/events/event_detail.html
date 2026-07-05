@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'layouts/full_layout.html' %}
 
 {% load static %}
 
@@ -6,51 +6,96 @@
   Age of Claritas - {{ event.display_title }}
 {% endblock title_tag %}
 {% block content %}
-  <div class="container my-5">
-    <div class="card shadow border-0 mx-auto" style="max-width: 900px; border-radius: 12px; overflow: hidden">
-      <!-- Contextual Event Image Header -->
-      {% if event.event_image %}
-        <div style="width: 100%; max-height: 400px; overflow: hidden">
-          <img src="{{ event.event_image.url }}" class="img-fluid w-100 h-100 object-fit-cover" alt="{{ event.display_title }} Banner" />
-        </div>
-      {% endif %}
-      <div class="card-body p-4 p-md-5">
-        <a href="{% url 'events:index' %}" class="text-decoration-none text-secondary small fw-semibold d-inline-flex align-items-center mb-4">
-          <i class="bi bi-arrow-left me-1"></i> Back to all events
+  <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+    <article class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80">
+      <div class="relative aspect-video w-full overflow-hidden bg-slate-100">
+        <img src="{{ event.display_image_url }}" class="h-full w-full object-cover" alt="{{ event.display_title }} Banner" />
+      </div>
+
+      <div class="px-6 py-6 sm:px-8 sm:py-8 lg:px-10">
+        <a href="{% url 'events:index' %}" class="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          Back to all events
         </a>
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start mb-4">
-          <div>
-            <h1 class="display-6 fw-bold text-dark mb-2">{{ event.display_title }}</h1>
-            <p class="lead text-muted mb-0 fw-normal">
-              <i class="bi bi-calendar3 me-2"></i>{{ event.start_time|date:"l, F d, Y" }} at {{ event.start_time|date:"g:i A" }}
-            </p>
+
+        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div class="max-w-3xl">
+            <h1 class="text-3xl font-serif font-bold tracking-tight text-slate-900 sm:text-4xl">{{ event.display_title }}</h1>
+            <div class="mt-3 flex flex-col gap-2 text-base text-slate-600 sm:text-lg">
+              <p class="flex flex-wrap items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar text-slate-400 shrink-0">
+                  <path d="M8 2v4" />
+                  <path d="M16 2v4" />
+                  <rect width="18" height="18" x="3" y="4" rx="2" />
+                  <path d="M3 10h18" />
+                </svg>
+                <span><span class="font-semibold text-slate-700">Starts:</span> {{ event.start_time|date:"l, F d, Y" }} at {{ event.start_time|date:"g:i A" }}</span>
+              </p>
+              <p class="flex flex-wrap items-center gap-2 text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-3 text-slate-400 shrink-0">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                <span><span class="font-semibold text-slate-700">Ends:</span> {{ event.end_time|date:"l, F d, Y" }} at {{ event.end_time|date:"g:i A" }}</span>
+              </p>
+            </div>
           </div>
-          <div class="mt-3 mt-md-0">
+
+          <div class="shrink-0">
             {% if event.event_type == EventType.SENIOR %}
-              <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 uppercase tracking-wide fw-bold">Senior (18+)</span>
+              <span class="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-indigo-800">Senior (18+)</span>
             {% elif event.event_type == EventType.JUNIOR %}
-              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 uppercase tracking-wide fw-bold">Junior (8-17)</span>
+              <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Junior (8-17)</span>
+            {% elif event.event_type == EventType.FEAST %}
+              <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-amber-700">Feast/Social Gathering</span>
             {% else %}
-              <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 uppercase tracking-wide fw-bold">Standard</span>
+              <span class="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-zinc-600">Other</span>
             {% endif %}
           </div>
         </div>
-        <hr class="text-muted opacity-25 my-4" />
-        <div class="text-secondary fs-5 lh-lg mb-5">
-          <p>{{ event.description|default:"No event overview has been provided yet." }}</p>
+
+        <div class="my-8 h-px w-full bg-slate-200/80"></div>
+
+        <div class="space-y-4 text-base leading-8 text-slate-700 sm:text-lg">
+          <p>{{ event.description }}</p>
         </div>
       </div>
-      <div class="card-footer bg-light p-4 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-0">
-        <div class="mb-3 mb-sm-0">
-          <span class="text-muted text-uppercase small fw-bold d-block tracking-wider" style="font-size: 0.75rem">Location Venue</span>
-          <span class="text-dark fw-medium"><i class="bi bi-geo-alt-fill text-muted me-1"></i>{{ event.location|default:"Main Field / Arena" }}</span>
+
+      <div class="border-t border-slate-200 bg-slate-50 px-6 py-6 sm:px-8 lg:px-10">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span class="block text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Location Venue</span>
+            <span class="mt-2 inline-flex items-center gap-2 text-sm font-medium text-slate-800 sm:text-base">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin text-slate-400 shrink-0">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {{ event.location }}
+            </span>
+          </div>
+
+          {% if event.registration_available %}
+            {% if event.event_type == EventType.SENIOR %}
+              <a href="{% url 'events:register' slug=event.slug %}"
+                 class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Register for Event</a>
+            {% elif event.event_type == EventType.JUNIOR %}
+              <a href="{% url 'events:register' slug=event.slug %}"
+                 class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">Register for Event</a>
+            {% elif event.event_type == EventType.FEAST %}
+              <a href="{% url 'events:register' slug=event.slug %}"
+                 class="inline-flex items-center justify-center rounded-xl bg-amber-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">Register for Event</a>
+            {% else %}
+              <a href="{% url 'events:register' slug=event.slug %}"
+                 class="inline-flex items-center justify-center rounded-xl bg-zinc-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2">Register for Event</a>
+            {% endif %}
+          {% else %}
+            <button class="inline-flex items-center justify-center rounded-xl bg-slate-300 px-5 py-3 text-sm font-bold text-slate-600" disabled>Registration Opening Soon</button>
+          {% endif %}
         </div>
-        {% if event.registration_available %}
-          <a href="{% url 'events:register' slug=event.slug %}" class="btn btn-primary btn-lg fw-bold">Register for Event</a>
-        {% else %}
-          <button class="btn btn-secondary btn-lg fw-bold" disabled>Registration Opening Soon</button>
-        {% endif %}
       </div>
-    </div>
+    </article>
   </div>
 {% endblock content %}
