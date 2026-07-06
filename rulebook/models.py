@@ -34,19 +34,20 @@ class Class(models.Model):
 
     guild = models.ForeignKey("self", on_delete=models.CASCADE, related_name="factions", null=True, blank=True)
     class_type = models.CharField(max_length=15, choices=ClassType.choices)
-    has_special_rules = models.BooleanField(default=False)
     special_rules = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        if not self.has_special_rules:
-            self.special_rules = None
         if self.class_type == ClassType.GUILD:
             self.guild = None
 
         super().save(*args, **kwargs)
+
+    @property
+    def has_special_rules(self):
+        return bool(self.special_rules)
 
     def clean(self):
         super().clean()
