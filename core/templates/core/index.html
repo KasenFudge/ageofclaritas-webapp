@@ -1,9 +1,139 @@
-{% extends 'layouts/full_layout.html' %}
+{% extends 'base.html' %}
 
 {% load static %}
 
-{% block content %}
-  <div class="display-text">
-    <h1 class="text-center">Welcome to Age of Claritas</h1>
-  </div>
-{% endblock content %}
+{% block title_tag %}
+  Age of Claritas - Home
+{% endblock title_tag %}
+
+{% block layout %}
+
+  {% comment %}
+     No image has been picked yet, so this is a gradient placeholder built
+     from the site's indigo palette. Once we have an image, swap the
+     section's class/style for something like:
+       style="background-image:url('{% static "images/image.jpg" %}');
+              background-size:cover; background-position:center;"
+     and keep the dark overlay div below it for text legibility over a photo.
+  {% endcomment %}
+  <section class="relative w-full h-[60vh] min-h-105 flex items-center justify-center overflow-hidden bg-linear-to-br from-slate-950 via-indigo-950 to-slate-900">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.25),transparent_60%)]"></div>
+    <div class="relative z-10 text-center px-4">
+      <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-indigo-300 mb-4">A Live Action Roleplay Experience</p>
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold text-white tracking-tight">Age of Claritas</h1>
+      <p class="mt-6 max-w-xl mx-auto text-slate-300 text-base sm:text-lg leading-relaxed">Step into a living world of guilds, magic, and adventure.</p>
+    </div>
+  </section>
+
+  {% include 'components/messages.html' %}
+
+  {% comment %}
+     TESTIMONIAL CAROUSEL
+     Auto-advances every 6s, loops indefinitely regardless of count, pauses
+     on hover, and lets a click on a dot jump directly + reset the timer.
+  {% endcomment %}
+  {% if testimonials %}
+    <section class="max-w-3xl mx-auto px-4 py-16 sm:py-20">
+      <h2 class="text-center text-2xl sm:text-3xl font-serif font-bold text-slate-900 mb-10">What Our Players Are Saying</h2>
+
+        <div x-data="{
+                 slide: 0,
+                 total: {{ testimonials|length }},
+                 timer: null,
+                 start() {
+                   this.stop();
+
+                   if (this.total <= 1) {
+                     return;
+                   }
+
+                   this.timer = setInterval(() => {
+                     this.slide = (this.slide + 1) % this.total
+                   }, 6000)
+                 },
+                 stop() {
+                   if (this.timer) {
+                     clearInterval(this.timer);
+                     this.timer = null;
+                   }
+                 },
+                 goto(i) {
+                   this.slide = i;
+                   this.start()
+                 }
+               }"
+           x-init="start()"
+           @mouseenter="stop()"
+           @mouseleave="start()"
+           class="relative">
+        <div class="overflow-hidden">
+          <div class="flex transition-transform duration-700 ease-in-out" :style="{ transform: 'translateX(-' + (slide * 100) + '%)' }">
+            {% for testimonial in testimonials %}
+              <div class="w-full shrink-0 px-4 text-center">
+                <p class="text-lg sm:text-xl font-serif italic text-slate-700 leading-relaxed">"{{ testimonial.quote }}"</p>
+                <p class="mt-5 text-sm font-bold uppercase tracking-wide text-indigo-700">{{ testimonial.name }}</p>
+                {% if testimonial.role %}
+                  <p class="text-xs text-slate-400">{{ testimonial.role }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% if testimonials|length > 1 %}
+          <div class="flex justify-center gap-2 mt-8">
+            {% for testimonial in testimonials %}
+              <button @click="goto({{ forloop.counter0 }})" type="button" :class="slide === {{ forloop.counter0 }} ? 'bg-indigo-700' : 'bg-slate-300'" class="w-2 h-2 rounded-full transition-colors" aria-label="Testimonial {{ forloop.counter }}"></button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+  {# === Navigation Cards === #}
+  <section class="max-w-6xl mx-auto px-4 pb-20">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+      <a href="#" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <path d="M12 17h.01" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-2">What is LARP?</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">New to live action roleplay? Learn what Age of Claritas is all about.</p>
+      </a>
+
+      <a href="{% url 'rulebook:character_creation' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus">
+            <path d="M2 21a8 8 0 0 1 13.292-6" />
+            <circle cx="10" cy="8" r="5" />
+            <path d="M19 16v6" />
+            <path d="M22 19h-6" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-2">Create a Character</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Build your Kin, Class, and Talents with our step-by-step guide.</p>
+      </a>
+
+      <a href="{% url 'events:index' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+            <path d="M8 2v4" />
+            <path d="M16 2v4" />
+            <rect width="18" height="18" x="3" y="4" rx="2" />
+            <path d="M3 10h18" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-2">Upcoming Events</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">See what's coming up and register for your next adventure.</p>
+      </a>
+
+    </div>
+  </section>
+
+{% endblock layout %}
