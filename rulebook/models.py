@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Case, IntegerField, When
 from django.utils.text import slugify
 
 # Create your models here.
@@ -44,10 +45,15 @@ class Class(models.Model):
             self.special_rules = None
         if self.class_type == ClassType.GUILD:
             self.guild = None
-        if self.class_type not in [ClassType.GUILD, ClassType.CLASSLESS] and not self.guild:
-            raise ValidationError("Factions must be assigned to a Guild")
 
         super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+
+        # Factions must have a parent guild
+        if self.class_type not in [ClassType.GUILD, ClassType.CLASSLESS] and not self.guild:
+            raise ValidationError("Factions must be assigned to a Guild")
 
     class Meta:
         verbose_name = "Class"
@@ -68,7 +74,22 @@ class Talent(models.Model):
     talent_type = models.CharField(max_length=15, choices=TalentType.choices, default=TalentType.ABILITY)
 
     class Meta:
-        ordering = ["priority", "name"]
+        ordering = [
+            Case(
+                When(talent_type=TalentType.SKILL, then=0),
+                When(talent_type=TalentType.ABILITY, then=1),
+                When(talent_type=TalentType.WEAPON_WARRIOR_TITLE, then=2),
+                When(talent_type=TalentType.ARMOR_WARRIOR_TITLE, then=3),
+                When(talent_type=TalentType.SUPPORT_WARRIOR_TITLE, then=4),
+                When(talent_type=TalentType.MISC_WARRIOR_TITLE, then=5),
+                When(talent_type=TalentType.TIER_1, then=6),
+                When(talent_type=TalentType.TIER_2, then=7),
+                When(talent_type=TalentType.TIER_3, then=8),
+                output_field=IntegerField(),
+            ),
+            "priority",
+            "name",
+        ]
 
     def __str__(self):
         return self.name
