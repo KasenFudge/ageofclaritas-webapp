@@ -36,38 +36,7 @@
     <section class="max-w-3xl mx-auto px-4 py-16 sm:py-20">
       <h2 class="text-center text-2xl sm:text-3xl font-serif font-bold text-slate-900 mb-10">What Our Players Are Saying</h2>
 
-      <div x-data="{
-                       slide: 0,
-                       total: {
-                           {
-                               testimonials | length
-                           }
-                       },
-                       timer: null,
-                       start() {
-                           this.stop();
-                           if (this.total <= 1) {
-                               return;
-                           }
-                           this.timer = setInterval(() => {
-                               this.slide = (this.slide + 1) % this.total
-                           }, 6000)
-                       },
-                       stop() {
-                           if (this.timer) {
-                               clearInterval(this.timer);
-                               this.timer = null;
-                           }
-                       },
-                       goto(i) {
-                           this.slide = i;
-                           this.start()
-                       }
-                   }"
-           x-init="start()"
-           @mouseenter="stop()"
-           @mouseleave="start()"
-           class="relative">
+      <div x-data="testimonialCarousel({{ testimonials|length }})" x-init="start()" @mouseenter="stop()" @mouseleave="start()" class="relative">
         <div class="overflow-hidden">
           <div class="flex transition-transform duration-700 ease-in-out" :style="{ transform: 'translateX(-' + (slide * 100) + '%)' }">
             {% for testimonial in testimonials %}
@@ -92,6 +61,37 @@
       </div>
     </section>
   {% endif %}
+
+  <script>
+  function testimonialCarousel(total) {
+    return {
+      slide: 0,
+      total: total,
+      timer: null,
+      start() {
+        this.stop();
+
+        if (this.total <= 1) {
+          return;
+        }
+
+        this.timer = setInterval(() => {
+          this.slide = (this.slide + 1) % this.total;
+        }, 6000);
+      },
+      stop() {
+        if (this.timer) {
+          clearInterval(this.timer);
+          this.timer = null;
+        }
+      },
+      goto(i) {
+        this.slide = i;
+        this.start();
+      }
+    };
+  }
+  </script>
 
   {# === Navigation Cards === #}
   <section class="max-w-6xl mx-auto px-4 pb-20">

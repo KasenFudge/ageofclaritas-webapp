@@ -20,6 +20,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+admin.site.site_header = "Age of Claritas Administration"
+admin.site.site_title = "Age of Claritas Administration"
+admin.site.index_title = "Age of Claritas Administration"
+admin.site.site_url = "/"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("summernote/", include("django_summernote.urls")),
