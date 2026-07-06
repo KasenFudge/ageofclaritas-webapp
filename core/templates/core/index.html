@@ -36,32 +36,34 @@
     <section class="max-w-3xl mx-auto px-4 py-16 sm:py-20">
       <h2 class="text-center text-2xl sm:text-3xl font-serif font-bold text-slate-900 mb-10">What Our Players Are Saying</h2>
 
-        <div x-data="{
-                 slide: 0,
-                 total: {{ testimonials|length }},
-                 timer: null,
-                 start() {
-                   this.stop();
-
-                   if (this.total <= 1) {
-                     return;
-                   }
-
-                   this.timer = setInterval(() => {
-                     this.slide = (this.slide + 1) % this.total
-                   }, 6000)
-                 },
-                 stop() {
-                   if (this.timer) {
-                     clearInterval(this.timer);
-                     this.timer = null;
-                   }
-                 },
-                 goto(i) {
-                   this.slide = i;
-                   this.start()
-                 }
-               }"
+      <div x-data="{
+                       slide: 0,
+                       total: {
+                           {
+                               testimonials | length
+                           }
+                       },
+                       timer: null,
+                       start() {
+                           this.stop();
+                           if (this.total <= 1) {
+                               return;
+                           }
+                           this.timer = setInterval(() => {
+                               this.slide = (this.slide + 1) % this.total
+                           }, 6000)
+                       },
+                       stop() {
+                           if (this.timer) {
+                               clearInterval(this.timer);
+                               this.timer = null;
+                           }
+                       },
+                       goto(i) {
+                           this.slide = i;
+                           this.start()
+                       }
+                   }"
            x-init="start()"
            @mouseenter="stop()"
            @mouseleave="start()"
@@ -117,7 +119,7 @@
           </svg>
         </div>
         <h3 class="font-serif font-bold text-lg text-slate-900 mb-2">Create a Character</h3>
-        <p class="text-slate-500 text-sm leading-relaxed">Build your Kin, Class, and Talents with our step-by-step guide.</p>
+        <p class="text-slate-500 text-sm leading-relaxed">Build your Character with our step-by-step guide.</p>
       </a>
 
       <a href="{% url 'events:index' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
