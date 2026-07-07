@@ -64,7 +64,8 @@ class Class(models.Model):
 
 class Talent(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    class_for = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
+    slug = models.SlugField(max_length=55, unique=True, blank=True)
+    class_for = models.ForeignKey(Class, on_delete=models.CASCADE, related_name="talents")
     description = models.TextField(blank=True, default="")
     is_rankless = models.BooleanField(default=False)
 
@@ -91,6 +92,11 @@ class Talent(models.Model):
             "priority",
             "name",
         ]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -123,20 +129,81 @@ class Kin_Image(models.Model):
 
 
 class Attribute(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=55, unique=True, blank=True)
     kin_for = models.ForeignKey(Kin, on_delete=models.CASCADE, related_name="attributes")
     description = models.TextField()
     can_start_with = models.BooleanField(default=True)
 
+    priority = models.IntegerField(
+        default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ["name"]
-        unique_together = ("name", "kin_for")
 
     def __str__(self):
         return f"{self.name} ({self.kin_for.name})"
 
 
-# TODO: Might not use this, plan is to incorporate
+class IndexType(models.TextChoices):
+    CLASS = "class", "Class"
+    TALENT = "talent", "Talent"
+    KIN = "kin", "Kin"
+    ATTRIBUTE = "attribute", "Attribute"
+    MECHANIC = "mechanic", "Game Mechanic"
+    GLOSSARY = "glossary", "Glossary Term"
+
+
+class RulePage(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
+
+
 class Definition(models.Model):
-    name = models.CharField()
-    description = models.TextField()
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    short_description = models.CharField(max_length=300, blank=True, default="")
+    description = models.TextField(blank=True, default="")
+
+    index_type = models.CharField(max_length=15, choices=IndexType.choices, default=IndexType.GLOSSARY)
+    target_url = models.CharField(max_length=255, blank=True, default="")
+
+    # True = no backing model, this row IS the source of truth (edited directly here).
+    # False = mirrored from Class/Talent/Kin/Attribute/RulePage via signal, read-only in admin.
+    source_id = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="PK of the source row when this Definition is synced from another model. Null for glossary terms.",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"[{self.get_index_type_display()}] {self.name}"
+
+    class Meta:
+        ordering = ["name"]
+        # NULL source_id (glossary terms) doesn't collide with itself in Postgres/SQLite/MySQL --
+        # each is treated as distinct, so any number of glossary rows can coexist here.
+        unique_together = ("index_type", "source_id")

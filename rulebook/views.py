@@ -170,7 +170,3 @@ class CharacterCreationView(TemplateView):
 
 class TalentsView(TemplateView):
     template_name = "rulebook/talents.html"
-
-
-class DefinitionsView(TemplateView):
-    template_name = "rulebook/definitions.html"

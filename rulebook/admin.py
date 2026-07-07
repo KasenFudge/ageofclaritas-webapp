@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin, SummernoteModelAdminMixin
 
-from .models import Attribute, Class, ClassType, Definition, Kin, Kin_Image, Talent
+from .models import Attribute, Class, ClassType, Kin, Kin_Image, Talent
 
 # ==========================================
 # CLASS & TALENT ADMINISTRATION
@@ -81,17 +81,3 @@ class KinAdmin(SummernoteModelAdmin):
     list_display = ("name",)
 
     prepopulated_fields = {"slug": ("name",)}
-
-
-# ==========================================
-# RULEBOOK DEFINITIONS
-# ==========================================
-
-
-@admin.register(Definition)
-class DefinitionAdmin(SummernoteModelAdmin):
-    summernote_fields = (
-        "name",
-        "description",
-    )
-    list_display = ("name",)
