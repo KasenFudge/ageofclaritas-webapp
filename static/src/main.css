@@ -18,15 +18,16 @@
 }
 
 @theme {
-  /* Navy Color Pallette */
-  --color-navy-50: #f5f5f7;
-  --color-navy-100: #eaeaee;
-  --color-navy-200: #cbccd5;
-  --color-navy-300: #acadbc;
-  --color-navy-400: #6d6f8a;
-  --color-navy-500: #2f3158;
-  --color-navy-600: #2a2c4f;
-  --color-navy-700: #1c1d35;
-  --color-navy-800: #151628;
-  --color-navy-900: #0e0f1a;
+  /* High-Contrast Navy Palette (Rich Saturation) */
+  --color-navy-50: #f0f3ff;
+  --color-navy-100: #e1e6ff;
+  --color-navy-200: #c2cbff;
+  --color-navy-300: #9ca8ff;
+  --color-navy-400: #7382df;
+  --color-navy-500: #5260b7;
+  --color-navy-600: #3e4b8c;
+  --color-navy-700: #2f3157;
+  --color-navy-800: #20223d;
+  --color-navy-900: #141528;
+  --color-navy-950: #0a0b1a;
 }

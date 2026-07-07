@@ -1,16 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'layouts/full_layout.html' %}
+
+{% block title_tag %}
+  Age of Claritas - Checkout Canceled
+{% endblock title_tag %}
 
 {% block content %}
-  <div style="max-width: 600px; margin: 50px auto; text-align: center; font-family: sans-serif">
-    <div style="color: #d32f2f; font-size: 4rem; margin-bottom: 20px">✕</div>
-    <h2>Checkout Canceled</h2>
-    <p>Your transaction was canceled, and your credit card was not charged.</p>
-    <p style="color: #666">
-      If you had trouble with your payment method, you can try checking out again
-      from your dashboard selection list.
-    </p>
-    <div style="margin-top: 30px">
-      <a href="{% url 'accounts:upcoming_events' %}" style="background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold">Back to Registration List</a>
+  <div class="max-w-md mx-auto px-4 py-20 text-center">
+    <div class="rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-10">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x mx-auto mb-4 text-amber-500">
+        <circle cx="12" cy="12" r="10" />
+        <path d="m15 9-6 6" />
+        <path d="m9 9 6 6" />
+      </svg>
+      <h1 class="text-2xl font-serif font-bold text-slate-900 mb-2">Checkout Canceled</h1>
+      <p class="text-slate-600 mb-4">Your transaction was canceled, and your credit card was not charged.</p>
+      <p class="text-sm text-slate-500 leading-relaxed mb-6">If you had trouble with your payment method, you can try checking out again from your dashboard selection list.</p>
+      <a href="{% url 'accounts:upcoming_events' %}" class="inline-flex items-center justify-center rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold px-6 py-3 text-sm shadow-sm transition-colors">Back to Registration List</a>
     </div>
   </div>
 {% endblock content %}
