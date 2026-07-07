@@ -15,11 +15,11 @@
       <h1 class="text-3xl sm:text-4xl">Classes</h1>
       <div class="text-slate-600 space-y-2">
         <p class="text-base sm:text-lg leading-relaxed">
-          A character's Class determines the <a href="#" class="text-indigo-700 hover:text-indigo-900 font-semibold underline decoration-indigo-300 hover:decoration-indigo-500 transition-colors">Skills and Abilities</a> they have access to and influences their playstyle. Click on a Class or Faction to view their Class-specific Talents on a separate page.
+          A character's Class determines the <a href="#" class="text-navy-700 hover:text-navy-900 font-semibold underline decoration-navy-300 hover:decoration-navy-500 transition-colors">Skills and Abilities</a> they have access to and influences their playstyle. Click on a Class or Faction to view their Class-specific Talents on a separate page.
         </p>
         {% if classless_record %}
           <p class="text-sm text-slate-500">
-            In addition to those offered by a character's Class, every character also has access to <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-indigo-700 hover:text-indigo-900 font-semibold underline decoration-indigo-300 hover:decoration-indigo-500 transition-colors">{{ classless_record.name }} Talents</a>.
+            In addition to those offered by a character's Class, every character also has access to <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-navy-700 hover:text-navy-900 font-semibold underline decoration-navy-300 hover:decoration-navy-500 transition-colors">{{ classless_record.name }} Talents</a>.
           </p>
         {% endif %}
       </div>
@@ -30,7 +30,7 @@
         <article class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300">
           <div class="p-6 sm:p-8 text-center space-y-4">
             <h2 class="text-2xl font-serif font-bold tracking-wide">
-              <a href="{% url 'rulebook:class_detail' class_slug=guild.slug %}" class="text-indigo-700 hover:text-indigo-900 transition-colors">{{ guild.name }}</a>
+              <a href="{% url 'rulebook:class_detail' class_slug=guild.slug %}" class="text-navy-700 hover:text-navy-900 transition-colors">{{ guild.name }}</a>
             </h2>
             <div class="text-slate-600 leading-relaxed max-w-3xl mx-auto prose prose-slate">{{ guild.description|safe }}</div>
           </div>

@@ -16,3 +16,17 @@
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+@theme {
+  /* Navy Color Pallette */
+  --color-navy-50: #f5f5f7;
+  --color-navy-100: #eaeaee;
+  --color-navy-200: #cbccd5;
+  --color-navy-300: #acadbc;
+  --color-navy-400: #6d6f8a;
+  --color-navy-500: #2f3158;
+  --color-navy-600: #2a2c4f;
+  --color-navy-700: #1c1d35;
+  --color-navy-800: #151628;
+  --color-navy-900: #0e0f1a;
+}

@@ -29,6 +29,8 @@ If you are setting up the project for the first time or performing a fresh datab
 
 To make a backup/dump of your database, run this command:
 `docker exec aoc_db pg_dump -U <YOUR_DB_USER> -d <YOUR_DB> > db_backup_$(date +%F).sql`
+or alternatively this may work better, it uses insert operations on the data instead of copies.
+`docker exec aoc_db pg_dump --column-inserts --data-only -U aoc_staging_admin -d aoc_staging > inserts_backup.sql`
 
 ### Accessing Database
 

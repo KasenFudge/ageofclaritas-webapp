@@ -12,7 +12,7 @@
 
     <div class="relative isolate pb-20">
       <div class="pointer-events-none absolute left-1/2 top-0 w-screen -translate-x-1/2 -z-10 h-112 bg-linear-to-b from-slate-900 via-slate-900 to-transparent"></div>
-      <div class="pointer-events-none absolute left-1/2 top-24 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-indigo-500/10 blur-3xl"></div>
+      <div class="pointer-events-none absolute left-1/2 top-24 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-navy-500/10 blur-3xl"></div>
       <div class="pointer-events-none absolute right-8 top-44 -z-10 h-56 w-56 rounded-full bg-amber-400/10 blur-3xl"></div>
 
       <div class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
@@ -27,7 +27,7 @@
             <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               {% if next_senior_event %}
                 <a href="{% url 'events:detail' next_senior_event.slug %}"
-                   class="group rounded-2xl border border-white/10 bg-white/5 p-4 text-white shadow-lg backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-400/60">
+                   class="group rounded-2xl border border-white/10 bg-white/5 p-4 text-white shadow-lg backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-navy-400/60">
                   <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 transition-colors group-hover:text-slate-300">Next Senior Event</p>
                   <p class="mt-2 text-xl font-serif font-bold">{{ next_senior_event.start_time|date:"M d, Y" }}</p>
                   <p class="mt-1 text-sm text-slate-300 transition-colors group-hover:text-white">{{ next_senior_event.display_title }}</p>
@@ -57,7 +57,7 @@
         </section>
 
         <div class="mt-10 space-y-10">
-          {% include 'events/event_section.html' with title="Senior Events" subtitle="(Ages 18+)" events=senior_events accent_bar="bg-indigo-700" accent_text="text-indigo-800" button_classes="bg-indigo-700 hover:bg-indigo-800" ring_class="focus:ring-indigo-500" always_show=True %}
+          {% include 'events/event_section.html' with title="Senior Events" subtitle="(Ages 18+)" events=senior_events accent_bar="bg-navy-700" accent_text="text-navy-800" button_classes="bg-navy-700 hover:bg-navy-800" ring_class="focus:ring-navy-500" always_show=True %}
 
           {% include 'events/event_section.html' with title="Junior Events" subtitle="(Ages 8-17)" events=junior_events accent_bar="bg-emerald-600" accent_text="text-emerald-700" button_classes="bg-emerald-600 hover:bg-emerald-700" ring_class="focus:ring-emerald-500" always_show=True %}
 

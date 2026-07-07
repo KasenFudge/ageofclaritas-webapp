@@ -52,14 +52,14 @@
         {% for kin_nav in kin_list %}
           <li>
             <a href="{% url 'rulebook:kin_detail' kin_slug=kin_nav.slug %}"
-               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if kin_nav.id == kin.id %}text-indigo-700 bg-indigo-50/70 border border-indigo-100/80 shadow-sm{% endif %}">{{ kin_nav.name }}</a>
+               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if kin_nav.id == kin.id %}text-navy-700 bg-navy-50/70 border border-navy-100/80 shadow-sm{% endif %}">{{ kin_nav.name }}</a>
           </li>
         {% endfor %}
       </ul>
     </div>
 
     <div class="mt-6 pt-4 px-6 border-t border-gray-200">
-      <a href="{% url 'rulebook:kin' %}" class="flex items-center text-gray-500 hover:text-indigo-600 font-semibold text-sm transition-colors">
+      <a href="{% url 'rulebook:kin' %}" class="flex items-center text-gray-500 hover:text-navy-600 font-semibold text-sm transition-colors">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
@@ -86,7 +86,7 @@
       <ul class="space-y-1 text-base font-medium">
         {% for kin_nav in kin_list %}
           <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
-            <a href="{% url 'rulebook:kin_detail' kin_slug=kin_nav.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if kin_nav.id == kin.id %}text-indigo-700 bg-indigo-50 font-bold{% endif %}">{{ kin_nav.name }}</a>
+            <a href="{% url 'rulebook:kin_detail' kin_slug=kin_nav.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if kin_nav.id == kin.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ kin_nav.name }}</a>
           </li>
         {% endfor %}
       </ul>

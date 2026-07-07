@@ -7,8 +7,8 @@ from .models import CustomUser
 # live on the widget itself so field_render.html never has to guess at markup.
 TEXT_INPUT_CLASSES = (
     "block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm "
-    "text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 "
-    "focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    "text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-navy-500 "
+    "focus:outline-none focus:ring-1 focus:ring-navy-500"
 )
 
 

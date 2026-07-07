@@ -16,10 +16,10 @@
               background-size:cover; background-position:center;"
      and keep the dark overlay div below it for text legibility over a photo.
   {% endcomment %}
-  <section class="relative w-full h-[60vh] min-h-105 flex items-center justify-center overflow-hidden bg-linear-to-br from-slate-950 via-indigo-950 to-slate-900">
+  <section class="relative w-full h-[60vh] min-h-105 flex items-center justify-center overflow-hidden bg-linear-to-br from-slate-950 via-navy-950 to-slate-900">
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.25),transparent_60%)]"></div>
     <div class="relative z-10 text-center px-4">
-      <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-indigo-300 mb-4">A Live Action Roleplay Experience</p>
+      <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-navy-300 mb-4">A Live Action Roleplay Experience</p>
       <h1 class="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold text-white tracking-tight">Age of Claritas</h1>
       <p class="mt-6 max-w-xl mx-auto text-slate-300 text-base sm:text-lg leading-relaxed">Step into the world of Claritas.</p>
     </div>
@@ -42,7 +42,7 @@
             {% for testimonial in testimonials %}
               <div class="w-full shrink-0 px-4 text-center">
                 <p class="text-lg sm:text-xl font-serif italic text-slate-700 leading-relaxed">"{{ testimonial.quote }}"</p>
-                <p class="mt-5 text-sm font-bold uppercase tracking-wide text-indigo-700">{{ testimonial.name }}</p>
+                <p class="mt-5 text-sm font-bold uppercase tracking-wide text-navy-700">{{ testimonial.name }}</p>
                 {% if testimonial.role %}
                   <p class="text-xs text-slate-400">{{ testimonial.role }}</p>
                 {% endif %}
@@ -54,7 +54,7 @@
         {% if testimonials|length > 1 %}
           <div class="flex justify-center gap-2 mt-8">
             {% for testimonial in testimonials %}
-              <button @click="goto({{ forloop.counter0 }})" type="button" :class="slide === {{ forloop.counter0 }} ? 'bg-indigo-700' : 'bg-slate-300'" class="w-2 h-2 rounded-full transition-colors" aria-label="Testimonial {{ forloop.counter }}"></button>
+              <button @click="goto({{ forloop.counter0 }})" type="button" :class="slide === {{ forloop.counter0 }} ? 'bg-navy-700' : 'bg-slate-300'" class="w-2 h-2 rounded-full transition-colors" aria-label="Testimonial {{ forloop.counter }}"></button>
             {% endfor %}
           </div>
         {% endif %}
@@ -98,7 +98,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
       <a href="#" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
-        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
+        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help">
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />

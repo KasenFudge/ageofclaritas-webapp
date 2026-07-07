@@ -1,9 +1,9 @@
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from django.urls import reverse, NoReverseMatch
+from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
 
-from .models import Class, Talent, Kin, Attribute, RulePage, Definition, IndexType
+from .models import Attribute, Class, Definition, IndexType, Kin, RulePage, Talent
 
 
 # ------------------------------------------------------------------------

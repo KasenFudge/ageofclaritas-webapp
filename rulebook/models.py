@@ -178,8 +178,8 @@ class RulePage(models.Model):
 
 
 class Definition(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    term = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
     short_description = models.CharField(max_length=300, blank=True, default="")
     description = models.TextField(blank=True, default="")
 
@@ -196,14 +196,14 @@ class Definition(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = f"{slugify(self.index_type)}-{slugify(self.term)}"
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"[{self.get_index_type_display()}] {self.name}"
+        return f"[{self.get_index_type_display()}] {self.term}"
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["term"]
         # NULL source_id (glossary terms) doesn't collide with itself in Postgres/SQLite/MySQL --
         # each is treated as distinct, so any number of glossary rows can coexist here.
         unique_together = ("index_type", "source_id")

@@ -7,11 +7,11 @@ from .models import EventRegistration
 # consistent without field_render.html needing to guess at or reach into rendered HTML.
 TEXT_INPUT_CLASSES = (
     "block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm "
-    "text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 "
-    "focus:outline-none focus:ring-1 focus:ring-indigo-500"
+    "text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-navy-500 "
+    "focus:outline-none focus:ring-1 focus:ring-navy-500"
 )
-CHECKBOX_CLASSES = "h-4 w-4 rounded accent-indigo-600"
-RADIO_CLASSES = "h-4 w-4 accent-indigo-600"
+CHECKBOX_CLASSES = "h-4 w-4 rounded accent-navy-600"
+RADIO_CLASSES = "h-4 w-4 accent-navy-600"
 
 
 class EventRegistrationForm(forms.ModelForm):

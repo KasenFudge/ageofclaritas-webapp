@@ -62,7 +62,7 @@
         {% for guild_nav in sidebar_guilds %}
           <li>
             <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}"
-               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if guild_nav.id == guild.id %}text-indigo-700 bg-indigo-50/70 border border-indigo-100/80 shadow-sm{% endif %}">
+               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if guild_nav.id == guild.id %}text-navy-700 bg-navy-50/70 border border-navy-100/80 shadow-sm{% endif %}">
               {{ guild_nav.name }}
             </a>
 
@@ -70,12 +70,12 @@
               <ul class="mt-1 ml-4 pl-3 space-y-1 border-l-2 border-slate-100 text-xs">
                 {% for faction_nav in guild_nav.sidebar_factions %}
                   <li>
-                    <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" class="block py-1 px-2 rounded text-slate-500 hover:text-indigo-700 hover:bg-slate-50 transition-colors">{{ faction_nav.name }}</a>
+                    <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" class="block py-1 px-2 rounded text-slate-500 hover:text-navy-700 hover:bg-slate-50 transition-colors">{{ faction_nav.name }}</a>
                   </li>
                 {% endfor %}
                 {% if guild_nav.slug == 'warrior' %}
                   <li>
-                    <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="block py-1 px-2 rounded text-slate-500 hover:text-indigo-700 hover:bg-slate-50 transition-colors">Warrior Titles</a>
+                    <a href="{% url 'rulebook:class_detail' 'warrior' %}#warrior-titles" class="block py-1 px-2 rounded text-slate-500 hover:text-navy-700 hover:bg-slate-50 transition-colors">Warrior Titles</a>
                   </li>
                 {% endif %}
               </ul>
@@ -86,7 +86,7 @@
         {% if classless_record %}
           <li>
             <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
-               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if classless_record.id == guild.id %}text-indigo-700 bg-indigo-50/70 border border-indigo-100/80 shadow-sm{% endif %}">
+               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if classless_record.id == guild.id %}text-navy-700 bg-navy-50/70 border border-navy-100/80 shadow-sm{% endif %}">
               {{ classless_record.name }}
             </a>
           </li>
@@ -95,7 +95,7 @@
     </div>
 
     <div class="shrink-0 mt-6 pt-4 px-6 border-t border-gray-200">
-      <a href="{% url 'rulebook:classes' %}" class="flex items-center text-gray-500 hover:text-indigo-600 font-semibold text-sm transition-colors">
+      <a href="{% url 'rulebook:classes' %}" class="flex items-center text-gray-500 hover:text-navy-600 font-semibold text-sm transition-colors">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
@@ -122,11 +122,11 @@
       <ul class="space-y-1 text-base font-medium">
         {% for guild_nav in sidebar_guilds %}
           <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
-            <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if guild_nav.id == guild.id %}text-indigo-700 bg-indigo-50 font-bold{% endif %}">{{ guild_nav.name }}</a>
+            <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if guild_nav.id == guild.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ guild_nav.name }}</a>
             {% if guild_nav.sidebar_factions %}
               <ul class="mt-1 ml-5 pl-3 space-y-1 border-l-2 border-slate-100 text-sm">
                 {% for faction_nav in guild_nav.sidebar_factions %}
-                  <li><a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" @click="mobileSidebarOpen = false" class="block py-1.5 px-2 text-slate-500 active:text-indigo-700 active:bg-slate-50 rounded-md">{{ faction_nav.name }}</a></li>
+                  <li><a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}#{{ faction_nav.slug }}" @click="mobileSidebarOpen = false" class="block py-1.5 px-2 text-slate-500 active:text-navy-700 active:bg-slate-50 rounded-md">{{ faction_nav.name }}</a></li>
                 {% endfor %}
               </ul>
             {% endif %}
@@ -134,8 +134,7 @@
         {% endfor %}
         {% if classless_record %}
           <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
-            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
-               class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if classless_record.id == guild.id %}text-indigo-700 bg-indigo-50 font-bold{% endif %}">{{ classless_record.name }}</a>
+            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if classless_record.id == guild.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ classless_record.name }}</a>
           </li>
         {% endif %}
       </ul>

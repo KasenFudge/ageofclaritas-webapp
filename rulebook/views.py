@@ -45,11 +45,11 @@ class ClassDetailView(DetailView):
         factions_qs = (
             Class.objects.filter(class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD])
             .order_by("name")
-            .prefetch_related(Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"))
+            .prefetch_related(Prefetch("talents", queryset=talents_qs, to_attr="pref_talents"))
         )
 
         qs = Class.objects.filter(class_type__in=[ClassType.GUILD, ClassType.CLASSLESS]).prefetch_related(
-            Prefetch("talent_set", queryset=talents_qs, to_attr="pref_talents"),
+            Prefetch("talents", queryset=talents_qs, to_attr="pref_talents"),
             Prefetch("factions", queryset=factions_qs, to_attr="pref_factions"),
         )
 
@@ -82,8 +82,8 @@ class ClassDetailView(DetailView):
         context["TalentType"] = TalentType
 
         # Helper to grab talents by type
-        def _grab_talent_type(kind, talent_set):
-            return [t for t in talent_set if t.talent_type == kind]
+        def _grab_talent_type(kind, talents):
+            return [t for t in talents if t.talent_type == kind]
 
         # Base Class Talent Set
         talents = getattr(guild, "pref_talents", [])
