@@ -1,16 +1,19 @@
 from django.contrib import admin
-from django_summernote.admin import SummernoteModelAdmin, SummernoteModelAdminMixin
+from django.db import models
+from django_ckeditor_5.widgets import CKEditor5Widget
 
-from .models import Attribute, Class, ClassType, Kin, Kin_Image, Talent
+from .models import Attribute, Class, ClassType, Definition, Kin, Kin_Image, RulePage, Talent
+
+# Centralized CKEditor 5 mapping for TextFields
+CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
+
 
 # ==========================================
 # CLASS & TALENT ADMINISTRATION
 # ==========================================
-
-
-class TalentInline(SummernoteModelAdminMixin, admin.TabularInline):
+class TalentInline(admin.StackedInline):
     model = Talent
-    summernote_fields = ("description",)
+    formfield_overrides = CKEDITOR_5_OVERRIDE
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
@@ -25,34 +28,29 @@ class BaseClassFilter(admin.RelatedFieldListFilter):
 
 
 @admin.register(Class)
-class ClassAdmin(SummernoteModelAdmin):
+class ClassAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "guild":
             kwargs["queryset"] = Class.objects.filter(class_type=ClassType.GUILD).order_by("name")
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    summernote_fields = (
-        "description",
-        "special_rules",
-    )
     inlines = [TalentInline]
     ordering = ["name"]
     search_fields = ["name"]
     list_filter = [("guild", BaseClassFilter), "class_type"]
 
     list_display = ("name", "class_type", "guild")
-
     prepopulated_fields = {"slug": ("name",)}
 
 
 # ==========================================
 # KIN & ATTRIBUTE ADMINISTRATION
 # ==========================================
-
-
-class AttributeInline(SummernoteModelAdminMixin, admin.TabularInline):
+class AttributeInline(admin.TabularInline):
     model = Attribute
-    summernote_fields = ("description",)
+    formfield_overrides = CKEDITOR_5_OVERRIDE
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
@@ -60,7 +58,7 @@ class AttributeInline(SummernoteModelAdminMixin, admin.TabularInline):
         return 0  # No extra forms on editing existing objects
 
 
-class KinImageInline(admin.TabularInline):
+class KinImageInline(admin.StackedInline):
     model = Kin_Image
     verbose_name_plural = "Kin Art"
 
@@ -71,13 +69,31 @@ class KinImageInline(admin.TabularInline):
 
 
 @admin.register(Kin)
-class KinAdmin(SummernoteModelAdmin):
-    # Enable rich text editing for both long and short descriptions
-    summernote_fields = ("description", "short_description")
+class KinAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
     inlines = [AttributeInline, KinImageInline]
     ordering = ["name"]
     search_fields = ["name"]
 
     list_display = ("name",)
-
     prepopulated_fields = {"slug": ("name",)}
+
+
+# ==========================================
+# RULEBOOK PAGE & DEFINITION ADMINISTRATION
+# ==========================================
+@admin.register(RulePage)
+class RulePageAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
+    list_display = ("title", "slug")
+    search_fields = ["title"]
+    prepopulated_fields = {"slug": ("title",)}
+
+
+@admin.register(Definition)
+class DefinitionAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
+    list_display = ("term", "index_type", "source_id")
+    list_filter = ["index_type"]
+    search_fields = ["term"]
+    prepopulated_fields = {"slug": ("term",)}

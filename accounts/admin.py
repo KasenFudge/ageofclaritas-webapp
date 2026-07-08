@@ -1,9 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.db import models
 from django.utils import timezone
-from django_summernote.admin import SummernoteModelAdmin
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from .models import CustomUser, Waiver, WaiverSignature
+
+# Centralized CKEditor 5 mapping for TextFields
+CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
 
 
 @admin.register(CustomUser)
@@ -54,7 +58,7 @@ class CustomUserAdmin(UserAdmin):
         return "N/A"
 
 
-# Used for context of who has signed specifc waiver
+# Used for context of who has signed specific waiver
 class WaiverSignatureInline(admin.TabularInline):
     model = WaiverSignature
     extra = 0
@@ -79,8 +83,8 @@ class WaiverSignatureAdmin(admin.ModelAdmin):
 
 
 @admin.register(Waiver)
-class WaiverAdmin(SummernoteModelAdmin):
+class WaiverAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
     list_display = ("title", "effective_date", "is_active")
     list_editable = ("is_active",)
-    summernote_fields = ("content",)
     inlines = [WaiverSignatureInline]

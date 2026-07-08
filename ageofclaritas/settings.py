@@ -70,7 +70,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third-Party Dependencies
-    "django_summernote",  # Integrated rich-text rendering engine
+    "django_ckeditor_5",  # Integrated rich-text rendering engine
     # Age of Claritas Core Modules
     "ageofclaritas",  # Structural configuration root
     "core.apps.CoreConfig",  # Public portal landing surfaces
@@ -80,11 +80,6 @@ INSTALLED_APPS = [
     "surveys.apps.SurveysConfig",  # Player analytical surveying
     "payments.apps.PaymentsConfig",  # Stripe financial transactional gateway
 ]
-
-# Redirect internal third-party engine schemas away from read-only application folders
-MIGRATION_MODULES = {
-    "django_summernote": None,
-}
 
 
 # ==========================================
@@ -201,6 +196,28 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "core:index"
 LOGOUT_REDIRECT_URL = "core:index"
 
+
+# ==============================================================================
+# CKEDITOR 5 CONFIGURATION
+# ==============================================================================
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "bold",
+            "italic",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "link",
+            "|",
+            "insertTable",  # Adds the grid generator button to the UI
+        ],
+        "table": {
+            "contentToolbar": ["tableColumn", "tableRow", "mergeTableCells", "tableProperties", "tableCellProperties"]
+        },
+    }
+}
 
 # ==========================================
 # Stripe API Financial Integration

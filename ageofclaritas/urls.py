@@ -27,13 +27,13 @@ admin.site.site_url = "/"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("summernote/", include("django_summernote.urls")),
     path("", include("core.urls")),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("payments/", include("payments.urls")),
     path("rulebook/", include("rulebook.urls")),
     path("events/", include("events.urls")),
+    path("ckeditor5/", include("django_ckeditor_5.urls")),
 ]
 
 # Serve media files during development
