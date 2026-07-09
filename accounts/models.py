@@ -16,6 +16,10 @@ class CustomUser(AbstractUser):
     is_student = models.BooleanField(default=False)
     student_status_expires = models.DateField(null=True, blank=True)
 
+    is_veteran = models.BooleanField(
+        default=False, help_text="Designates whether this player attended LARP events prior to the new site."
+    )
+
     @property
     def has_valid_student_discount(self):
         """

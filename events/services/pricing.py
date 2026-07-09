@@ -52,11 +52,11 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     late_arrival_cutoff_sat = local_event_start.replace(hour=15, minute=0, second=0, microsecond=0)
 
     # First Event Discount: Check if user has attended a main event before and doesn't have a pending registration.
-    # 1. Check if they have physically attended a main event in the past
+    # 1. Check if they have physically attended a main event in the system OR are marked as a veteran
     has_attended_main_event = user.registrations.filter(
         checked_in=True,
         event__event_type__in=[EventType.JUNIOR, EventType.SENIOR],
-    ).exists()
+    ).exists() or getattr(user, "is_veteran", False)
 
     # 2. Check if they have already claimed/reserved a spot at a different future event
     has_other_reserved_event = (

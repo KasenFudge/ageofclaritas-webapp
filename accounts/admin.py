@@ -10,13 +10,21 @@ from .models import CustomUser, Waiver, WaiverSignature
 CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
 
 
+@admin.action(description="Mark selected players as Veterans")
+def make_veteran(modeladmin, request, queryset):
+    queryset.update(is_veteran=True)
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    # Display fields in the grid layout (Added is_student)
-    list_display = ("username", "email", "date_of_birth", "display_age", "is_student", "is_staff")
+    # Display fields in the grid layout
+    list_display = ("username", "email", "is_student", "is_veteran", "is_staff")
 
     # Enable filtering by student status and core flags on the right sidebar
-    list_filter = ("is_student", "is_staff", "is_superuser", "is_active", "groups")
+    list_filter = ("is_veteran", "is_student", "is_staff", "is_active")
+
+    # Add the make veteran action to the dropdown on the user list.
+    actions = [make_veteran]
 
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("username",)
