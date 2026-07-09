@@ -1,0 +1,411 @@
+{% extends 'layouts/full_layout.html' %}
+
+{% load static %}
+
+{% block title_tag %}
+  Age of Claritas - My Account
+{% endblock title_tag %}
+
+{% block content %}
+  <div x-data="{ activeModal: null, open(name) { this.activeModal = name }, close() { this.activeModal = null } }" x-init="{% if open_modal %}open('{{ open_modal }}'){% endif %}" @keydown.escape.window="close()" class="max-w-4xl mx-auto pb-16">
+
+    <h1 class="text-3xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-4 mb-8">My Account</h1>
+
+    {% comment %}
+       =====================================================================
+       NAV CARDS — each just flips activeModal, no page navigation involved.
+       =====================================================================
+    {% endcomment %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <button @click="open('settings')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Account Settings</h3>
+        <p class="text-slate-500 text-sm">Update your name, email, and birthdate.</p>
+      </button>
+
+      <button @click="open('waiver')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+        {% if active_waiver and not has_signed_current_waiver %}
+          <span class="absolute top-4 right-4 flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex h-3 w-3 rounded-full bg-amber-500"></span>
+          </span>
+        {% endif %}
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-check">
+            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            <path d="M4.268 21a2 2 0 0 0 1.727 1H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3" />
+            <path d="m3 15 2 2 4-4" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Waiver</h3>
+        <p class="text-slate-500 text-sm">
+          {% if has_signed_current_waiver %}
+            You're all signed up.
+          {% else %}
+            Review and sign the current waiver.
+          {% endif %}
+        </p>
+      </button>
+
+      <button @click="open('events')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+            <path d="M8 2v4" />
+            <path d="M16 2v4" />
+            <rect width="18" height="18" x="3" y="4" rx="2" />
+            <path d="M3 10h18" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Household Schedule</h3>
+        <p class="text-slate-500 text-sm">See your and your children's upcoming registrations.</p>
+      </button>
+
+      <button @click="open('billing')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+        {% if outstanding_registrations %}
+          <span class="absolute top-4 right-4 flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex h-3 w-3 rounded-full bg-amber-500"></span>
+          </span>
+        {% endif %}
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card">
+            <rect width="20" height="14" x="2" y="5" rx="2" />
+            <line x1="2" x2="22" y1="10" y2="10" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Account Billing</h3>
+        <p class="text-slate-500 text-sm">
+          {% if outstanding_registrations %}
+            <span class="font-bold text-rose-600">Action Required:</span> Balance due.
+          {% else %}
+            View statements and balances.
+          {% endif %}
+        </p>
+      </button>
+
+      <button @click="open('surveys')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+        {% if active_surveys %}<span class="absolute top-4 right-4 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-[10px] font-bold h-5 w-5">{{ active_surveys|length }}</span>{% endif %}
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list">
+            <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            <path d="M12 11h4" />
+            <path d="M12 16h4" />
+            <path d="M8 11h.01" />
+            <path d="M8 16h.01" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Surveys</h3>
+        <p class="text-slate-500 text-sm">
+          {% if active_surveys %}
+            You have surveys waiting for a response.
+          {% else %}
+            You're all caught up.
+          {% endif %}
+        </p>
+      </button>
+
+    </div>
+
+    {% comment %}
+       =====================================================================
+       MODALS — one shared backdrop pattern, gated on activeModal === '<name>'.
+      =====================================================================
+    {% endcomment %}
+
+    {# --- Account Settings --- #}
+    <div x-show="activeModal === 'settings'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
+    <div x-show="activeModal === 'settings'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-serif font-bold text-slate-900">Account Settings</h2>
+          <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form method="post" action="{% url 'accounts:update_settings' %}" novalidate>
+          {% csrf_token %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {% include 'includes/field_render.html' with field=settings_form.first_name %}
+            {% include 'includes/field_render.html' with field=settings_form.last_name %}
+          </div>
+          {% include 'includes/field_render.html' with field=settings_form.email %}
+          {% include 'includes/field_render.html' with field=settings_form.date_of_birth %}
+
+          <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm shadow-sm transition-colors mt-2">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    {# --- Waivers --- #}
+    <div x-show="activeModal === 'waiver'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
+    <div x-show="activeModal === 'waiver'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-serif font-bold text-slate-900">{{ active_waiver.title|default:"Waiver" }}</h2>
+          <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {% if active_waiver %}
+          <div class="prose prose-sm max-w-none text-slate-700 mb-6 max-h-64 overflow-y-auto pr-2 border border-slate-100 rounded-xl p-4 bg-slate-50">{{ active_waiver.content|linebreaks }}</div>
+
+          {% if has_signed_current_waiver %}
+            <div class="rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 flex items-center gap-2 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big shrink-0">
+                <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                <path d="m9 11 3 3L22 4" />
+              </svg>
+              Signed on {{ current_signature.signed_at|date:"F d, Y" }}
+            </div>
+          {% else %}
+            <form method="post" action="{% url 'accounts:sign_waiver' %}">
+              {% csrf_token %}
+              <input type="hidden" name="waiver_id" value="{{ active_waiver.id }}" />
+              <label class="flex items-start gap-2 text-sm text-slate-600 mb-4 cursor-pointer">
+                <input type="checkbox" required class="mt-0.5 h-4 w-4 accent-navy-600 shrink-0" />
+                I have read and agree to the terms above.
+              </label>
+              <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm shadow-sm transition-colors">Sign Waiver</button>
+            </form>
+          {% endif %}
+        {% else %}
+          <p class="text-slate-500 text-sm">There is no waiver currently required.</p>
+        {% endif %}
+
+        {% if past_waivers %}
+          <div class="mt-6 pt-6 border-t border-slate-100">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Previously Signed Waivers</h3>
+            <ul class="space-y-2 text-sm text-slate-600">
+              {% for sig in past_waivers %}
+                <li class="flex items-center justify-between">
+                  <span>{{ sig.waiver.title }}</span>
+                  <span class="text-slate-400">{{ sig.signed_at|date:"M d, Y" }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# --- Upcoming Schedule --- #}
+    <div x-show="activeModal === 'events'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
+    <div x-show="activeModal === 'events'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-serif font-bold text-slate-900">Upcoming Schedule</h2>
+          <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">My Schedule</h3>
+            <div class="space-y-3">
+              {% for reg in personal_registrations %}
+                <div class="rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-3">
+                  <div class="min-w-0">
+                    <p class="font-bold text-navy-700 truncate">{{ reg.event.title }}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Starts {{ reg.event.start_time|date:"m/d - g:i A" }}</p>
+                  </div>
+                  {% if reg.is_refunded %}
+                    <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">Refunded</span>
+                  {% elif reg.is_failed %}
+                    <span class="shrink-0 rounded-full bg-red-100 text-red-700 px-2.5 py-1 text-[11px] font-bold uppercase">Failed</span>
+                  {% elif reg.is_paid %}
+                    <span class="shrink-0 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-1 text-[11px] font-bold uppercase">Paid</span>
+                  {% else %}
+                    <span class="shrink-0 rounded-full bg-amber-100 text-amber-700 px-2.5 py-1 text-[11px] font-bold uppercase">Incomplete</span>
+                  {% endif %}
+                </div>
+              {% empty %}
+                <p class="text-sm text-slate-500">You're not registered for any upcoming events.</p>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if has_children %}
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Household</h3>
+              <div class="space-y-3">
+                {% for reg in child_registrations %}
+                  <div class="rounded-2xl border border-sky-200 bg-sky-50/40 p-4 flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                      <span class="inline-block rounded-full bg-sky-100 text-sky-700 px-2 py-0.5 text-[10px] font-bold uppercase mb-1">{{ reg.user.get_full_name|default:reg.user.username }}</span>
+                      <p class="font-bold text-slate-900 truncate">{{ reg.event.title }}</p>
+                      <p class="text-xs text-slate-500 mt-0.5">Starts {{ reg.event.start_time|date:"m/d - g:i A" }}</p>
+                    </div>
+                    {% if reg.is_refunded %}
+                      <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">Refunded</span>
+                    {% elif reg.is_failed %}
+                      <span class="shrink-0 rounded-full bg-red-100 text-red-700 px-2.5 py-1 text-[11px] font-bold uppercase">Failed</span>
+                    {% elif reg.is_paid %}
+                      <span class="shrink-0 rounded-full bg-emerald-100 text-emerald-700 px-2.5 py-1 text-[11px] font-bold uppercase">Paid</span>
+                    {% else %}
+                      <span class="shrink-0 rounded-full bg-amber-100 text-amber-700 px-2.5 py-1 text-[11px] font-bold uppercase">Incomplete</span>
+                    {% endif %}
+                  </div>
+                {% empty %}
+                  <p class="text-sm text-slate-500">No child registrations for upcoming events.</p>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# --- Account Billing --- #}
+    <div x-show="activeModal === 'billing'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
+    <div x-show="activeModal === 'billing'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click.stop class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-serif font-bold text-slate-900">Outstanding Balance</h2>
+          <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {% if outstanding_registrations %}
+          <div class="mb-6 rounded-2xl bg-sky-50 border border-sky-200 p-4 flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-600 shrink-0 mt-0.5">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+            <p class="text-sm text-sky-800 leading-relaxed">
+              <strong>Payment Options:</strong> You may securely pay your balance online below right now to expedite your check-in, or you may settle your balance in person on the day of the event.
+            </p>
+          </div>
+
+          <div class="space-y-4 mb-6">
+            {% for reg in outstanding_registrations %}
+              <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <div class="flex items-center justify-between gap-4 bg-slate-50 px-5 py-3 border-b border-slate-200">
+                  <div class="min-w-0">
+                    <h3 class="font-bold text-navy-700 truncate">{{ reg.event.title }}</h3>
+                    {% if reg.user != request.user %}
+                      <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">For: {{ reg.user.get_full_name|default:reg.user.username }}</p>
+                    {% endif %}
+                  </div>
+                  <span class="shrink-0 inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-amber-800 shadow-sm">Unpaid</span>
+                </div>
+
+                <ul class="divide-y divide-slate-100 text-sm">
+                  <li class="flex items-center justify-between px-5 py-2.5">
+                    <span class="text-slate-600">Base Price</span>
+                    <span class="text-slate-900 font-bold">${{ reg.base_price|floatformat:2 }}</span>
+                  </li>
+                  {% for discount in reg.formatted_discounts %}
+                    <li class="flex items-center justify-between px-5 py-2 bg-emerald-50/50 text-emerald-700">
+                      <span>{{ discount.reason }}</span>
+                      <span class="font-semibold">-${{ discount.amount|floatformat:2 }}</span>
+                    </li>
+                  {% endfor %}
+                  {% for item in reg.formatted_additional_items %}
+                    <li class="flex items-center justify-between px-5 py-2 text-slate-500">
+                      <span>{{ item.reason }}</span>
+                      <span class="font-semibold">+${{ item.amount|floatformat:2 }}</span>
+                    </li>
+                  {% endfor %}
+                  <li class="flex items-center justify-between px-5 py-3 bg-slate-50">
+                    <span class="text-slate-700 font-bold">Subtotal</span>
+                    <span class="text-navy-700 font-bold">${{ reg.final_price|floatformat:2 }}</span>
+                  </li>
+                </ul>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="rounded-2xl bg-white border border-navy-100 shadow-sm p-5">
+            <div class="flex items-center justify-between gap-4 mb-4">
+              <span class="font-bold text-slate-700">Total Amount Due</span>
+              <span class="text-2xl font-serif font-bold text-navy-700">${{ total_balance|floatformat:2 }}</span>
+            </div>
+            <form action="{% url 'payments:checkout' %}" method="post">
+              {% csrf_token %}
+              {% for reg in outstanding_registrations %}
+                <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
+              {% endfor %}
+              <button type="submit"
+                      class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3.5 text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                Pay Now Online
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </button>
+            </form>
+          </div>
+        {% else %}
+          <div class="py-8 text-center">
+            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                <path d="m9 11 3 3L22 4" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-serif font-bold text-slate-900 mb-2">Account Fully Cleared</h3>
+            <p class="text-slate-500 text-sm">You have no outstanding charges at this time. All upcoming schedules are paid up!</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# --- Surveys --- #}
+    <div x-show="activeModal === 'surveys'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
+    <div x-show="activeModal === 'surveys'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-serif font-bold text-slate-900">Surveys</h2>
+          <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {% if active_surveys %}
+          <div class="space-y-3">
+            {% for survey in active_surveys %}
+              {# TODO: swap href="#" for the real survey-taking URL once the surveys app has one, e.g. {% url 'surveys:respond' survey.pk %} #}
+              <a href="#" class="block rounded-2xl border border-slate-200 p-4 hover:border-navy-300 hover:bg-navy-50/40 transition-colors">
+                <div class="flex items-center justify-between gap-3 mb-1">
+                  <p class="font-bold text-slate-900">{{ survey.title }}</p>
+                  <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[10px] font-bold uppercase">{{ survey.get_survey_type_display }}</span>
+                </div>
+                {% if survey.description %}<p class="text-sm text-slate-500">{{ survey.description }}</p>{% endif %}
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-slate-500 text-sm">You're all caught up! No surveys are waiting for your response.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+{% endblock content %}

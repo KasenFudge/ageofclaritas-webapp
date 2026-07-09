@@ -71,45 +71,26 @@
             </ul>
           </li>
 
+        </ul>
+
+        {# Right Side: Authentication Controls #}
+        <ul class="flex items-center gap-x-4 text-sm font-semibold">
           {# Admin Dashboard Link #}
           {% if user.is_staff %}
             <li>
               <a href="{% url 'admin:index' %}" class="text-yellow-400 hover:text-yellow-300 border-b border-transparent hover:border-yellow-300 transition-all focus:outline-none">Admin Dashboard</a>
             </li>
           {% endif %}
-        </ul>
 
-        {# Right Side: Authentication Controls #}
-        <ul class="flex items-center text-sm font-semibold">
           {% if user.is_authenticated %}
-            <li x-data="{ accountOpen: false }" @click.outside="accountOpen = false" class="relative">
-              <button @click="accountOpen = !accountOpen" class="flex items-center gap-1 border-b border-transparent hover:border-white hover:text-white transition-all focus:outline-none">
-                {{ user.username }}
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                     class="w-4 h-4 transform transition-transform duration-200"
-                     :class="accountOpen ? 'rotate-180' : ''">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </button>
-              <ul x-show="accountOpen" x-cloak x-transition class="absolute right-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-50 text-gray-300">
-                <li class="px-4 py-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Account Overview</li>
-                <li><a href="{% url 'accounts:upcoming_events' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Registered Events</a></li>
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">My Surveys</a></li>
-                <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">View Waivers</a></li>
-                <li class="border-t border-gray-700 my-1"></li>
-                <li>
-                  <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="block w-full text-left px-4 py-2 text-red-400 hover:bg-red-900/20 hover:text-red-300 active:bg-red-900/40 active:text-red-100 transition-colors">Logout</button>
-                  </form>
-                </li>
-              </ul>
+            <li>
+              <a href="{% url 'accounts:dashboard' %}" class="border-b border-transparent hover:border-white hover:text-white transition-all focus:outline-none">{{ user.username }}</a>
+            </li>
+            <li>
+              <form method="post" action="{% url 'logout' %}" class="inline m-0">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-600 hover:bg-red-500 active:bg-red-700 active:scale-95 px-4 py-2 rounded-md text-white transition-all">Logout</button>
+              </form>
             </li>
           {% else %}
             <li>
@@ -178,15 +159,13 @@
         </li>
       {% endif %}
 
+      {# Mobile Account Information #}
       <li class="pt-2">
         {% if user.is_authenticated %}
-          <span class="block px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider">Account ({{ user.username }})</span>
-          <a href="{% url 'accounts:upcoming_events' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Registered Events</a>
-          <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">My Surveys</a>
-          <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">View Waivers</a>
-          <form method="post" action="{% url 'logout' %}">
+          <a href="{% url 'accounts:dashboard' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">{{ user.username }} (Dashboard)</a>
+          <form method="post" action="{% url 'logout' %}" class="mt-2">
             {% csrf_token %}
-            <button type="submit" class="w-full text-left block px-3 py-2 text-red-400 font-bold active:bg-red-900/30 active:text-red-200 rounded-md transition-colors">Logout</button>
+            <button type="submit" class="w-full text-center block bg-red-600 active:bg-red-700 active:scale-[0.98] px-4 py-2 rounded-md text-white font-bold transition-all">Logout</button>
           </form>
         {% else %}
           <a href="{% url 'login' %}" class="block text-center bg-blue-600 active:bg-blue-700 active:scale-[0.98] px-4 py-2 rounded-md text-white font-bold transition-all">Login</a>

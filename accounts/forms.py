@@ -42,3 +42,22 @@ class CustomUserCreationForm(UserCreationForm):
                 attrs={"type": "date"},  # This forces the native browser date picker
             ),
         }
+
+
+class AccountSettingsForm(forms.ModelForm):
+    """Basic profile fields a player can self-edit from the account dashboard.
+    Deliberately excludes username, password, is_student, is_veteran, and
+    parent_account — those are either admin-managed or need their own
+    dedicated, more careful flow (password change in particular)."""
+
+    class Meta:
+        model = CustomUser
+        fields = ["first_name", "last_name", "email", "date_of_birth"]
+        widgets = {
+            "date_of_birth": forms.DateInput(attrs={"type": "date"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({"class": TEXT_INPUT_CLASSES})
