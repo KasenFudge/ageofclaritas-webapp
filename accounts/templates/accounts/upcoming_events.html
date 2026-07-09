@@ -24,9 +24,9 @@
                   <rect width="18" height="18" x="3" y="4" rx="2" />
                   <path d="M3 10h18" />
                 </svg>
-                <span>Starts: <strong class="text-slate-700 font-semibold">{{ reg.event.start_time|date:"g:i A" }}</strong></span>
+                <span>Starts: <strong class="text-slate-700 font-semibold">{{ reg.event.start_time|date:"m/d - g:i A" }}</strong></span>
                 <span class="text-slate-300">|</span>
-                <span>Arriving: <strong class="text-slate-700 font-semibold">{{ reg.declared_arrival_time|date:"g:i A" }}</strong></span>
+                <span>Arriving: <strong class="text-slate-700 font-semibold">{{ reg.declared_arrival_time|date:"m/d - g:i A" }}</strong></span>
               </p>
             </div>
 
@@ -81,9 +81,9 @@
                 <span class="inline-flex items-center rounded-full bg-sky-100 text-sky-700 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide mb-2">For: {{ reg.user.get_full_name|default:reg.user.username }}</span>
                 <h3 class="font-serif font-bold text-slate-900 text-lg mb-1">{{ reg.event.title }}</h3>
                 <p class="text-slate-500 text-sm flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span>Starts: <strong class="text-slate-700 font-semibold">{{ reg.event.start_time|date:"M d — g:i A" }}</strong></span>
+                  <span>Starts: <strong class="text-slate-700 font-semibold">{{ reg.event.start_time|date:"m/d - g:i A" }}</strong></span>
                   <span class="text-slate-300">|</span>
-                  <span>Arriving: <strong class="text-slate-700 font-semibold">{{ reg.declared_arrival_time|date:"M d — g:i A" }}</strong></span>
+                  <span>Arriving: <strong class="text-slate-700 font-semibold">{{ reg.declared_arrival_time|date:"m/d - g:i A" }}</strong></span>
                 </p>
               </div>
               <div class="text-center sm:text-right min-w-30 shrink-0">

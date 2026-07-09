@@ -51,12 +51,22 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     # Late Arrival Cutoff: At 3pm the day the event starts (e.g., Saturday at 3:00 PM)
     late_arrival_cutoff_sat = local_event_start.replace(hour=15, minute=0, second=0, microsecond=0)
 
-    # First Event Discount: Check if user has attended a main event before
+    # First Event Discount: Check if user has attended a main event before and doesn't have a pending registration.
+    # 1. Check if they have physically attended a main event in the past
     has_attended_main_event = user.registrations.filter(
         checked_in=True,
         event__event_type__in=[EventType.JUNIOR, EventType.SENIOR],
     ).exists()
-    is_first_event = not has_attended_main_event
+
+    # 2. Check if they have already claimed/reserved a spot at a different future event
+    has_other_reserved_event = (
+        user.registrations.filter(event__event_type__in=[EventType.JUNIOR, EventType.SENIOR])
+        .exclude(event=event)
+        .exists()
+    )
+
+    # They only get the discount if both conditions are met
+    is_first_event = (not has_attended_main_event) and (not has_other_reserved_event)
 
     # First Event Discount: Ticket is free if it is their first event, and a free weapon rental
     if is_first_event:

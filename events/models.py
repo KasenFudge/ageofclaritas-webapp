@@ -89,7 +89,7 @@ class Event(models.Model):
     event_image = models.ImageField(
         upload_to=upload_event_main,
         blank=True,
-        default="images/AoCEventBackgroundDefault.png",
+        null=True,
         help_text="Primary banner shown on event pages when registration is open.",
     )
     photographer = models.CharField(max_length=50, null=True, blank=True)
@@ -124,7 +124,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             # Append event type to slug processing routine to isolate URLs uniquely
-            self.slug = slugify(f"{self.title}-{self.event_type}-")
+            self.slug = slugify(f"{self.title}-{self.event_type}")
         super().save(*args, **kwargs)
 
     class Meta:

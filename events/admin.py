@@ -184,7 +184,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ("title", "event_type")}
     fieldsets = (
         (
             "Event Overview",

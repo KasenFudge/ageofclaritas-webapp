@@ -55,101 +55,106 @@ class EventDetailView(DetailView):
 
 
 @login_required
-def event_registration_view(request, slug):
+def event_registration_view(request, slug, user_id=None):
     # 1. Fetch target event data
     event = get_object_or_404(Event, slug=slug)
-    user = request.user
+    actor = request.user  # The person sitting at the keyboard
 
-    # 2. Enforce Age & Validation Safeguards
-    if not user.date_of_birth:
-        raise PermissionDenied("Birthdate required to register.")
+    # 2. Determine the Target Participant
+    if user_id and user_id != actor.id:
+        # Fetch the child account, ensuring it actually belongs to this parent
+        target_user = get_object_or_404(actor.child_accounts.all(), id=user_id)
+    else:
+        target_user = actor
+
+    # 3. Enforce Age & Validation Safeguards on the Target User
+    if not target_user.date_of_birth:
+        raise PermissionDenied(f"Birthdate required to register {target_user}.")
 
     event_date = event.start_time.date()
-    user_age = user.age_on(event_date)
+    user_age = target_user.age_on(event_date)
 
-    # TODO: This may need to be updated to allow parent accounts
-    # (accounts with child accounts) to register their children.
     if event.event_type == EventType.JUNIOR:
         if user_age < 8:
-            raise PermissionDenied("Children must be 8 or older to register.")
+            raise PermissionDenied(f"{target_user} must be 8 or older to register.")
         if user_age >= 18:
-            raise PermissionDenied("Junior events are only for participants under 18.")
+            raise PermissionDenied(f"Junior events are only for participants under 18 ({target_user} is {user_age}).")
 
     if event.event_type == EventType.SENIOR and user_age < 18:
-        raise PermissionDenied("Senior events are only for participants 18+.")
+        raise PermissionDenied(f"Senior events are only for participants 18+ ({target_user} is {user_age}).")
 
-    # 3. Prevent Duplicate Registrations
-    if EventRegistration.objects.filter(event=event, user=user).exists():
-        messages.info(request, "You are already registered for this event.")
+    # 4. Enforce Active Waiver Signature
+    if not target_user.has_signed_active_waiver():
+        messages.warning(
+            request, f"An active liability waiver must be signed for {target_user} before completing registration."
+        )
+        return redirect("accounts:sign_waiver")
+
+    # 5. Prevent Duplicate Registrations
+    if EventRegistration.objects.filter(event=event, user=target_user).exists():
+        messages.info(request, f"{target_user} is already registered for this event.")
         return redirect("accounts:upcoming_events")
 
-    # 4. Process Form Actions
+    # 6. Process Form Actions
     if request.method == "POST":
-        # This forces the user's account to update its expiration records immediately
-        student_discount = user.has_valid_student_discount
+        # Check discount matching the actual participant
+        student_discount = target_user.has_valid_student_discount
 
-        # Pass event and user into form initialization (replacing get_form_kwargs)
-        form = EventRegistrationForm(request.POST, event=event, user=user)
+        # Form initialization tailored to the target profile
+        form = EventRegistrationForm(request.POST, event=event, user=target_user)
 
         if form.is_valid():
             declared_arrival_time = form.cleaned_data.get("declared_arrival_time") or event.start_time
             weapon_rental = form.cleaned_data.get("weapon_rental", False)
             payment_method = form.cleaned_data.get("payment_method", "in_person")
 
-            # Compute transaction parameters
+            # Compute transaction details for the target attendee
             registration_time = timezone.now()
             quote = quote_price(
                 event=event,
-                user=user,
+                user=target_user,
                 registration_time=registration_time,
                 arrival_time=declared_arrival_time,
                 student_discount=student_discount,
                 weapon_rental=weapon_rental,
             )
 
-            # Build and decorate record payload
             registration = form.save(commit=False)
             registration.event = event
-            registration.user = user
+            registration.user = target_user  # Bound to the child/adult participant
             registration.declared_arrival_time = declared_arrival_time
 
-            # Apply calculated invoice rows
             registration.base_price_cents = quote.base_cents
             registration.final_price_cents = quote.final_cents
             registration.discounts = quote.discounts
             registration.additional_items = quote.additional_items
-
-            # Commit record to db tables
             registration.save()
 
-            # Auto clear $0.00 Tickets (First-Time Discount) via creating a dummy inline Transaction that has succeeded.
             if quote.final_cents == 0:
                 from payments.models import Transaction
 
-                # Build the $0.00 Transaction marked succeeded.
                 zero_dollar_transaction = Transaction.objects.create(
                     total_amount_cents=0,
                     payment_status="succeeded",
                     payment_method="online" if payment_method == "online" else "in_person",
                 )
-
                 registration.transaction = zero_dollar_transaction
                 registration.save()
 
-                messages.success(request, f"Successfully registered for {event.title} (Free for First-Time Attendees)!")
+                messages.success(
+                    request,
+                    f"Successfully registered {target_user} for {event.title} with First Event Discount Applied!",
+                )
                 return redirect("accounts:upcoming_events")
 
-            # Dynamic checkout rerouting
             if payment_method == "online":
                 return redirect("payments:checkout")
 
-            messages.success(request, f"Successfully registered for {event.title}!")
+            messages.success(request, f"Successfully registered {target_user} for {event.title}!")
             return redirect("accounts:upcoming_events")
     else:
-        # Evaluate student status on GET requests too so the database stays fresh
-        _ = user.has_valid_student_discount
-        # Build empty display form instance on safe GET request methods
-        form = EventRegistrationForm(event=event, user=user)
+        _ = target_user.has_valid_student_discount
+        form = EventRegistrationForm(event=event, user=target_user)
 
-    context = {"form": form, "event": event}
+    context = {"form": form, "event": event, "target_user": target_user}
     return render(request, "events/event_registration.html", context)

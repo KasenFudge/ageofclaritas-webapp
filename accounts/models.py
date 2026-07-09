@@ -74,7 +74,7 @@ class CustomUser(AbstractUser):
     def has_signed_active_waiver(self):
         waiver = Waiver.objects.filter(is_active=True).first()
         if not waiver:  # No Active Waiver Found
-            return False
+            return True
         return WaiverSignature.objects.filter(user=self, waiver=waiver).exists()
 
     def __str__(self):
@@ -146,4 +146,4 @@ class WaiverSignature(models.Model):
         unique_together = ("user", "waiver")
 
     def __str__(self):
-        return f"{self.user.username} signed {self.waiver.title}"
+        return f"{self.user.username} {self.waiver.title} Signature"
