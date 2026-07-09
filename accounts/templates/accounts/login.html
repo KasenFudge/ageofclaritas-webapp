@@ -18,6 +18,10 @@
         {% include 'includes/field_render.html' with field=form.username %}
         {% include 'includes/field_render.html' with field=form.password %}
 
+        <div class="text-right mb-4">
+          <a href="{% url 'accounts:password_reset' %}" class="text-sm text-navy-700 hover:text-navy-900 font-medium transition-colors">Forgot password?</a>
+        </div>
+
         <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm uppercase tracking-wide shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2">
           Sign In
         </button>

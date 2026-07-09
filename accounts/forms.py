@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm
 
 from .models import CustomUser
 
@@ -13,9 +13,37 @@ TEXT_INPUT_CLASSES = (
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    """Styled login form. Django's built-in AuthenticationForm has no class
+    """
+    Styled login form. Django's built-in AuthenticationForm has no class
     applied to its widgets by default, so this exists purely to carry
-    TEXT_INPUT_CLASSES the same way CustomUserCreationForm does below."""
+    TEXT_INPUT_CLASSES the same way CustomUserCreationForm does below.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    """
+    Styled password reset form. Django's built-in AuthenticationForm has no
+    class applied to its widgets by default, so this exists purely to carry
+    TEXT_INPUT_CLASSES the same way CustomUserCreationForm does below.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    """
+    Styled password reset form. Django's built-in AuthenticationForm has no
+    class applied to its widgets by default, so this exists purely to carry
+    TEXT_INPUT_CLASSES the same way CustomUserCreationForm does below.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
