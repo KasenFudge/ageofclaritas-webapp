@@ -1948,6 +1948,18 @@
       color: var(--color-slate-400);
     }
   }
+  .before\:absolute {
+    &::before {
+      content: var(--tw-content);
+      position: absolute;
+    }
+  }
+  .before\:inset-0 {
+    &::before {
+      content: var(--tw-content);
+      inset: 0;
+    }
+  }
   .last\:border-0 {
     &:last-child {
       border-style: var(--tw-border-style);
@@ -2360,9 +2372,19 @@
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
   }
+  .active\:scale-\[0\.95\] {
+    &:active {
+      scale: 0.95;
+    }
+  }
   .active\:scale-\[0\.98\] {
     &:active {
       scale: 0.98;
+    }
+  }
+  .active\:border-slate-400 {
+    &:active {
+      border-color: var(--color-slate-400);
     }
   }
   .active\:bg-blue-700 {
@@ -3022,6 +3044,11 @@
   inherits: false;
   initial-value: 1;
 }
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -3101,6 +3128,7 @@
       --tw-scale-x: 1;
       --tw-scale-y: 1;
       --tw-scale-z: 1;
+      --tw-content: "";
     }
   }
 }

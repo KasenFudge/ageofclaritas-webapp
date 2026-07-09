@@ -18,7 +18,7 @@
     {% endcomment %}
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-      <button @click="open('settings')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+      <button @click="open('settings')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
@@ -29,7 +29,7 @@
         <p class="text-slate-500 text-sm">Update your name, email, and birthdate.</p>
       </button>
 
-      <button @click="open('waiver')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+      <button @click="open('waiver')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
         {% if active_waiver and not has_signed_current_waiver %}
           <span class="absolute top-4 right-4 flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -53,7 +53,7 @@
         </p>
       </button>
 
-      <button @click="open('events')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+      <button @click="open('events')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
             <path d="M8 2v4" />
@@ -62,11 +62,11 @@
             <path d="M3 10h18" />
           </svg>
         </div>
-        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Household Schedule</h3>
-        <p class="text-slate-500 text-sm">See your and your children's upcoming registrations.</p>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Schedule</h3>
+        <p class="text-slate-500 text-sm">See your upcoming registrations.</p>
       </button>
 
-      <button @click="open('billing')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+      <button @click="open('billing')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
         {% if outstanding_registrations %}
           <span class="absolute top-4 right-4 flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -89,7 +89,7 @@
         </p>
       </button>
 
-      <button @click="open('surveys')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1">
+      <button @click="open('surveys')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
         {% if active_surveys %}<span class="absolute top-4 right-4 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-[10px] font-bold h-5 w-5">{{ active_surveys|length }}</span>{% endif %}
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list">
