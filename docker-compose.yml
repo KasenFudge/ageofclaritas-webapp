@@ -4,9 +4,9 @@ services:
     image: postgres:16-alpine
     restart: always
     volumes:
-      - aoc_data:/var/lib/postgresql/data/
+      - ageofclaritas_data:/var/lib/postgresql/data/
     networks:
-      - aoc_net
+      - ageofclaritas_net
     env_file:
       - .env
 
@@ -18,11 +18,11 @@ services:
     command: gunicorn ageofclaritas.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
-      - aoc_static:/var/www/static/aoc
-      - aoc_media:/var/www/media/aoc
+      - ageofclaritas_static:/var/www/static/aoc
+      - ageofclaritas_media:/var/www/media/aoc
     restart: always
     networks:
-      - aoc_net
+      - ageofclaritas_net
       - web_gateway
     env_file:
       - .env
@@ -38,7 +38,7 @@ volumes:
     name: ageofclaritas_media
 
 networks:
-  aoc_net:
+  ageofclaritas_net:
     driver: bridge
   web_gateway:
     external: true
