@@ -15,10 +15,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    command: >
-      sh -c "python manage.py migrate && 
-             python manage.py collectstatic --noinput &&
-             gunicorn ageofclaritas.wsgi:application --bind 0.0.0.0:8000"
+    command: gunicorn ageofclaritas.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
       - aoc_static:/var/www/static/aoc
@@ -40,7 +37,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - aoc_static:/var/www/static/aoc:ro

@@ -1,112 +1,136 @@
 # Age of Claritas Webapp
 
-This is a Django webapp for the Age of Claritas Website that is under active development.
+A Django-based web application for the *Age of Claritas* project.
 
-## Setup on Hosting Service
+## Workflow Overview
 
-The application is containerized using Docker. These instructions assume you have Docker and Docker Compose installed on your host (e.g., DigitalOcean Droplet).
+* **Development:** Local environment using Python virtual environments, Tailwind CSS watch mode, and full migration capabilities.
+* **Production:** Containerized deployment using Docker Compose. Note: The production Droplet is configured to run the application only; **all database migrations must be performed in development and pushed via code/database updates.**
 
-## Initial Deployment & Database Setup
+---
 
-If you are setting up the project for the first time or performing a fresh database reset, follow these steps in order:
+## Development Setup
 
-1. **Build and Start Containers** `docker compose up -d --build`  
-   *This builds the images and starts the services in the background.*
+### 1. Local Environment
 
-2. **Generate Migrations (App Specific)** `docker compose run --rm webapp python manage.py makemigrations accounts`  
-   *Crucial: We generate 'accounts' first to ensure the CustomUser model is properly initialized before other apps dependency-link to it.*
+For local development, manage dependencies and migrations outside of Docker to keep your environment lean:
 
-3. **Generate Remaining Migrations** `docker compose run --rm webapp python manage.py makemigrations`  
-   *This captures changes in the Events, Rulebook, and other applications.*
+1. **Virtual Environment:**
 
-4. **Apply Database Schema** `docker compose run --rm webapp python manage.py migrate`  
-   *This creates the actual tables in the Postgres container.*
+    ```bash
+    python -m venv .venv
+    # Activate:
+    # Windows: .venv\Scripts\activate
+    # macOS/Linux: source .venv/bin/activate
+    ```
 
-5. **Create Admin Account** `docker compose run --rm webapp python manage.py createsuperuser`  
-   *Note: You will be prompted for a username, email, and Date of Birth (as required by our CustomUser model).*
+2. **Tailwind CSS:**
+    Run this command while developing to keep your `output.css` updated automatically:
 
-## Maintenance Commands
+    ```bash
+    npx @tailwindcss/cli -i ./static/src/main.css -o ./static/dist/output.css --watch
+    ```
 
-To make a backup/dump of your database, run this command:
-`docker exec aoc_db pg_dump -U <YOUR_DB_USER> -d <YOUR_DB> > db_backup_$(date +%F).sql`
-or alternatively this may work better, it uses insert operations on the data instead of copies.
-`docker exec aoc_db pg_dump --column-inserts --data-only -U aoc_staging_admin -d aoc_staging > inserts_backup.sql`
+### 2. Database Migrations
 
-### Accessing Database
+Migrations are managed in the development environment. After creating new models or fields:
 
-In the case the database needs to be accessed, run:
-`docker exec -it <aoc_db> psql -U <YOUR_DB_USER> -d <YOUR_DB>`
+1. Run `python manage.py makemigrations <app_name>`
+2. Run `python manage.py migrate`
+3. Commit these changes to Git so they are available for deployment.
+
+---
+
+## Production Deployment (DigitalOcean)
+
+The production server pulls the latest code and restarts services.
+
+### Initial Setup
+
+Follow these steps only when first initializing the Droplet:
+
+1. **Start Services:**
+
+    ```bash
+    docker compose up -d --build
+    ```
+
+2. **Create Admin:**
+
+    ```bash
+    docker compose run --rm webapp python manage.py createsuperuser
+    ```
+
+### Routine Updates
+
+When deploying code changes to the production Droplet:
+
+1. `git pull`
+2. `docker compose up -d --build` (This restarts your containers with the new code).
+3. *Note: Migrations are handled by your build/deployment pipeline or manual trigger during the update process.*
+
+---
+
+## Maintenance & Troubleshooting
+
+### Database Backups
+
+To create a standard SQL backup:
+
+   ```bash
+   docker exec aoc_db pg_dump -U <USER> -d <DB_NAME> > db_backup_$(date +%F).sql
+   ```
+
+For a data-only backup (safer for schema migrations):
+
+   ```bash
+   docker exec aoc_db pg_dump --column-inserts --data-only -U <USER> -d <DB_NAME> > inserts_backup.sql
+   ```
+
+### Migrations
+
+To run migrations and apply database changes (ensure you are in the directory for the site you wish to update):
+
+   ```bash
+   docker exec -it aoc_webapp python manage.py migrate
+   ```
 
 ### Static Files
 
-If CSS or images are not appearing correctly after an update, run:
-`docker exec -it aoc_webapp python manage.py collectstatic --noinput`
+If CSS/Images break after an update:
 
-### Tailwind CSS Compilation
+   ```bash
+   docker exec -it aoc_webapp python manage.py collectstatic --noinput
+   ```
 
-To recompile your utility classes and generate a fresh `output.css` file locally during development:
+### Logs
 
-* **One-time Build:**
-* `npx @tailwindcss/cli -i ./static/src/main.css -o ./static/dist/output.css`
-  
-* **Watch for changes to `main.css` file locally and regenerate on save:
-* `npx @tailwindcss/cli -i ./static/src/main.css -o ./static/dist/output.css --watch`
+To debug a service (e.g., webapp or db):
 
-### Viewing Logs
+   ```bash
+   docker compose logs -f <service_name>
+   ```
 
-To troubleshoot a service (e.g., Nginx or Webapp):
-`docker compose logs -f [service_name]`
+## Configuration
 
-## Environment Files
+Ensure a `.env` file exists in your root directory. Never commit this file to version control.
 
-For environment files, which are not included in the GitHub Repo, you'll need to make a .env folder.
-I then recommend putting the following in it.\n
-Note that anything that looks empty, like "//" or "xxxxxxxxxxx" needs to be filled in on your end.
+   ```.env
+   # SECURITY
+   SECRET_KEY='your-secret-key'
+   DEBUG=False
 
-### ./.env
+   # ROOTS
+   STATIC_ROOT=/var/www/static/aoc
+   MEDIA_ROOT=/var/www/media/aoc
 
-This is an example of the environment file for the age of claritas application
+   # DATABASE
+   POSTGRES_DB=aoc_db
+   POSTGRES_USER=aocdb_admin
+   POSTGRES_PASSWORD=your_secure_password
+   POSTGRES_HOST=db
+   POSTGRES_PORT=5432
 
-```.env
-# SECURITY (Used by Django)
-SECRET_KEY='xxxxxxxxxxx'
-DEBUG=False
-
-# ROOTS (Used in constructing paths to store data)
-STATIC_ROOT=/var/www/static/aoc
-MEDIA_ROOT=/var/www/media/aoc
-
-# DATABASE (Used by BOTH Postgres and Django)
-POSTGRES_DB=aoc_db
-POSTGRES_USER=aocdb_admin
-POSTGRES_PASSWORD=
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
-# Who can Host
-ALLOWED_HOSTS='["kasenfudge.me", "www.kasenfudge.me", "167.99.232.224", "127.0.0.1", "localhost"]'
-```
-
-## Using a Virtual Environment
-
-I also recommend creating a a virtual environment and running it during development.
-To create a Virtual Environment, type and run the following in a terminal:
-
-```bash
-python -m venv .venv
-```
-
-This will create a virtual environment called venv in the .env folder.
-Then to run it, you type the path to the Activate Script into a terminal (on Windows).
-In the above case (from the main directory):
-
-```bash
-.venv/scripts/activate
-```
-
-This may work differently for MacOS/Linux systems.
-Then to deactivate, you just type deactivate into a terminal.
-
-```bash
-deactivate
-```
+   # HOSTS
+   ALLOWED_HOSTS='["ageofclaritas.com", "beta.ageofclaritas.com", "127.0.0.1"]'
+   ```
