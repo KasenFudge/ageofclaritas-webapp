@@ -78,13 +78,13 @@ When deploying code changes to the production Droplet:
 To create a standard SQL backup:
 
    ```bash
-   docker exec aoc_db pg_dump -U <USER> -d <DB_NAME> > db_backup_$(date +%F).sql
+   docker exec ageofclaritas_db pg_dump -U <USER> -d <DB_NAME> > db_backup_$(date +%F).sql
    ```
 
 For a data-only backup (safer for schema migrations):
 
    ```bash
-   docker exec aoc_db pg_dump --column-inserts --data-only -U <USER> -d <DB_NAME> > inserts_backup.sql
+   docker exec ageofclaritas_db pg_dump --column-inserts --data-only -U <USER> -d <DB_NAME> > inserts_backup_$(date +%F).sql
    ```
 
 ### Migrations
@@ -92,7 +92,7 @@ For a data-only backup (safer for schema migrations):
 To run migrations and apply database changes (ensure you are in the directory for the site you wish to update):
 
    ```bash
-   docker exec -it aoc_webapp python manage.py migrate
+   docker exec -it ageofclaritas_webapp python manage.py migrate
    ```
 
 ### Static Files
@@ -100,7 +100,7 @@ To run migrations and apply database changes (ensure you are in the directory fo
 If CSS/Images break after an update:
 
    ```bash
-   docker exec -it aoc_webapp python manage.py collectstatic --noinput
+   docker exec -it ageofclaritas_webapp python manage.py collectstatic --noinput
    ```
 
 ### Logs
