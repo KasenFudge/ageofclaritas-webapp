@@ -36,6 +36,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True if os.getenv("DEBUG") == "True" else False
 
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
+SITE_ID = 1
 
 
 # ==========================================
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sites",
     "django.contrib.staticfiles",
     # Third-Party Dependencies
     "django_ckeditor_5",  # Integrated rich-text rendering engine
@@ -205,7 +207,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # Resend SMTP Settings
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.resend.com")
 EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", True)
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 
 # Pull credentials safely from your environment variables
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "resend")
