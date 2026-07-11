@@ -30,12 +30,12 @@ load_dotenv(BASE_DIR / ".env", override=True)
 # Security & Deployment Guardrails
 # ==========================================
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if os.getenv("DEBUG") == "True" else False
+DEBUG = True if os.environ.get("DEBUG") == "True" else False
 
-ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
+ALLOWED_HOSTS = json.loads(os.environ.get("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
 SITE_ID = 1
 
 
@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third-Party Dependencies
     "django_ckeditor_5",  # Integrated rich-text rendering engine
+    "anymail",  # Handles Emailing
     # Age of Claritas Core Modules
     "ageofclaritas",  # Structural configuration root
     "core.apps.CoreConfig",  # Public portal landing surfaces
@@ -132,11 +133,11 @@ TEMPLATES = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "ageofclaritas"),
-        "USER": os.getenv("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "your_local_db_password"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "NAME": os.environ.get("POSTGRES_DB", "ageofclaritas"),
+        "USER": os.environ.get("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "your_local_db_password"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -173,14 +174,14 @@ STATICFILES_FINDERS = [
 ]
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.getenv("STATIC_ROOT", BASE_DIR / "data" / "static")
+STATIC_ROOT = os.environ.get("STATIC_ROOT", BASE_DIR / "data" / "static")
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.getenv("MEDIA_ROOT", BASE_DIR / "data" / "media")
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", BASE_DIR / "data" / "media")
 
 
 # Production static delivery wrapper (Intercepts fallback delivery if Nginx drops asset threads)
@@ -201,19 +202,10 @@ LOGOUT_REDIRECT_URL = "core:index"
 # ==========================================
 # EMAIL CONFIGURATION (RESEND)
 # ==========================================
-# Use standard SMTP backend for production
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
-# Resend SMTP Settings
-EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.resend.com")
-EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
-
-# Pull credentials safely from your environment variables
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "resend")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
-# This must match the domain you verified in Step 1!
+EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+ANYMAIL = {
+    "RESEND_API_KEY": os.environ.get("RESEND_API_KEY"),
+}
 DEFAULT_FROM_EMAIL = "Age of Claritas <info@ageofclaritas.com>"
 
 # ==========================================
