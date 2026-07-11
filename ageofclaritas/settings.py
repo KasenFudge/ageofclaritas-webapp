@@ -196,10 +196,27 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "core:index"
 LOGOUT_REDIRECT_URL = "core:index"
 
+# ==========================================
+# EMAIL CONFIGURATION (RESEND)
+# ==========================================
+# Use standard SMTP backend for production
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-# ==============================================================================
+# Resend SMTP Settings
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.resend.com")
+EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", True)
+
+# Pull credentials safely from your environment variables
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "resend")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+# This must match the domain you verified in Step 1!
+DEFAULT_FROM_EMAIL = "Age of Claritas <info@ageofclaritas.com>"
+
+# ==========================================
 # CKEDITOR 5 CONFIGURATION
-# ==============================================================================
+# ==========================================
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
