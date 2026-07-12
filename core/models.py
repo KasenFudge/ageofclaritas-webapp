@@ -28,3 +28,6 @@ class TeamMember(models.Model):
     priority = models.IntegerField(
         default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
     )
+
+    class Meta:
+        ordering = ["priority", "name"]
