@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Case, IntegerField, When
+from django.utils.html import strip_tags
 from django.utils.text import slugify
 
 # Create your models here.
@@ -47,7 +48,17 @@ class Class(models.Model):
 
     @property
     def has_special_rules(self):
-        return bool(self.special_rules)
+        """
+        bool(self.special_rules) alone isn't reliable if this field is ever edited through
+        a rich-text widget: "clearing" the content there commonly leaves behind markup like
+        "<p><br></p>" or "<p>&nbsp;</p>" rather than a true empty string, and both of those
+        are non-empty strings that bool() would still treat as truthy. Strip tags and
+        normalize whitespace entities first so only genuinely visible content counts.
+        """
+        if not self.special_rules:
+            return False
+        text = strip_tags(self.special_rules).replace("&nbsp;", " ").replace("\xa0", " ")
+        return bool(text.strip())
 
     def clean(self):
         super().clean()

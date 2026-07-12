@@ -1,0 +1,20 @@
+{% comment %}
+Expects:
+  talents       - iterable of items with .slug, .name, .description (falsy/empty skips rendering entirely)
+  heading       - heading text to display
+  heading_class - full literal Tailwind classes for the heading element (so Tailwind's
+                  scanner finds them at the include call site, same convention as
+                  events/event_section.html's accent_bar/accent_text/button_classes)
+  heading_tag   - 'h2' or 'h3', defaults to 'h2'
+{% endcomment %}
+{% if talents %}
+  <{{ heading_tag|default:"h2" }} class="{{ heading_class }}">{{ heading }}</{{ heading_tag|default:"h2" }}>
+  <div class="space-y-6">
+    {% for talent in talents %}
+      <div id="{{ talent.slug }}" class="scroll-mt-24">
+        <b class="block text-lg font-bold font-serif text-slate-900">{{ talent.name }}</b>
+        <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|safe }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

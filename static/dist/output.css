@@ -312,6 +312,9 @@
   .invisible {
     visibility: hidden;
   }
+  .visible {
+    visibility: visible;
+  }
   .sr-only {
     position: absolute;
     width: 1px;
@@ -1158,21 +1161,6 @@
   .bg-navy-100 {
     background-color: var(--color-navy-100);
   }
-  .bg-navy-200 {
-    background-color: var(--color-navy-200);
-  }
-  .bg-navy-300 {
-    background-color: var(--color-navy-300);
-  }
-  .bg-navy-400 {
-    background-color: var(--color-navy-400);
-  }
-  .bg-navy-400\/50 {
-    background-color: color-mix(in srgb, #758bb3 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-navy-400) 50%, transparent);
-    }
-  }
   .bg-navy-500 {
     background-color: var(--color-navy-500);
   }
@@ -1181,9 +1169,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-navy-500) 10%, transparent);
     }
-  }
-  .bg-navy-600 {
-    background-color: var(--color-navy-600);
   }
   .bg-navy-700 {
     background-color: var(--color-navy-700);
@@ -2076,13 +2061,6 @@
         @supports (color: color-mix(in lab, red, red)) {
           background-color: color-mix(in oklab, var(--color-navy-50) 40%, transparent);
         }
-      }
-    }
-  }
-  .hover\:bg-navy-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-navy-700);
       }
     }
   }

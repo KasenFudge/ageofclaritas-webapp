@@ -15,66 +15,30 @@
 
     <h1 id="{{ guild.slug }}" class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4 scroll-mt-24">{{ guild.name }}</h1>
 
-    {% if guild.special_rules %}
+    {% if guild.has_special_rules %}
       <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ guild.special_rules|safe }}</div>
     {% endif %}
 
     {% if guild_skills %}
       <section>
-        <h2 class="text-2xl font-serif font-bold text-navy-700 mb-4">Skills</h2>
-        <div class="space-y-4">
-          {% for skill in guild_skills %}
-            <div id="{{ skill.slug }}" class="scroll-mt-24">
-              <b class="block text-lg font-bold font-serif text-slate-900">{{ skill.name }}</b>
-              <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ skill.description|safe }}</div>
-            </div>
-          {% endfor %}
-        </div>
+        {% include 'rulebook/talent_section.html' with talents=guild_skills heading="Skills" heading_class="text-2xl font-serif font-bold text-navy-700 mb-4" %}
       </section>
     {% endif %}
 
     {% if guild_abilities %}
       <section>
-        <h2 class="text-2xl font-serif font-bold text-navy-700 mb-4">Abilities</h2>
-        <div class="space-y-4">
-          {% for ability in guild_abilities %}
-            <div id="{{ ability.slug }}" class="scroll-mt-24">
-              <b class="block text-lg font-bold font-serif text-slate-900">{{ ability.name }}</b>
-              <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ ability.description|safe }}</div>
-            </div>
-          {% endfor %}
-        </div>
+        {% include 'rulebook/talent_section.html' with talents=guild_abilities heading="Abilities" heading_class="text-2xl font-serif font-bold text-navy-700 mb-4" %}
       </section>
     {% endif %}
 
     {% for faction in factions %}
       <section class="pt-8 border-t border-slate-200">
         <h1 id="{{ faction.faction.slug }}" class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 mb-4 scroll-mt-24">{{ faction.faction.name }}</h1>
-        {% if faction.faction.special_rules %}
+        {% if faction.faction.has_special_rules %}
           <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ faction.faction.special_rules|safe }}</div>
         {% endif %}
-        {% if faction.skills %}
-          <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">Skills</h2>
-          <div class="space-y-4">
-            {% for skill in faction.skills %}
-              <div id="{{ skill.slug }}" class="scroll-mt-24">
-                <b class="block text-lg font-bold font-serif text-slate-900">{{ skill.name }}</b>
-                <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ skill.description|safe }}</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        {% if faction.abilities %}
-          <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">Abilities</h2>
-          <div class="space-y-4">
-            {% for ability in faction.abilities %}
-              <div id="{{ ability.slug }}" class="scroll-mt-24">
-                <b class="block text-lg font-bold font-serif text-slate-900">{{ ability.name }}</b>
-                <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ ability.description|safe }}</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
+        {% include 'rulebook/talent_section.html' with talents=faction.skills heading="Skills" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
+        {% include 'rulebook/talent_section.html' with talents=faction.abilities heading="Abilities" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
       </section>
     {% endfor %}
 
@@ -87,39 +51,9 @@
             {% if elemental.faction.special_rules %}
               <div class="p-4 mb-4 bg-navy-50 rounded-lg border border-navy-200 text-slate-700 leading-relaxed">{{ elemental.faction.special_rules|safe }}</div>
             {% endif %}
-            {% if elemental.tier_1 %}
-              <h3 class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4">Tier I</h3>
-              <div class="space-y-4">
-                {% for talent in elemental.tier_1 %}
-                  <div id="{{ talent.slug }}" class="scroll-mt-24">
-                    <b class="block text-lg font-bold text-slate-900">{{ talent.name }}</b>
-                    <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|safe }}</div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-            {% if elemental.tier_2 %}
-              <h3 class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4">Tier II</h3>
-              <div class="space-y-4">
-                {% for talent in elemental.tier_2 %}
-                  <div id="{{ talent.slug }}" class="scroll-mt-24">
-                    <b class="block text-lg font-bold text-slate-900">{{ talent.name }}</b>
-                    <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|safe }}</div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-            {% if elemental.tier_3 %}
-              <h3 class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4">Tier III</h3>
-              <div class="space-y-4">
-                {% for talent in elemental.tier_3 %}
-                  <div id="{{ talent.slug }}" class="scroll-mt-24">
-                    <b class="block text-lg font-bold text-slate-900">{{ talent.name }}</b>
-                    <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed scroll-mt-24">{{ talent.description|safe }}</div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
+            {% include 'rulebook/talent_section.html' with talents=elemental.tier_1 heading="Tier I" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
+            {% include 'rulebook/talent_section.html' with talents=elemental.tier_2 heading="Tier II" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
+            {% include 'rulebook/talent_section.html' with talents=elemental.tier_3 heading="Tier III" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
           </div>
         {% endfor %}
       </section>
@@ -134,39 +68,9 @@
             {% if manifold.faction.special_rules %}
               <div class="p-4 mb-4 bg-navy-50 rounded-lg border border-navy-200 text-slate-700 leading-relaxed">{{ manifold.faction.special_rules|safe }}</div>
             {% endif %}
-            {% if manifold.tier_1 %}
-              <h3 class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4">Tier I</h3>
-              <div class="space-y-4">
-                {% for talent in manifold.tier_1 %}
-                  <div id="{{ talent.slug }}" class="scroll-mt-24">
-                    <b class="block text-lg font-bold text-slate-900">{{ talent.name }}</b>
-                    <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|safe }}</div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-            {% if manifold.tier_2 %}
-              <h3 class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4">Tier II</h3>
-              <div class="space-y-4">
-                {% for talent in manifold.tier_2 %}
-                  <div id="{{ talent.slug }}" class="scroll-mt-24">
-                    <b class="block text-lg font-bold text-slate-900">{{ talent.name }}</b>
-                    <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|safe }}</div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-            {% if manifold.tier_3 %}
-              <h3 class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4">Tier III</h3>
-              <div class="space-y-4">
-                {% for talent in manifold.tier_3 %}
-                  <div id="{{ talent.slug }}" class="scroll-mt-24">
-                    <b class="block text-lg font-bold text-slate-900">{{ talent.name }}</b>
-                    <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|safe }}</div>
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
+            {% include 'rulebook/talent_section.html' with talents=manifold.tier_1 heading="Tier I" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
+            {% include 'rulebook/talent_section.html' with talents=manifold.tier_2 heading="Tier II" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
+            {% include 'rulebook/talent_section.html' with talents=manifold.tier_3 heading="Tier III" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
           </div>
         {% endfor %}
       </section>
@@ -184,50 +88,10 @@
           active slot and gets another active when they join the guild and another
           active when they join the faction.
         </div>
-        {% if weapon_titles %}
-          <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">Weapon Titles</h2>
-          <div class="space-y-4">
-            {% for title in weapon_titles %}
-              <div id="{{ title.slug }}" class="scroll-mt-24">
-                <b class="block text-lg font-bold text-slate-900">{{ title.name }}</b>
-                <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ title.description|safe }}</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        {% if armor_titles %}
-          <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">Armor Titles</h2>
-          <div class="space-y-4">
-            {% for title in armor_titles %}
-              <div id="{{ title.slug }}" class="scroll-mt-24">
-                <b class="block text-lg font-bold text-slate-900">{{ title.name }}</b>
-                <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ title.description|safe }}</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        {% if support_titles %}
-          <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">Support Titles</h2>
-          <div class="space-y-4">
-            {% for title in support_titles %}
-              <div id="{{ title.slug }}" class="scroll-mt-24">
-                <b class="block text-lg font-bold text-slate-900">{{ title.name }}</b>
-                <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ title.description|safe }}</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        {% if misc_titles %}
-          <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">Miscellaneous Titles</h2>
-          <div class="space-y-4">
-            {% for title in misc_titles %}
-              <div id="{{ title.slug }}" class="scroll-mt-24">
-                <b class="block text-lg font-bold text-slate-900">{{ title.name }}</b>
-                <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ title.description|safe }}</div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
+        {% include 'rulebook/talent_section.html' with talents=weapon_titles heading="Weapon Titles" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
+        {% include 'rulebook/talent_section.html' with talents=armor_titles heading="Armor Titles" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
+        {% include 'rulebook/talent_section.html' with talents=support_titles heading="Support Titles" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
+        {% include 'rulebook/talent_section.html' with talents=misc_titles heading="Miscellaneous Titles" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
       </section>
     {% endif %}
 
