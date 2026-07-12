@@ -18,7 +18,7 @@ def make_veteran(modeladmin, request, queryset):
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     # Display fields in the grid layout
-    list_display = ("username", "email", "is_student", "is_veteran", "is_staff")
+    list_display = ("username", "email", "is_active", "is_student", "is_veteran", "is_staff")
 
     # Enable filtering by student status and core flags on the right sidebar
     list_filter = ("is_veteran", "is_student", "is_staff", "is_active")

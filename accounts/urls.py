@@ -14,6 +14,7 @@ urlpatterns = [
         name="login",
     ),
     path("register/", views.UserRegistrationView.as_view(), name="register"),
+    path("activate/<uidb64>/<token>/", views.activate_account, name="activate"),
     # --- Password Reset Flow ---
     path(
         "password-reset/",

@@ -1,9 +1,16 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView
 
@@ -14,11 +21,69 @@ from surveys.models import Survey
 from .forms import AccountSettingsForm, CustomUserCreationForm
 from .models import Waiver, WaiverSignature
 
+User = get_user_model()
+
 
 class UserRegistrationView(CreateView):
     form_class = CustomUserCreationForm
     template_name = "accounts/register.html"
-    success_url = reverse_lazy("login")
+    success_url = reverse_lazy("accounts:login")
+
+    def form_valid(self, form):
+        # 1. Save the user but don't commit to the database yet
+        user = form.save(commit=False)
+
+        # 2. Set user as inactive so they cannot log in
+        user.is_active = False
+        user.save()
+
+        # 3. Generate the secure token and user ID
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+        # 4. Build the activation URL
+        current_site = get_current_site(self.request)
+        domain = current_site.domain
+
+        # 5. Prepare the email content
+        context = {
+            "user": user,
+            "domain": domain,
+            "uid": uid,
+            "token": token,
+            "protocol": "https" if self.request.is_secure() else "http",
+        }
+
+        subject = "Verify your account"
+        text_content = render_to_string("emails/activation_email.txt", context)
+        html_content = render_to_string("emails/activation_email.html", context)
+
+        # 6. Send the email using your newly configured Resend API
+        email = EmailMultiAlternatives(subject, text_content, to=[user.email])
+        email.attach_alternative(html_content, "text/html")
+        email.send()
+
+        messages.success(self.request, "Registration successful! Please check your email to verify your account.")
+        return redirect(self.success_url)
+
+
+def activate_account(request, uidb64, token):
+    try:
+        # Decode the user ID
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    # Verify the token
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Your account has been successfully verified! You can now log in.")
+        return redirect("accounts:login")
+    else:
+        messages.error(request, "The activation link is invalid or has expired. Please register again.")
+        return redirect("accounts:register")
 
 
 def _build_dashboard_context(user):
