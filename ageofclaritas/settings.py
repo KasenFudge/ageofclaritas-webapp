@@ -38,6 +38,7 @@ DEBUG = True if os.environ.get("DEBUG") == "True" else False
 ALLOWED_HOSTS = json.loads(os.environ.get("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
 SITE_ID = 1
 
+RATELIMIT_VIEW = "accounts.views.ratelimited_error"
 
 # ==========================================
 # Reverse Proxy & SSL Handshakes
@@ -97,6 +98,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # High-efficiency file caching
+    "django_ratelimit.middleware.RatelimitMiddleware",  # To catch RateLimit Errors
 ]
 
 ROOT_URLCONF = "ageofclaritas.urls"

@@ -2,17 +2,16 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.decorators import method_decorator
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView
+from django_ratelimit.decorators import ratelimit
 
 from events.models import EventRegistration
 from payments.models import PaymentStatus
@@ -20,51 +19,38 @@ from surveys.models import Survey
 
 from .forms import AccountSettingsForm, CustomUserCreationForm
 from .models import Waiver, WaiverSignature
+from .utils import send_activation_email
 
 User = get_user_model()
 
 
+@method_decorator(ratelimit(key="ip", rate="3/h", method="POST", block=True), name="post")
 class UserRegistrationView(CreateView):
     form_class = CustomUserCreationForm
     template_name = "accounts/register.html"
     success_url = reverse_lazy("accounts:login")
 
     def form_valid(self, form):
-        # 1. Save the user but don't commit to the database yet
+        # Save the user but don't commit to the database yet
         user = form.save(commit=False)
 
-        # 2. Set user as inactive so they cannot log in
+        # Set user as inactive so they cannot log in
         user.is_active = False
         user.save()
 
-        # 3. Generate the secure token and user ID
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        # Save the email to the session so the next page can read it
+        self.request.session["registration_email"] = user.email
 
-        # 4. Build the activation URL
-        current_site = get_current_site(self.request)
-        domain = current_site.domain
+        send_activation_email(self.request, user)
 
-        # 5. Prepare the email content
-        context = {
-            "user": user,
-            "domain": domain,
-            "uid": uid,
-            "token": token,
-            "protocol": "https" if self.request.is_secure() else "http",
-        }
+        return redirect("accounts:registration_success")
 
-        subject = "Verify your account"
-        text_content = render_to_string("emails/activation_email.txt", context)
-        html_content = render_to_string("emails/activation_email.html", context)
 
-        # 6. Send the email using your newly configured Resend API
-        email = EmailMultiAlternatives(subject, text_content, to=[user.email])
-        email.attach_alternative(html_content, "text/html")
-        email.send()
+def registration_success(request):
+    # Get the email from session, default to empty string if it's missing
+    email = request.session.get("registration_email", "")
 
-        messages.success(self.request, "Registration successful! Please check your email to verify your account.")
-        return redirect(self.success_url)
+    return render(request, "accounts/registration_success.html", {"user_email": email})
 
 
 def activate_account(request, uidb64, token):
@@ -84,6 +70,31 @@ def activate_account(request, uidb64, token):
     else:
         messages.error(request, "The activation link is invalid or has expired. Please register again.")
         return redirect("accounts:register")
+
+
+def resend_verification_email(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            if user.is_active:
+                messages.info(request, "This account is already verified. Please log in.")
+                return redirect("accounts:login")
+
+            # Use the same email logic we created earlier
+            send_activation_email(request, user)
+            messages.success(request, "Verification email resent! Please check your inbox.")
+        except User.DoesNotExist:
+            messages.error(request, "No account found with that email address.")
+
+        return redirect("accounts:registration_success")
+    return redirect("accounts:register")
+
+    return redirect("accounts:register")
+
+
+def ratelimited_error(request, exception):
+    return render(request, "accounts/ratelimited.html", status=429)
 
 
 def _build_dashboard_context(user):

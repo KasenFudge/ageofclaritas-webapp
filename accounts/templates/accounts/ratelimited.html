@@ -1,0 +1,32 @@
+{% extends 'layouts/full_layout.html' %}
+
+{% block title_tag %}
+  Age of Claritas - Too Many Attempts
+{% endblock title_tag %}
+
+{% block content %}
+  <div class="max-w-md mx-auto px-4 py-16">
+    <div class="rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-8 sm:p-10 text-center">
+
+      <!-- Icon Container (Updated to Amber/Warning colors) -->
+      <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      </div>
+
+      <h1 class="text-2xl font-serif font-bold uppercase tracking-wide text-slate-900 mb-4">Too Many Attempts</h1>
+
+      <p class="text-sm text-slate-600 mb-8 leading-relaxed">
+        You have exceeded the maximum number of registration attempts allowed for your network.
+        <br />
+        <br />
+        To protect our community from automated spam, we have temporarily paused requests from your connection. Please wait an hour and try again.
+      </p>
+
+      <a href="{% url 'core:index' %}" class="block w-full rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3 text-sm uppercase tracking-wide shadow-sm transition-colors text-center">Return to Homepage</a>
+    </div>
+  </div>
+{% endblock content %}

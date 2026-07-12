@@ -14,7 +14,9 @@ urlpatterns = [
         name="login",
     ),
     path("register/", views.UserRegistrationView.as_view(), name="register"),
+    path("registration_success/", views.registration_success, name="registration_success"),
     path("activate/<uidb64>/<token>/", views.activate_account, name="activate"),
+    path("resend-verification/", views.resend_verification_email, name="resend_verification"),
     # --- Password Reset Flow ---
     path(
         "password-reset/",
