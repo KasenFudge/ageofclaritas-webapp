@@ -88,12 +88,12 @@ def event_registration_view(request, slug, user_id=None):
         messages.warning(
             request, f"An active liability waiver must be signed for {target_user} before completing registration."
         )
-        return redirect("accounts:sign_waiver")
+        return redirect("accounts:dashboard")
 
     # 5. Prevent Duplicate Registrations
     if EventRegistration.objects.filter(event=event, user=target_user).exists():
         messages.info(request, f"{target_user} is already registered for this event.")
-        return redirect("accounts:upcoming_events")
+        return redirect("accounts:dashboard")
 
     # 6. Process Form Actions
     if request.method == "POST":
@@ -145,13 +145,13 @@ def event_registration_view(request, slug, user_id=None):
                     request,
                     f"Successfully registered {target_user} for {event.title} with First Event Discount Applied!",
                 )
-                return redirect("accounts:upcoming_events")
+                return redirect("accounts:dashboard")
 
             if payment_method == "online":
                 return redirect("payments:checkout")
 
             messages.success(request, f"Successfully registered {target_user} for {event.title}!")
-            return redirect("accounts:upcoming_events")
+            return redirect("accounts:dashboard")
     else:
         _ = target_user.has_valid_student_discount
         form = EventRegistrationForm(event=event, user=target_user)

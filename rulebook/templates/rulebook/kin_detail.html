@@ -64,14 +64,14 @@
       <div class="space-y-4">
         {% for attribute in kin.attributes.all %}
           <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
-            <h4 class="text-lg font-bold text-navy-700 mb-2">
+            <h4 id="{{ attribute.slug }}" class="text-lg font-bold font-serif text-navy-700 mb-2 scroll-mt-24">
               {% if not attribute.can_start_with %}<span class="text-red-600" title="Cannot be taken as a starting attribute">*</span>{% endif %}
               {{ attribute.name }}
             </h4>
             <div class="pl-3 border-l-2 border-navy-200 text-slate-600 leading-relaxed">{{ attribute.description|safe }}</div>
           </div>
         {% empty %}
-          <div class="text-center text-red-600 italic py-3">No unique attributes are registered for this kin database index.</div>
+          <div class="text-center text-red-600 italic py-3">No unique attributes are registered for this kin.</div>
         {% endfor %}
       </div>
     </div>

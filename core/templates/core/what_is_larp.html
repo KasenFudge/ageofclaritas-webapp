@@ -1,0 +1,322 @@
+{% extends 'layouts/full_layout.html' %}
+
+{% block title_tag %}
+  Age of Claritas - What is LARP?
+{% endblock title_tag %}
+
+{% block content %}
+  <div class="max-w-3xl mx-auto space-y-8 pb-16">
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900">What is Age of Claritas?</h1>
+    </header>
+
+    <section id="what-is-larp" class="space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">What is LARP?</h2>
+      <p class="text-slate-600 leading-relaxed">
+        LARP stands for Live Action Role Play. Different LARP communities have different focuses and styles -
+        at Age of Claritas we aim for a mix of free-will storytelling, improvisational acting, theatrical combat,
+        and interesting mechanics.
+      </p>
+    </section>
+
+    <section id="who-we-are" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Who We Are</h2>
+      <p class="text-slate-600 leading-relaxed">
+        Age of Claritas is a KC-local family friendly live action adventure. We've been hosting fantasy themed
+        events for children and teens since 2013. Age of Claritas started with the goals of getting kids outside
+        and letting them be creative. We also have our roots in stunt combat and acting, so theatrics and
+        storytelling are a huge focus for us. Our community is made up of people with all sorts of interests,
+        including theater (and former theater) kids, DnD/RPG enthusiasts, stunt actors, cosplayers, and a whole
+        lot of other individuals who just think fantasy adventure is a fun way to spend a weekend. You can meet
+        our GMs - Game Masters -
+        <a href="{% url 'core:our_team' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+      </p>
+    </section>
+
+    <section id="goals-and-values" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Our Goals and Values</h2>
+      <p class="text-slate-600 leading-relaxed">
+        Ultimately, we believe LARP is a uniquely effective medium for people to play with characters that differ
+        from themselves and tell interesting and dynamic stories. For some people this is a therapeutic way to
+        play with different versions of themselves, for some it's an opportunity to engage with moral choices
+        that wouldn't exist in the real world, and for others it's just a fun fantasy world that lets us escape
+        reality for a little.
+      </p>
+    </section>
+
+    <section id="junior-adventurers" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Junior Adventurers</h2>
+      <p class="text-slate-600 leading-relaxed">
+        We strongly believe that LARPing can help kids play, grow, and experiment in a safe and creative space.
+        We're proud of our roots as a children's LARP, and we remain the only LARP in the KC area to have
+        children-only events (alternating with senior events each month). Players under 18 are welcome to join
+        us as junior adventurers, and over 18 as senior adventurers.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        Our junior storylines generally parallel our senior storylines with slight differences to ensure age
+        appropriateness. Junior LARPs use appropriate language, avoid gore, and use slightly simpler mechanics,
+        but other than that are largely similar. We give our junior and senior adventurers the same free will
+        and character freedom. You can see our junior code of conduct
+        {# TODO: link to the junior code of conduct page once it exists #}
+        <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>
+        and our parent/volunteer information
+        {# TODO: link to the parent/volunteer info page once it exists #}
+        <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+      </p>
+    </section>
+
+    <section id="location-and-schedule" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">The Location and Schedule</h2>
+      <p class="text-slate-600 leading-relaxed">
+        Our events take place at <a href="https://maps.app.goo.gl/TsZHi22YSea77SXSA" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">5014 Gibbs Rd, Kansas City, KS 66106</a> and generally start at 9AM
+        on Saturday and end at 4PM on Sunday. Game off is called at 10PM Saturday for junior adventurers and
+        variable times for senior adventures. Game on is at 10AM on Sunday. Most players go home overnight, but
+        you can tent-camp if you'd prefer. Meals are in-character, but you are welcome to leave to get food if
+        you'd like.
+      </p>
+    </section>
+
+    {% comment %}
+       =====================================================================
+       "How We Play" groups the more gameplay-curious sections separately
+       from the orientation content above.
+       =====================================================================
+    {% endcomment %}
+    <section class="pt-8 border-t border-slate-200">
+      <h2 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 uppercase tracking-wide mb-6">How We Play</h2>
+
+      <div class="space-y-8">
+        <div id="storytelling" class="space-y-3">
+          <h3 class="text-xl font-serif font-bold text-navy-700">Storytelling and Character Building</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Age of Claritas creates situations and characters for players to interact with, but beyond the
+            setting, we strive to let players drive the story. Parts are not scripted; other than restrictions
+            laid out in our rulebook or code of conduct, player characters can act and react as they see fit.
+            Conflict, drama, and impulsivity are welcome - your character does not need to be good, kind,
+            or well behaved. At the same time, the world will produce realistic consequences, and those
+            consequences tend to push players toward cooperation against common challenges.
+          </p>
+        </div>
+
+        <div id="acting" class="space-y-3">
+          <h3 class="text-xl font-serif font-bold text-navy-700">Acting</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Many (but not all) in our community have acting backgrounds and enjoy improvising to the complex,
+            exciting, and fantastical scenarios set out for us. The unscripted nature of Claritas makes acting a
+            fun, but not entirely necessary component. Some people go all in on the drama with accents, high
+            emotions, or silly quirks, while others play characters that resemble themselves and keep the acting
+            to a minimum. Either playstyle is absolutely welcome, we just ask that our players stay "in game"
+            (i.e. leave the real-world conversations at the door) and delve into the story.
+          </p>
+        </div>
+
+        <div id="combat-and-mechanics" class="space-y-3">
+          <h3 class="text-xl font-serif font-bold text-navy-700">Combat and Mechanics</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Combat is a significant part of Age of Claritas! We focus on physical theatrical combat, although
+            there's plenty of technique and intensity. Talents and other mechanics make our combat more complex
+            than just weapon fighting. Claritas is a step more intense than a lightest-touch LARP; we're ok with
+            a little force behind swings, but nobody should be getting hurt. We call damage numbers and enjoy
+            dramatic and theatric fighting.
+          </p>
+          <p class="text-slate-600 leading-relaxed">
+            Some players get really into the mechanics and rules of combat and character building, while others
+            base their character and combat style on whatever feels the most fun. There's no right answer -
+            whether you're a power gamer or a vibes player we'd love to have you.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {% comment %}
+     =====================================================================
+       FAQ — accordion, one open at a time. Plain x-show/x-transition rather
+       than an x-collapse plugin, since only core Alpine is loaded anywhere
+       else on the site.
+       ===================================================================== 
+    {% endcomment %}
+    <section class="pt-8 border-t border-slate-200">
+      <h2 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 mb-6">Frequently Asked Questions</h2>
+
+      <div x-data="{ openFaq: null }" class="space-y-3">
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 1 ? null : 1" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What kind of world is Claritas?</span>
+            <svg :class="openFaq === 1 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 1" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Claritas is a fantasy world with a deep history where much remains unknown. We have a hard magic
+            system, but the people of Claritas haven't figured it out fully, so there are a lot of mysteries. We
+            have storylines and settings that span all sorts of genres, so there's something for everyone, but in
+            general you can expect epic storylines, wild adventures, and weird challenges. You can learn more
+            about the Adventurer's Encampment
+            {# TODO: link once the Adventurer's Encampment page exists #}
+            <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>
+            and about the kinds of people that inhabit Claritas
+            <a href="{% url 'rulebook:kin' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 2 ? null : 2" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What kind of combat does Age of Claritas practice?</span>
+            <svg :class="openFaq === 2 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 2" x-transition class="px-5 pb-4 space-y-3 text-sm text-slate-600 leading-relaxed">
+            <p><span class="font-semibold text-slate-700">For LARPers:</span> We describe our LARP as slightly more intense than softest-touch LARPs, and we use weapons that are slightly less padded than boffer weapons.</p>
+            <p><span class="font-semibold text-slate-700">For non-LARPers:</span> we're hitting each other with pretty soft weapons, but we're not hitting super hard, and Talents make our combat more interesting than just weapon fighting. If being on the front lines of combat isn't your thing, we have plenty of play styles that might suit you!</p>
+            <p>
+              You can see our safety rules
+              {# TODO: link once the safety rules page exists #}
+              <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>
+              and our weapon guidelines
+              {# TODO: link once the weapon guidelines page exists #}
+              <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+            </p>
+          </div>
+        </div>
+
+        {% comment %}
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 3 ? null : 3" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What kinds of topics does Age of Claritas interact with?</span>
+            <svg :class="openFaq === 3 ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 3" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Many storylines focus on generally fun and fantastical themes. Junior LARPs will interact with some
+            serious topics, such as war, death, and poverty. Senior LARPs interact with more sensitive themes,
+            including genocide and slavery. Age of Claritas does not interact with explicitly sexual content. We
+            will very rarely interact with suicide, child endangerment, and substance abuse. If there are
+            specific topics you wish to avoid, please tell the GMs and we'll be sure to communicate with you.
+          </div>
+        </div>
+        {% endcomment %}
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 4 ? null : 4" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>Can I come to junior LARP as an adult (18 and over)?</span>
+            <svg :class="openFaq === 4 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 4" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            If you meet our volunteer NPC or parent NPC guidelines and pass the required background check you can
+            join us to NPC for Junior LARP, but otherwise no. Exceptions may be made if you've turned 18 within
+            the month.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 5 ? null : 5" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>Can I come to Senior LARP as a Junior (under 18)?</span>
+            <svg :class="openFaq === 5 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 5" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">Nope! Exceptions may be made if you're turning 18 within the month.</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 6 ? null : 6" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What's the property like?</span>
+            <svg :class="openFaq === 6 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 6" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            We'll have tent-pavilions for socializing, benches, a porta-potty, and a fire pit. We have a public
+            water cooler, but we recommend you bring water or drinks for yourself. The property has pretty
+            well-established trails and open areas. Although our main areas are pretty cultivated, you should
+            prepare for standard weather and nature related challenges - bring sunscreen, bugspray, warm
+            clothes, and whatever else you need to be comfortable outside!
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 7 ? null : 7" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>Meal Options</span>
+            <svg :class="openFaq === 7 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 7" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Most players bring food. We'll have a fire pit (if the weather allows) that you can use to heat food
+            if you'd like. There are also fast food options within 10 minutes driving from the property if you'd
+            rather go out to get food, but we don't pause our game for meals. We have a public water cooler but
+            we recommend you bring water and drinks for yourself to be safe.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+{% endblock content %}

@@ -18,3 +18,13 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return f"{self.name} \u2014 {self.quote[:40]}"
+
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    bio = models.TextField()
+    image = models.ImageField(upload_to="images/Team/")
+    priority = models.IntegerField(
+        default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
+    )

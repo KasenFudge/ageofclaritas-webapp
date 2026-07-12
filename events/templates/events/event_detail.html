@@ -85,34 +85,19 @@
               {% if event.event_type == EventType.SENIOR %}
                 <a href="{% url 'events:register' slug=event.slug %}"
                    class="inline-flex items-center justify-center rounded-xl bg-navy-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2 text-center">
-                  Register Myself
+                  Register
                 </a>
-
-                {% if user.child_accounts.exists %}
-                  <div class="w-full sm:w-auto mt-2">
-                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register minor dependent:</p>
-                    <div class="flex flex-wrap gap-2 sm:justify-end">
-                      {% for child in user.child_accounts.all %}
-                        {% if child.age < 18 %}
-                          <a href="{% url 'events:register_sub' slug=event.slug user_id=child.id %}" class="inline-flex items-center justify-center rounded-lg bg-navy-600 px-3 py-1.5 text-xs font-medium text-white shadow-xs transition-colors hover:bg-navy-700">
-                            {{ child.get_full_name|default:child.username }}
-                          </a>
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-                  </div>
-                {% endif %}
 
                 {# Junior Events (Emerald) #}
               {% elif event.event_type == EventType.JUNIOR %}
                 <a href="{% url 'events:register' slug=event.slug %}"
                    class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 text-center">
-                  Register Myself
+                  Register
                 </a>
 
                 {% if user.child_accounts.exists %}
                   <div class="w-full sm:w-auto mt-2">
-                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register minor dependent:</p>
+                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register Children</p>
                     <div class="flex flex-wrap gap-2 sm:justify-end">
                       {% for child in user.child_accounts.all %}
                         {% if child.age < 18 %}
@@ -129,12 +114,12 @@
               {% elif event.event_type == EventType.FEAST %}
                 <a href="{% url 'events:register' slug=event.slug %}"
                    class="inline-flex items-center justify-center rounded-xl bg-amber-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 text-center">
-                  Register Myself
+                  Register
                 </a>
 
                 {% if user.child_accounts.exists %}
                   <div class="w-full sm:w-auto mt-2">
-                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register minor dependent:</p>
+                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register Children</p>
                     <div class="flex flex-wrap gap-2 sm:justify-end">
                       {% for child in user.child_accounts.all %}
                         {% if child.age < 18 %}
@@ -151,12 +136,12 @@
               {% else %}
                 <a href="{% url 'events:register' slug=event.slug %}"
                    class="inline-flex items-center justify-center rounded-xl bg-zinc-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 text-center">
-                  Register Myself
+                  Register
                 </a>
 
                 {% if user.child_accounts.exists %}
                   <div class="w-full sm:w-auto mt-2">
-                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register minor dependent:</p>
+                    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register Children</p>
                     <div class="flex flex-wrap gap-2 sm:justify-end">
                       {% for child in user.child_accounts.all %}
                         {% if child.age < 18 %}

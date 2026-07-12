@@ -1,0 +1,33 @@
+{% extends 'layouts/full_layout.html' %}
+
+{% block title_tag %}
+  Age of Claritas - Our Team
+{% endblock title_tag %}
+
+{% block content %}
+  <div class="max-w-5xl mx-auto pb-16">
+
+    <header class="text-center mb-12">
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900">Our Team</h1>
+      <p class="mt-3 text-slate-600 max-w-xl mx-auto">The people behind Age of Claritas.</p>
+    </header>
+
+    {% if team_members %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for member in team_members %}
+          <div class="rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 text-center">
+            <img src="{{ member.image.url }}" alt="{{ member.name }}" class="w-28 h-28 rounded-full object-cover mx-auto mb-4 ring-4 ring-navy-50" />
+            <h3 class="font-serif font-bold text-lg text-slate-900">{{ member.name }}</h3>
+            <p class="text-xs font-bold uppercase tracking-wider text-navy-600 mb-3">{{ member.role }}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{{ member.bio }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="rounded-3xl bg-slate-50 ring-1 ring-slate-100 p-10 text-center">
+        <p class="text-slate-500">No team members have been added yet.</p>
+      </div>
+    {% endif %}
+
+  </div>
+{% endblock content %}

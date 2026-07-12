@@ -66,8 +66,8 @@
               </svg>
             </button>
             <ul x-show="aboutOpen" x-cloak x-transition class="absolute left-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-50 text-gray-300">
-              <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">FAQ</a></li>
-              <li><a href="#" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Our Team</a></li>
+              <li><a href="{% url 'core:what_is_larp' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">What is LARP</a></li>
+              <li><a href="{% url 'core:our_team' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Our Team</a></li>
             </ul>
           </li>
 
@@ -148,8 +148,8 @@
       {# Mobile About Section #}
       <li class="border-b border-gray-700 py-2">
         <span class="block px-3 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider">About</span>
-        <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">FAQ</a>
-        <a href="#" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Our Team</a>
+        <a href="{% url 'core:what_is_larp' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">What Is LARP</a>
+        <a href="{% url 'core:our_team' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Our Team</a>
       </li>
 
       {# Mobile Admin Dashboard Link #}
