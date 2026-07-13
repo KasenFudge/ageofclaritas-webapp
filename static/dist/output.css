@@ -3520,16 +3520,20 @@
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
 }
-.prose figure.table {
-  width: 100% !important;
-  max-width: 100%;
-}
 .prose table {
   display: block;
   width: 100% !important;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+.prose table > tbody, .prose table > thead, .prose table tr, .prose table td, .prose table th {
+  display: block;
+  width: 100%;
+}
+.prose figure.table {
+  width: 100% !important;
+  max-width: 100%;
 }
 @property --tw-translate-x {
   syntax: "*";
