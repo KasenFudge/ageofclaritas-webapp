@@ -66,12 +66,15 @@
 /* Injects custom CSS into tables from our CKEditor Fields (assuming we use .prose, as we always should) 
    Sets the width to take up the whole view port on desktops and on mobile makes it so that it will 
    scroll internally instead of the whole screen. */
-@layer components {
-  .prose table {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+.prose figure.table {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+.prose table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
