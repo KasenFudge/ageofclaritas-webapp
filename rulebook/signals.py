@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.urls import NoReverseMatch, reverse
 from django.utils.text import Truncator
 
-from .models import Attribute, Class, Definition, IndexType, Kin, RulePage, Talent
+from .models import Attribute, Class, Definition, IndexType, Kin, Talent
 
 
 # ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ def sync_index(index_type, source_id, *, term, description, target_url, short_de
         source_id=source_id,
         defaults={
             "term": term,
-            "short_description": short_description or Truncator(description).chars(295),
+            "short_description": short_description or Truncator(description).chars(295, html=True),
             "description": description,
             "target_url": target_url,
         },
@@ -129,24 +129,3 @@ def sync_attribute_to_index(sender, instance, created, raw=False, **kwargs):
 @receiver(post_delete, sender=Attribute)
 def remove_attribute_from_index(sender, instance, **kwargs):
     remove_from_index(IndexType.ATTRIBUTE, instance.pk)
-
-
-# ------------------------------------------------------------------------
-# RULEPAGE SIGNALS
-# ------------------------------------------------------------------------
-@receiver(post_save, sender=RulePage)
-def sync_rulepage_to_index(sender, instance, created, raw=False, **kwargs):
-    if raw:
-        return
-    sync_index(
-        IndexType.MECHANIC,
-        instance.pk,
-        term=instance.title,
-        description=instance.content,
-        target_url=get_safe_url("rulebook:rulepage_detail", slug=instance.slug),
-    )
-
-
-@receiver(post_delete, sender=RulePage)
-def remove_rulepage_from_index(sender, instance, **kwargs):
-    remove_from_index(IndexType.MECHANIC, instance.pk)

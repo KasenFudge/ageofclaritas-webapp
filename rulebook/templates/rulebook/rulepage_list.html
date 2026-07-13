@@ -1,0 +1,32 @@
+{% extends 'layouts/sidebar_layout.html' %}
+
+{% load static %}
+
+{% block title_tag %}
+  Age of Claritas - Rulebook Pages
+{% endblock title_tag %}
+
+{% block sidebar %}
+  {% include 'rulebook/rulepage_sidebar.html' %}
+{% endblock sidebar %}
+
+{% block content %}
+  <div class="max-w-4xl mx-auto space-y-8 pb-16">
+
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">Rulebook Pages</h1>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      {% for rule_page in pages %}
+        <a href="{% url 'rulebook:rulepage_detail' slug=rule_page.slug %}" class="sm:col-span-2 block p-5 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm hover:border-navy-200 hover:shadow-md transition-all">
+          <h2 class="text-lg font-serif font-bold text-navy-700">{{ rule_page.title }}</h2>
+        </a>
+      {% empty %}
+        <div class="col-span-full text-center text-slate-500 italic py-6">No rulebook pages have been added yet.</div>
+      {% endfor %}
+      <a href="{% url 'rulebook:glossary' %}" class="sm:col-span-2 block p-5 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm hover:border-navy-200 hover:shadow-md transition-all">
+        <h2 class="text-lg font-serif font-bold text-navy-700">Glossary</h2>
+      </a>
+    </div>
+
+  </div>
+{% endblock content %}

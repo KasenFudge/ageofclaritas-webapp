@@ -18,8 +18,8 @@ services:
     command: gunicorn ageofclaritas.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
-      - kasenfudge_static:/var/www/static/aoc
-      - kasenfudge_media:/var/www/media/aoc
+      - /var/www/static/aoc:/var/www/static/aoc
+      - /var/www/media/aoc:/var/www/media/aoc
     restart: always
     networks:
       - kasenfudge_net
@@ -32,10 +32,6 @@ services:
 volumes:
   kasenfudge_data:
     name: kasenfudge_data
-  kasenfudge_static:
-    name: kasenfudge_static
-  kasenfudge_media:
-    name: kasenfudge_media
 
 networks:
   kasenfudge_net:

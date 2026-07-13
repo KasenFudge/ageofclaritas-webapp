@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load rulebook_filters %}
+
 {% block title_tag %}
   Age of Claritas - {{ guild.name }}
 {% endblock title_tag %}
@@ -16,7 +18,7 @@
     <h1 id="{{ guild.slug }}" class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4 scroll-mt-24">{{ guild.name }}</h1>
 
     {% if guild.has_special_rules %}
-      <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ guild.special_rules|safe }}</div>
+      <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ guild.special_rules|parse_rules }}</div>
     {% endif %}
 
     {% if guild_skills %}
@@ -35,7 +37,7 @@
       <section class="pt-8 border-t border-slate-200">
         <h1 id="{{ faction.faction.slug }}" class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 mb-4 scroll-mt-24">{{ faction.faction.name }}</h1>
         {% if faction.faction.has_special_rules %}
-          <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ faction.faction.special_rules|safe }}</div>
+          <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ faction.faction.special_rules|parse_rules }}</div>
         {% endif %}
         {% include 'rulebook/talent_section.html' with talents=faction.skills heading="Skills" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
         {% include 'rulebook/talent_section.html' with talents=faction.abilities heading="Abilities" heading_class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4" %}
@@ -49,7 +51,7 @@
           <div class="mt-6">
             <h2 id="{{ elemental.faction.slug }}" class="text-xl font-serif font-bold text-center text-navy-700 mb-3 scroll-mt-24">{{ elemental.faction.name }}</h2>
             {% if elemental.faction.special_rules %}
-              <div class="p-4 mb-4 bg-navy-50 rounded-lg border border-navy-200 text-slate-700 leading-relaxed">{{ elemental.faction.special_rules|safe }}</div>
+              <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ elemental.faction.special_rules|parse_rules }}</div>
             {% endif %}
             {% include 'rulebook/talent_section.html' with talents=elemental.tier_1 heading="Tier I" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
             {% include 'rulebook/talent_section.html' with talents=elemental.tier_2 heading="Tier II" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
@@ -66,7 +68,7 @@
           <div class="mt-6">
             <h2 id="{{ manifold.faction.slug }}" class="text-xl font-serif font-bold text-center text-navy-700 mb-3 scroll-mt-24">{{ manifold.faction.name }}</h2>
             {% if manifold.faction.special_rules %}
-              <div class="p-4 mb-4 bg-navy-50 rounded-lg border border-navy-200 text-slate-700 leading-relaxed">{{ manifold.faction.special_rules|safe }}</div>
+              <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">{{ manifold.faction.special_rules|parse_rules }}</div>
             {% endif %}
             {% include 'rulebook/talent_section.html' with talents=manifold.tier_1 heading="Tier I" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}
             {% include 'rulebook/talent_section.html' with talents=manifold.tier_2 heading="Tier II" heading_tag="h3" heading_class="text-sm font-bold text-navy-700 uppercase tracking-wide mb-2 mt-4" %}

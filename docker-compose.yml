@@ -18,8 +18,8 @@ services:
     command: gunicorn ageofclaritas.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
-      - ageofclaritas_static:/var/www/static/aoc
-      - ageofclaritas_media:/var/www/media/aoc
+      - /var/www/static/aoc:/var/www/static/aoc
+      - /var/www/media/aoc:/var/www/media/aoc
     restart: always
     networks:
       - ageofclaritas_net
@@ -32,10 +32,6 @@ services:
 volumes:
   ageofclaritas_data:
     name: ageofclaritas_data
-  ageofclaritas_static:
-    name: ageofclaritas_static
-  ageofclaritas_media:
-    name: ageofclaritas_media
 
 networks:
   ageofclaritas_net:

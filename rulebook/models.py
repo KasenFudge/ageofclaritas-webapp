@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Case, IntegerField, When
+from django.urls import NoReverseMatch, reverse
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
@@ -167,7 +168,6 @@ class IndexType(models.TextChoices):
     TALENT = "talent", "Talent"
     KIN = "kin", "Kin"
     ATTRIBUTE = "attribute", "Attribute"
-    MECHANIC = "mechanic", "Game Mechanic"
     GLOSSARY = "glossary", "Glossary Term"
 
 
@@ -197,17 +197,31 @@ class Definition(models.Model):
     index_type = models.CharField(max_length=15, choices=IndexType.choices, default=IndexType.GLOSSARY)
     target_url = models.CharField(max_length=255, blank=True, default="")
 
-    # True = no backing model, this row IS the source of truth (edited directly here).
-    # False = mirrored from Class/Talent/Kin/Attribute/RulePage via signal, read-only in admin.
+    # Mirrored (Class/Talent/Kin/Attribute) rows use source_id for their real
+    # pk; hand-authored Glossary rows leave it null.
     source_id = models.PositiveIntegerField(
         null=True,
         blank=True,
         help_text="PK of the source row when this Definition is synced from another model. Null for glossary terms.",
     )
 
+    # Glossary is the only hand-authored, hover-only index_type now that
+    # Mechanic has been removed -- everything else is mirrored from a real
+    # model and renders as a link via its precomputed target_url.
+    @property
+    def uses_hover_display(self):
+        return self.index_type == IndexType.GLOSSARY
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = f"{slugify(self.index_type)}-{slugify(self.term)}"
+
+        if self.index_type == IndexType.GLOSSARY and not self.target_url:
+            try:
+                self.target_url = f"{reverse('rulebook:glossary')}#{self.slug}"
+            except NoReverseMatch:
+                pass
+
         super().save(*args, **kwargs)
 
     def __str__(self):

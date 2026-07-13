@@ -1,6 +1,7 @@
 {% extends 'layouts/sidebar_layout.html' %}
 
 {% load static %}
+{% load rulebook_filters %}
 
 {% block title_tag %}
   Age of Claritas - {{ kin.name }}
@@ -22,7 +23,7 @@
       </p>
     </div>
 
-    <div class="text-slate-600 leading-relaxed prose prose-slate max-w-none">{{ kin.description|safe }}</div>
+    <div class="text-slate-600 leading-relaxed prose prose-slate max-w-none">{{ kin.description|parse_rules }}</div>
 
     {# === Kin Image Carousel === #}
     {% if kin.kin_images.all %}

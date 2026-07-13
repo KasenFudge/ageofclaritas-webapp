@@ -1,0 +1,35 @@
+{% extends 'layouts/sidebar_layout.html' %}
+
+{% load static %}
+{% load rulebook_filters %}
+
+{% block title_tag %}
+  Age of Claritas - Glossary
+{% endblock title_tag %}
+
+{% block sidebar %}
+  {% include 'rulebook/rulepage_sidebar.html' %}
+{% endblock sidebar %}
+
+{% block content %}
+  <div class="max-w-4xl mx-auto space-y-8 pb-16">
+
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">
+      Glossary
+    </h1>
+
+    <div class="space-y-6">
+      {% for definition in definitions %}
+        <div id="{{ definition.slug }}" class="scroll-mt-24">
+          <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
+          <div class="pl-3 border-l-2 border-indigo-300 text-slate-600 leading-relaxed">
+            {{ definition.description|default:definition.short_description|parse_rules }}
+          </div>
+        </div>
+      {% empty %}
+        <div class="text-center text-slate-500 italic py-6">No glossary terms have been added yet.</div>
+      {% endfor %}
+    </div>
+
+  </div>
+{% endblock content %}

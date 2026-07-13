@@ -1,8 +1,10 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Prefetch
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
 
-from .models import Class, ClassType, Kin, Talent, TalentType
+from .models import Class, ClassType, Definition, IndexType, Kin, RulePage, Talent, TalentType
 
 
 # Create your views here.
@@ -170,3 +172,44 @@ class CharacterCreationView(TemplateView):
 
 class TalentsView(TemplateView):
     template_name = "rulebook/talents.html"
+
+
+def rulepage_list(request):
+    pages = RulePage.objects.all()
+    return render(request, "rulebook/rulepage_list.html", {"pages": pages, "sidebar_pages": pages})
+
+
+def rulepage_detail(request, slug):
+    page = get_object_or_404(RulePage, slug=slug)
+    sidebar_pages = RulePage.objects.all()
+    return render(request, "rulebook/rulepage_detail.html", {"page": page, "sidebar_pages": sidebar_pages})
+
+
+def glossary_list(request):
+    definitions = Definition.objects.filter(index_type=IndexType.GLOSSARY)
+    sidebar_pages = RulePage.objects.all()
+    return render(request, "rulebook/glossary.html", {"definitions": definitions, "sidebar_pages": sidebar_pages})
+
+
+@staff_member_required
+def definition_mentions(request):
+    """
+    Feeds CKEditor5's mention autocomplete (triggered by typing "[" in the
+    admin editor). Restricted to staff since it's an authoring tool, not
+    public-facing.
+
+    Response shape: a JSON array of {"id": ..., "name": ...} objects.
+    "id" is the literal text CKEditor inserts when an item is selected --
+    already wrapped in [[double brackets]] so it's a valid shortcode the
+    moment it's typed, no extra step needed. "name" is what's shown in the
+    dropdown.
+    """
+    query = request.GET.get("query", "").strip()
+
+    definitions = Definition.objects.all()
+    if query:
+        definitions = definitions.filter(term__icontains=query)
+    definitions = definitions.order_by("term")[:10]
+
+    results = [{"id": f"[[{d.slug}]]", "name": d.term} for d in definitions]
+    return JsonResponse(results, safe=False)
