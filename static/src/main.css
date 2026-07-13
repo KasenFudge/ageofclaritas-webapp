@@ -34,3 +34,26 @@
 
   --font-quintessential: "Quintessential", sans-serif;
 }
+
+.bg-photo-fade-top {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  /* Opaque at the top, fully faded by 75% of the way down; the last fourth
+     stays transparent so whatever's behind it (the section's own gradient
+     background) shows through cleanly. */
+  mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+}
+
+.bg-photo-fade-bottom {
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  /* Opaque at the bottom, fading smoothly to fully transparent by the very
+     top of whatever element this is applied to -- size the element itself
+     to control how much of the fade is visible, rather than leaving most
+     of a taller element sitting fully transparent and wasted. */
+  mask-image: linear-gradient(to top, black, transparent);
+  -webkit-mask-image: linear-gradient(to top, black, transparent);
+}

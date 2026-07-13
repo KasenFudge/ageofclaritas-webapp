@@ -1,16 +1,17 @@
 {% comment %}
 Expects:
+  class         - the class/faction that this talent_section is for
   talents       - iterable of items with .slug, .name, .description (falsy/empty skips rendering entirely)
   heading       - heading text to display
-  heading_class - full literal Tailwind classes for the heading element (so Tailwind's
-                  scanner finds them at the include call site, same convention as
-                  events/event_section.html's accent_bar/accent_text/button_classes)
-  heading_tag   - 'h2' or 'h3', defaults to 'h2'
 {% endcomment %}
 {% load rulebook_filters %}
 
 {% if talents %}
-  <{{ heading_tag|default:"h2" }} class="{{ heading_class }}">{{ heading }}</{{ heading_tag|default:"h2" }}>
+  <h2 class="text-xl font-serif font-bold text-navy-700 mb-3 mt-4">{{ heading }}</h2>
+  {# One-off exception: Neuromancy's Tier III requires special text that is inserted here. #}
+  {% if class.slug == "neuromancy" and heading == "Tier III" %}
+    <div class="p-4 my-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed">The player gets independent uses of both the combat and non-combat versions of their Tier III spell.</div>
+  {% endif %}
   <div class="space-y-6">
     {% for talent in talents %}
       <div id="{{ talent.slug }}" class="scroll-mt-24">

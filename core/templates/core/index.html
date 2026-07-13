@@ -9,18 +9,14 @@
 {% block layout %}
 
   {% comment %}
-     No image has been picked yet, so this is a gradient placeholder built
-     from the site's indigo palette. Once we have an image, swap the
-     section's class/style for something like:
-       style="background-image:url('{% static "images/image.jpg" %}');
-              background-size:cover; background-position:center;"
-     and keep the dark overlay div below it for text legibility over a photo.
+     Background photo starts fully opaque at the top and transitions to fully transparent
+     about 3/4 of the way down using mask-image with a linear gradient in the background to perserve coloring better.
   {% endcomment %}
   <section class="relative w-full h-[60vh] min-h-105 flex items-center justify-center overflow-hidden bg-linear-to-br from-slate-950 via-navy-950 to-slate-900">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.25),transparent_60%)]"></div>
+    <div class="pointer-events-none absolute inset-0 bg-photo-fade-top" style="background-image:url('{% static "images/ClaritasBackground.png" %}');"></div>
+    <div class="pointer-events-none absolute inset-0 bg-black/45 bg-photo-fade-top"></div>
     <div class="relative z-10 text-center px-4">
-      <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-navy-300 mb-4">A Live Action Roleplay Experience</p>
-      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold text-white tracking-tight">Age of Claritas</h1>
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-quintessential text-white">Age of Claritas</h1>
       <p class="mt-6 max-w-xl mx-auto text-slate-300 text-base sm:text-lg leading-relaxed">Age of Claritas offers fun and fulfilling adventure experiences. Our storytellers provide unique role-playing events for children and adults in an exciting, immersive, and friendly atmosphere.</p>
       <p class="mt-6 max-w-xl mx-auto text-slate-300 text-base sm:text-lg leading-relaxed">Come enjoy the magic of Claritas!</p>
     </div>
@@ -98,7 +94,7 @@
   <section class="max-w-6xl mx-auto px-4 pb-20">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
-      <a href="{% url 'core:what_is_larp' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
+      <a href="{% url 'core:what_is_larp' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1 active:scale-[0.97]">
         <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help">
             <circle cx="12" cy="12" r="10" />
@@ -110,7 +106,7 @@
         <p class="text-slate-500 text-sm leading-relaxed">New to live action roleplay? Learn what Age of Claritas is all about.</p>
       </a>
 
-      <a href="{% url 'rulebook:character_creation' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
+      <a href="{% url 'rulebook:character_creation' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1 active:scale-[0.97]">
         <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus">
             <path d="M2 21a8 8 0 0 1 13.292-6" />
@@ -123,7 +119,7 @@
         <p class="text-slate-500 text-sm leading-relaxed">Build your Character with our step-by-step guide.</p>
       </a>
 
-      <a href="{% url 'events:index' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1">
+      <a href="{% url 'events:index' %}" class="group rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-8 text-center transition-all hover:shadow-xl hover:-translate-y-1 active:scale-[0.97]">
         <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
             <path d="M8 2v4" />
