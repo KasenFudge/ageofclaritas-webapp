@@ -1,9 +1,14 @@
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import NoReverseMatch, reverse
+from django.utils.html import strip_tags
 from django.utils.text import Truncator
 
 from .models import Attribute, Class, Definition, IndexType, Kin, Talent
+
+# Definition.short_description is a CharField(max_length=300) -- keep every
+# value we write to it safely under that, no matter where it came from.
+SHORT_DESCRIPTION_MAX_LENGTH = 300
 
 
 # ------------------------------------------------------------------------
@@ -18,12 +23,28 @@ def get_safe_url(view_name, **kwargs):
 
 
 def sync_index(index_type, source_id, *, term, description, target_url, short_description=None):
+    if not short_description:
+        # Strip markup before truncating. Truncator.chars(..., html=True) only
+        # counts *visible* text toward its limit and leaves surrounding tags
+        # untouched -- so rich-text markup (a long <a href="...">, nested
+        # <strong>/<em>/<p> tags, etc.) can push the rendered string well past
+        # 295 characters even though only 295 chars of visible text were kept.
+        # Plain text has no such overhead, so a straightforward char-count
+        # truncation is safe here.
+        short_description = Truncator(strip_tags(description)).chars(295)
+
+    # Defensive hard cap: applies to the computed value above as well as any
+    # short_description passed in directly (e.g. Kin.short_description, which
+    # is a free-form TextField with no length limit of its own), so a value
+    # from either path can never overflow the DB column.
+    short_description = short_description[:SHORT_DESCRIPTION_MAX_LENGTH]
+
     Definition.objects.update_or_create(
         index_type=index_type,
         source_id=source_id,
         defaults={
             "term": term,
-            "short_description": short_description or Truncator(description).chars(295, html=True),
+            "short_description": short_description,
             "description": description,
             "target_url": target_url,
         },
