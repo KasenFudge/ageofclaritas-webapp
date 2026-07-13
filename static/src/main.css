@@ -73,7 +73,7 @@
 
 .prose table {
   display: block;
-  width: 100%;
+  width: 100% !important;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
