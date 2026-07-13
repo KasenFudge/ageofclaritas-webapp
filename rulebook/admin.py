@@ -84,6 +84,7 @@ class KinAdmin(admin.ModelAdmin):
 # ==========================================
 @admin.register(RulePage)
 class RulePageAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
     list_display = ("title", "slug")
     search_fields = ["title"]
     prepopulated_fields = {"slug": ("title",)}
