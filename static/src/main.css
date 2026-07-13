@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Quintessential&display=swap");
 @import "tailwindcss";
 
+/* Makes the prose classes that handle tailwind deleting desired css from our CKEditor fields.
+   Assumes @tailwindcss/typography is already an npm dependency; 
+   run `npm install @tailwindcss/typography` first if the build errors on this line. */
+@plugin "@tailwindcss/typography";
+
 /* Tells Tailwind where to look for Django Templates */
 @source "../../templates/**/*.html";
 @source "../../**/templates/**/*.html";
@@ -56,4 +61,17 @@
      of a taller element sitting fully transparent and wasted. */
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
+}
+
+/* Injects custom CSS into tables from our CKEditor Fields (assuming we use .prose, as we always should) 
+   Sets the width to take up the whole view port on desktops and on mobile makes it so that it will 
+   scroll internally instead of the whole screen. */
+@layer components {
+  .prose table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

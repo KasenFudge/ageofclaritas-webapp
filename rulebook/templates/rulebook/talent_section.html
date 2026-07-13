@@ -16,7 +16,7 @@ Expects:
     {% for talent in talents %}
       <div id="{{ talent.slug }}" class="scroll-mt-24">
         <b class="block text-lg font-bold font-serif text-slate-900">{{ talent.name }}</b>
-        <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed">{{ talent.description|parse_rules }}</div>
+        <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed prose prose-slate max-w-none">{{ talent.description|parse_rules }}</div>
       </div>
     {% endfor %}
   </div>
