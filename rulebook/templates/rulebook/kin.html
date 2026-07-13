@@ -16,22 +16,23 @@
       <div class="text-slate-600 space-y-2">
         <p class="text-base sm:text-lg leading-relaxed">A Kin is the ancestry of a character. A character's Kin will decide their appearance and will influence how the character will act.</p>
 
-        <div class="p-4 mt-4 bg-slate-50 border border-slate-200 rounded-lg text-sm text-left">
-          <h5 class="text-navy-700 font-bold mb-2 uppercase tracking-wider text-xs font-serif">Kin Attributes</h5>
+        <div class="p-4 m-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-left">
+          <h5 class="text-navy-700 font-bold mb-2 tracking-wider text-xs font-serif">Kin Attributes</h5>
           <p class="text-slate-600 leading-relaxed">Every Kin has unique Attributes (listed within each Kin's Page). Players may select one to start with and may learn two more by completing Kin Quests during the course of an event.</p>
-          <span class="text-red-600 font-semibold block mt-2">Note: Players cannot start with attributes marked by an asterisk (*).</span>
+          <span class="text-slate-500 font-semibold italic block mt-2">Note: Players cannot start with attributes marked by an asterisk (*).</span>
         </div>
       </div>
     </header>
 
     <div class="space-y-6">
       {% for kin in kin_list %}
-        <article class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300">
+        {# relative: anchors the full-card overlay link below. active:scale gives tap feedback on mobile; ontouchstart="" is the standard trick to make :active fire on iOS Safari. #}
+        <article class="relative bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300 active:scale-[0.97]">
+          <a href="{% url 'rulebook:kin_detail' kin_slug=kin.slug %}" class="absolute inset-0 z-10 rounded-xl" ontouchstart="" aria-label="View {{ kin.name }} details"></a>
           <div class="p-6 sm:p-8 text-center space-y-4">
-            <h2 class="text-2xl font-serif font-bold tracking-wide">
-              <a href="{% url 'rulebook:kin_detail' kin_slug=kin.slug %}" class="text-navy-700 hover:text-navy-900 transition-colors">{{ kin.name }}</a>
-            </h2>
-            <div class="text-slate-600 leading-relaxed max-w-3xl mx-auto prose prose-slate">{{ kin.short_description|safe }}</div>
+            <h2 class="text-2xl font-serif font-bold tracking-wide text-navy-700">{{ kin.name }}</h2>
+            {# [&_a]:relative [&_a]:z-20 lifts any real links inside rich-text description above the full-card overlay so they stay independently clickable. #}
+            <div class="text-slate-600 leading-relaxed max-w-3xl mx-auto prose prose-slate [&_a]:relative [&_a]:z-20">{{ kin.short_description|safe }}</div>
           </div>
         </article>
       {% empty %}

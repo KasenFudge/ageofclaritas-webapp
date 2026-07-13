@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Quintessential&display=swap");
 @import "tailwindcss";
 
 /* Tells Tailwind where to look for Django Templates */
@@ -30,4 +31,6 @@
   --color-navy-800: #222340;
   --color-navy-900: #16172b;
   --color-navy-950: #0c0d17;
+
+  --font-quintessential: "Quintessential", sans-serif;
 }

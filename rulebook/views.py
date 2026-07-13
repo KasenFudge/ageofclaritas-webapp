@@ -170,10 +170,6 @@ class CharacterCreationView(TemplateView):
     template_name = "rulebook/character_creation.html"
 
 
-class TalentsView(TemplateView):
-    template_name = "rulebook/talents.html"
-
-
 def rulepage_list(request):
     pages = RulePage.objects.all()
     return render(request, "rulebook/rulepage_list.html", {"pages": pages, "sidebar_pages": pages})

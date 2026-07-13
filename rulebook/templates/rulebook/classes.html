@@ -14,9 +14,7 @@
     <header class="text-center space-y-4">
       <h1 class="text-3xl sm:text-4xl font-serif">Classes</h1>
       <div class="text-slate-600 space-y-2">
-        <p class="text-base sm:text-lg leading-relaxed">
-          A character's Class determines the <a href="#" class="text-navy-700 hover:text-navy-900 font-semibold underline decoration-navy-300 hover:decoration-navy-500 transition-colors">Skills and Abilities</a> they have access to and influences their playstyle. Click on a Class or Faction to view their Class-specific Talents on a separate page.
-        </p>
+        <p class="text-base sm:text-lg leading-relaxed">A character's Class determines the Skills and Abilities they have access to and influences their playstyle.</p>
         {% if classless_record %}
           <p class="text-sm text-slate-500">
             In addition to those offered by a character's Class, every character also has access to <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-navy-700 hover:text-navy-900 font-semibold underline decoration-navy-300 hover:decoration-navy-500 transition-colors">{{ classless_record.name }} Talents</a>.
@@ -25,14 +23,262 @@
       </div>
     </header>
 
+    {% comment %}
+       Skills and Abilities -- single-item accordion, closed by default. Same
+       Alpine x-show/x-transition pattern as the FAQ accordion on the "What
+       is LARP?" page (only core Alpine is loaded sitewide, so we stick to
+       plain x-show rather than an x-collapse plugin).
+    {% endcomment %}
+    <div id="skills-and-abilities" class="rounded-2xl border border-slate-200 overflow-hidden" x-data="{ open: false }">
+      <button @click="open = !open" type="button" ontouchstart="" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+        <span>Skills and Abilities</span>
+        <svg :class="open ? 'rotate-180' : ''"
+             xmlns="http://www.w3.org/2000/svg"
+             width="16"
+             height="16"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             class="text-slate-400 shrink-0 transition-transform">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+      <div x-show="open" x-transition class="px-5 pb-5 space-y-6 text-sm text-slate-600 leading-relaxed">
+
+        <div class="space-y-3">
+          <p>
+            A Player's Class determines the skills and abilities they have access to in most cases.
+            {% if classless_record %}
+              Every player has access to <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="text-indigo-700 underline decoration-navy-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">{{ classless_record.name }} Talents</a> in addition to those offered by their class.
+            {% endif %}
+          </p>
+          <p>
+            A Skill is a Talent that can be used repeatedly without resting. Instead of
+            purchasing multiple of the same Skill, you can upgrade its rank to increase
+            its usefulness.
+          </p>
+          <p>
+            An Ability is an expendable Talent that refreshes after resting. You can
+            purchase multiple of the same Ability to have multiple uses available before
+            resting. Players call the name of the ability to use it.
+          </p>
+          <p>
+            Refer to the chart below for costs of purchasing a Skill and the order of
+            Ability purchases. An associated in-game achievement is usually a prerequisite
+            for purchasing a Rank 3 Talent.
+          </p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-4">
+
+          {# Costs #}
+          <div class="lg:w-56 shrink-0 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
+            <h5 class="font-serif font-bold text-slate-900 mb-3">Costs:</h5>
+            <dl class="text-sm divide-y divide-slate-300">
+              <div class="flex items-center justify-between py-1.5">
+                <dt class="font-bold text-slate-700">Rank I Skills</dt>
+                <dd class="text-slate-500">
+                  5 XP
+                </dd>
+              </div>
+              <div class="flex items-center justify-between py-1.5">
+                <dt class="font-bold text-slate-700">Rank II Skills</dt>
+                <dd class="text-slate-500">
+                  10 XP
+                </dd>
+              </div>
+              <div class="flex items-center justify-between pt-1.5 pb-4">
+                <dt class="font-bold text-slate-700">Rank III Skills</dt>
+                <dd class="text-slate-500">
+                  15 XP
+                </dd>
+              </div>
+              <div class="flex items-center justify-between pb-1.5 pt-4">
+                <dt class="font-bold text-slate-700">Rank I Abilities</dt>
+                <dd class="text-slate-500">
+                  5 XP
+                </dd>
+              </div>
+              <div class="flex items-center justify-between py-1.5">
+                <dt class="font-bold text-slate-700">Rank II Abilities</dt>
+                <dd class="text-slate-500">
+                  5 XP
+                </dd>
+              </div>
+              <div class="flex items-center justify-between py-1.5">
+                <dt class="font-bold text-slate-700">Rank III Abilities</dt>
+                <dd class="text-slate-500">
+                  5 XP
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          {# Orders #}
+          <div class="flex-1 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5 space-y-6">
+
+            {# Purchase Order Key #}
+            <div class="flex flex-col items-center gap-3">
+              <h5 class="font-serif font-bold text-slate-900">Purchase Order Key:</h5>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-slate-200">
+                  <span class="w-4 h-4 rounded bg-slate-200 border border-slate-300 shrink-0"></span>
+                  <span class="font-bold text-slate-600">Already Owned</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-slate-200">
+                  <span class="w-4 h-4 rounded bg-indigo-200 shrink-0"></span>
+                  <span class="font-bold text-slate-600">Purchase First</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-slate-200">
+                  <span class="w-4 h-4 rounded bg-indigo-400 shrink-0"></span>
+                  <span class="font-bold text-slate-600">Purchase Second</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-slate-200">
+                  <span class="w-4 h-4 rounded bg-indigo-700 shrink-0"></span>
+                  <span class="font-bold text-slate-600">Purchase Third</span>
+                </div>
+              </div>
+            </div>
+
+            {# Skill Purchase Order #}
+            <div class="border-t border-slate-300 pt-6">
+              <h5 class="font-serif font-bold text-slate-900 text-center mb-4">Skill Purchase Order:</h5>
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <div class="w-12 h-12 flex items-center justify-center rounded-md font-bold text-sm bg-indigo-200 text-navy-900">R1</div>
+
+                {# Arrow Right #}
+                <div class="flex flex-col items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5 text-slate-900 shrink-0">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+
+                <div class="w-13 h-13 flex items-center justify-center rounded-md font-bold text-sm bg-indigo-400 text-white">R2</div>
+
+                {# Arrow Right #}
+                <div class="flex flex-col items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5 text-slate-900 shrink-0">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+
+                <div class="w-14 h-14 flex items-center justify-center rounded-md font-bold text-sm bg-indigo-700 text-white">R3</div>
+              </div>
+            </div>
+
+            {# Ability Purchase Order #}
+            <div class="border-t border-slate-300 pt-6">
+              <h5 class="font-serif font-bold text-slate-900 text-center mb-4">Ability Purchase Order:</h5>
+              <div class="flex flex-wrap items-center justify-center gap-3">
+
+                {# Pyramid 1: first R1 ever purchased #}
+                <div class="flex flex-col items-center gap-1">
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 invisible"></div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 invisible"></div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-200 text-navy-900">R1</div>
+                  </div>
+                </div>
+
+                {# Arrow Right #}
+                <div class="flex flex-col items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5 text-slate-900 shrink-0">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+                {# Pyramid 2: own 1 R1, can buy another R1 or upgrade to R2 #}
+                <div class="flex flex-col items-center gap-1">
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 invisible"></div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-400 text-white">R2</div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R1</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-200 text-navy-900">R1</div>
+                  </div>
+                </div>
+
+                {# Arrow Right #}
+                <div class="flex flex-col items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5 text-slate-900 shrink-0">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+
+                {# Pyramid 3: own 2 R1 + 1 R2, can buy 3rd R1 or 2nd R2 or first R3 #}
+                <div class="flex flex-col items-center gap-1">
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-700 text-white">R3</div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R2</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-400 text-white">R2</div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R1</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R1</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-200 text-navy-900">R1</div>
+                  </div>
+                </div>
+
+                {# Arrow Right #}
+                <div class="hidden md:flex flex-col items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5 text-slate-900 shrink-0">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </div>
+
+                {# Pyramid 4: fully stacked, next purchase at every tier available #}
+                <div class="hidden md:flex flex-col items-center gap-1">
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R3</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-700 text-white">R3</div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R2</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R2</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-400 text-white">R2</div>
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R1</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R1</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-slate-200 border border-slate-300 text-slate-400">R1</div>
+                    <div class="w-10 h-10 flex items-center justify-center rounded-md font-bold text-xs bg-indigo-200 text-navy-900">R1</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <div class="space-y-6">
       {% for guild in guilds %}
-        <article class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300">
+        {# relative: anchors the full-card overlay link below. active:scale gives tap feedback on mobile; ontouchstart="" is the standard trick to make :active fire on iOS Safari. #}
+        <article class="relative bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:shadow-md hover:border-slate-300 active:scale-[0.97]">
+          <a href="{% url 'rulebook:class_detail' class_slug=guild.slug %}" class="absolute inset-0 z-10 rounded-xl" ontouchstart="" aria-label="View {{ guild.name }} Talents"></a>
           <div class="p-6 sm:p-8 text-center space-y-4">
-            <h2 class="text-2xl font-serif font-bold tracking-wide">
-              <a href="{% url 'rulebook:class_detail' class_slug=guild.slug %}" class="text-navy-700 hover:text-navy-900 transition-colors">{{ guild.name }}</a>
-            </h2>
-            <div class="text-slate-600 leading-relaxed max-w-3xl mx-auto prose prose-slate">{{ guild.description|safe }}</div>
+            <h2 class="text-2xl font-serif font-bold tracking-wide text-navy-700">{{ guild.name }}</h2>
+            {# [&_a]:relative [&_a]:z-20 lifts any real links inside rich-text description above the full-card overlay so they stay independently clickable. #}
+            <div class="text-slate-600 leading-relaxed max-w-3xl mx-auto prose prose-slate [&_a]:relative [&_a]:z-20">{{ guild.description|safe }}</div>
           </div>
         </article>
       {% empty %}

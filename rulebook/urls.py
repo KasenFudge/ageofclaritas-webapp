@@ -9,7 +9,6 @@ urlpatterns = [
     path("kin/", views.KinView.as_view(), name="kin"),
     path("kin/<str:kin_slug>/", views.KinDetailView.as_view(), name="kin_detail"),
     path("character-creation/", views.CharacterCreationView.as_view(), name="character_creation"),
-    path("talents/", views.TalentsView.as_view(), name="talents"),
     path("mechanics/", views.rulepage_list, name="rulepage_list"),
     path("mechanics/<slug:slug>/", views.rulepage_detail, name="rulepage_detail"),
     path("glossary/", views.glossary_list, name="glossary"),

@@ -22,34 +22,24 @@
     </header>
 
     <section class="space-y-4">
-      <h2 class="text-2xl font-serif font-bold text-navy-700 text-center">How to Use the Character Creation Guide</h2>
+      <h2 class="text-2xl font-serif font-bold text--700 text-center">How to Use the Character Creation Guide</h2>
       <p class="text-slate-600 text-center">For the best experience, utilize this guide on a tablet or computer.</p>
       <ol class="list-decimal list-outside pl-6 space-y-2 text-slate-700 max-w-2xl mx-auto">
         <li>
           Make a copy of the
-          <a href="https://docs.google.com/document/d/1E5zoR2A1v8prJreC5J-ATIp97lMksiOl4dGM-1642dU/edit?usp=sharing" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">Online Character Sheet Template</a>
+          <a href="https://docs.google.com/document/d/1E5zoR2A1v8prJreC5J-ATIp97lMksiOl4dGM-1642dU/edit?usp=sharing" class="text-indigo-700 underline decoration-indigo-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">Online Character Sheet Template</a>
           or
-          <a href="{% static 'docs//AoC Character Sheet Template.docx' %}" download class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">Download a Word Document</a>
+          <a href="{% static 'docs//AoC Character Sheet Template.docx' %}" download class="text-indigo-700 underline decoration-indigo-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">Download a Word Document</a>
           version.
         </li>
         <li>
           Keep this page open, work alongside it, and fill in each field unless
           prompted not to.
         </li>
-        <li>
-          Use the popup links on the page for quick access to relevant information for
-          each field.
-          <ul class="list-disc list-outside pl-6 mt-1 space-y-1 text-slate-600 text-sm">
-            <li>
-              If you would rather not view this information in a popup link, you can
-              navigate through the "Rulebook" menu and select the desired page.
-            </li>
-          </ul>
-        </li>
         <li>Complete all fields.</li>
         <li>
           Once finished,
-          <a href="mailto:info@ageofclaritas.com" title="Character Sheet Email Link" data-popup-processed="true" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">submit it</a>
+          <a href="mailto:info@ageofclaritas.com" title="Character Sheet Email Link" data-popup-processed="true" class="text-indigo-700 underline decoration-indigo-300 hover:text-indigo-900 hover:decoration-indigo-500 transition-colors">submit it</a>
           via the email link and print a copy to bring with you to the event.
         </li>
         <li>
@@ -96,15 +86,15 @@
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <h3 class="font-bold text-navy-700"><a href="#" class="hover:text-navy-900 transition-colors">HP:</a></h3>
+              <h3 class="font-bold text-navy-700">HP:</h3>
               <p class="text-slate-600 text-sm mt-1">Start with 3 HP. More HP may be acquired.</p>
             </div>
             <div>
-              <h3 class="font-bold text-navy-700"><a href="#" class="hover:text-navy-900 transition-colors">XP:</a></h3>
+              <h3 class="font-bold text-navy-700">XP:</h3>
               <p class="text-slate-600 text-sm mt-1">Buy talents with XP.</p>
             </div>
             <div>
-              <h3 class="font-bold text-navy-700"><a href="#" class="hover:text-navy-900 transition-colors">Copper:</a></h3>
+              <h3 class="font-bold text-navy-700">Copper:</h3>
               <p class="text-slate-600 text-sm mt-1">100 copper.</p>
             </div>
           </div>
@@ -112,9 +102,7 @@
 
         {# Kin #}
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
-          <h3 class="font-bold text-navy-700">
-            <a href="{% url 'rulebook:kin' %}" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Kin:</a>
-          </h3>
+          <h3 class="font-bold text-navy-700">Kin:</h3>
           <p class="text-slate-600 text-sm mt-1">Your Kin primarily determines how your character will look and behave.</p>
         </div>
 
@@ -122,9 +110,7 @@
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <h3 class="font-bold text-navy-700">
-                <a href="{% url 'rulebook:classes' %}" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Class:</a>
-              </h3>
+              <h3 class="font-bold text-navy-700">Class:</h3>
               <p class="text-slate-600 text-sm mt-1">Select a base Class.</p>
             </div>
             <div class="flex items-end">
@@ -135,9 +121,7 @@
 
         {# Modifier #}
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
-          <h3 class="font-bold text-navy-700">
-            <a href="{% url 'rulebook:talents' %}#modifiers" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Modifier:</a>
-          </h3>
+          <h3 class="font-bold text-navy-700">Modifier:</h3>
           <p class="text-slate-600 text-sm mt-1">Players typically do not start with a Modifier.</p>
         </div>
 
@@ -145,9 +129,7 @@
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <h3 class="font-bold text-navy-700">
-                <a href="{% url 'rulebook:talents' %}#backgrounds" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Backgrounds:</a>
-              </h3>
+              <h3 class="font-bold text-navy-700">Backgrounds:</h3>
               <p class="text-slate-600 text-sm mt-1">Choose two backgrounds for your character.</p>
             </div>
             <div class="flex items-end">
@@ -158,9 +140,7 @@
 
         {# Attributes #}
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
-          <h3 class="font-bold text-navy-700 mb-3">
-            <a href="{% url 'rulebook:kin' %}" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Attributes:</a>
-          </h3>
+          <h3 class="font-bold text-navy-700 mb-3">Attributes:</h3>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <p class="text-slate-600 text-sm">This will be decided by your Kin.</p>
             <p class="text-slate-600 text-sm">Choose one you can start with.</p>
@@ -170,9 +150,7 @@
 
         {# Techniques #}
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
-          <h3 class="font-bold text-navy-700">
-            <a href="{% url 'rulebook:talents' %}#techniques" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Techniques:</a>
-          </h3>
+          <h3 class="font-bold text-navy-700">Techniques:</h3>
           <p class="text-slate-600 text-sm mt-1">
             Techniques are earned in game. Most classes start with none, but
             Warriors start with a
@@ -184,26 +162,15 @@
         <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="space-y-2">
-              <h3 class="font-bold text-navy-700">
-                <a href="{% url 'rulebook:talents' %}#skills-and-abilities" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Skills:</a>
-              </h3>
-              <p class="text-slate-600 text-sm">
-                Choose 1 free
-                <a href="{% url 'rulebook:class_detail' 'classless' %}#weapon-dexterity" onclick="openMiniWindow(event, this.href)" class="text-navy-700 underline hover:text-navy-900 transition-colors">Weapon Dexterity</a>.
-              </p>
+              <h3 class="font-bold text-navy-700">Skills:</h3>
+              <p class="text-slate-600 text-sm">Choose 1 free Weapon Dexterity.</p>
               <p class="text-slate-600 text-sm">With 15 XP, select up to 3 R1 Skills and Abilities.</p>
               <div class="border-b border-slate-300 h-6 mt-4"></div>
               <div class="border-b border-slate-300 h-6"></div>
             </div>
             <div class="space-y-2">
-              <h3 class="font-bold text-navy-700">
-                <a href="{% url 'rulebook:talents' %}#skills-and-abilities" onclick="openMiniWindow(event, this.href)" class="hover:text-navy-900 transition-colors">Abilities:</a>
-              </h3>
-              <p class="text-slate-600 text-sm">
-                Select
-                <a href="{% url 'rulebook:class_detail' 'wizard' %}" onclick="openMiniWindow(event, this.href)" class="text-navy-700 underline hover:text-navy-900 transition-colors">Magic Spells</a>
-                if you are a Wizard.
-              </p>
+              <h3 class="font-bold text-navy-700">Abilities:</h3>
+              <p class="text-slate-600 text-sm">Select Magic Spells if you are a Wizard.</p>
               <p class="text-slate-600 text-sm">Wizards get 1 R1 spell in 1 School of Magic.</p>
               <div class="border-b border-slate-300 h-6 mt-4"></div>
               <div class="border-b border-slate-300 h-6"></div>

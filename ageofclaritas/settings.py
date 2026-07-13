@@ -247,7 +247,7 @@ CKEDITOR_5_CONFIGS = {
             "feeds": [
                 {
                     "marker": "[",
-                    "feed": "/definitions/mentions/",
+                    "feed": "/rulebook/definitions/mentions/",
                     "minimumCharacters": 1,
                 },
             ]

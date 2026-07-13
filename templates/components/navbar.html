@@ -39,8 +39,6 @@
               <li><a href="{% url 'rulebook:classes' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Classes</a></li>
               <li><a href="{% url 'rulebook:kin' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Kin</a></li>
               <li><a href="{% url 'rulebook:rulepage_list' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Game Mechanics</a></li>
-              <li class="border-t border-gray-700 my-1"></li>
-              <li><a href="{% url 'rulebook:talents' %}" class="block px-4 py-2 hover:bg-gray-700 hover:text-white active:bg-gray-600 active:text-white transition-colors">Talents</a></li>
             </ul>
           </li>
 
@@ -101,7 +99,10 @@
       </div>
 
       {# Mobile Navbar Toggle Button #}
-      <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="lg:hidden flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition-colors duration-200" aria-label="Toggle navigation">
+      <button @click="mobileMenuOpen = !mobileMenuOpen"
+              type="button"
+              class="lg:hidden flex items-center justify-center p-2 rounded-md text-gray-400 border border-gray-400 hover:text-white hover:bg-gray-800 transition-colors duration-200"
+              aria-label="Toggle navigation">
 
         {# Hamburger Icon (Visible when menu is closed) #}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 transition-opacity duration-200" :class="mobileMenuOpen ? 'hidden' : 'block'">
@@ -138,6 +139,7 @@
         <a href="{% url 'rulebook:character_creation' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Character Creation</a>
         <a href="{% url 'rulebook:classes' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Classes</a>
         <a href="{% url 'rulebook:kin' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Kin</a>
+        <a href="{% url 'rulebook:rulepage_list' %}" class="block px-3 py-2 rounded-md active:bg-gray-700 active:text-white transition-colors">Game Mechanics</a>
       </li>
 
       {# Mobile Events Link #}
