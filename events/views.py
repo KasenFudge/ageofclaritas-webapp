@@ -108,6 +108,12 @@ def event_registration_view(request, slug, user_id=None):
             weapon_rental = form.cleaned_data.get("weapon_rental", False)
             payment_method = form.cleaned_data.get("payment_method", "in_person")
 
+            # Self-reported "not my first event" - mark them as veteran for pricing so a first time discount
+            # is not applied to their account and we don't ask them in the future.
+            if form.cleaned_data.get("is_first_event") is False and not target_user.is_veteran:
+                target_user.is_veteran = True
+                target_user.save(update_fields=["is_veteran"])
+
             # Compute transaction details for the target attendee
             registration_time = timezone.now()
             quote = quote_price(

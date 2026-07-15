@@ -101,7 +101,8 @@ def _build_dashboard_context(user):
     """Shared by the dashboard GET view and the settings-update view."""
     now = timezone.now()
 
-    child_ids = list(user.child_accounts.values_list("id", flat=True))
+    children = list(user.child_accounts.all())
+    child_ids = [child.id for child in children]
     household_ids = [user.id] + child_ids
 
     # 1. Upcoming Schedule Logic
@@ -140,6 +141,21 @@ def _build_dashboard_context(user):
     if active_waiver and has_signed_current_waiver:
         past_waivers = past_waivers.exclude(waiver=active_waiver)
 
+    # Household waiver status: lets a parent see (and act on) which of their
+    # children still need the active waiver signed, right alongside their own.
+    child_waiver_status = []
+    if active_waiver and children:
+        signed_child_ids = set(
+            WaiverSignature.objects.filter(waiver=active_waiver, user_id__in=child_ids).values_list(
+                "user_id", flat=True
+            )
+        )
+        child_waiver_status = [{"user": child, "has_signed": child.id in signed_child_ids} for child in children]
+
+    household_waiver_pending = bool(active_waiver) and (
+        not has_signed_current_waiver or any(not status["has_signed"] for status in child_waiver_status)
+    )
+
     active_surveys = Survey.objects.filter(is_active=True).exclude(submissions__user=user).distinct()
 
     return {
@@ -152,6 +168,8 @@ def _build_dashboard_context(user):
         "has_signed_current_waiver": has_signed_current_waiver,
         "current_signature": current_signature,
         "past_waivers": past_waivers,
+        "child_waiver_status": child_waiver_status,
+        "household_waiver_pending": household_waiver_pending,
         "active_surveys": active_surveys,
     }
 
@@ -187,8 +205,20 @@ def update_account_settings_view(request):
 @require_POST
 def sign_waiver_view(request):
     waiver = get_object_or_404(Waiver, pk=request.POST.get("waiver_id"), is_active=True)
+
+    # Finds the user's account and any of their child accounts.
+    user_id = request.POST.get("user_id")
+    if user_id and str(user_id) != str(request.user.id):
+        target_user = get_object_or_404(request.user.child_accounts.all(), id=user_id)
+    else:
+        target_user = request.user
+
     # get_or_create rather than create: guards against a double-submit
     # (e.g. double-click) tripping the unique_together constraint.
-    WaiverSignature.objects.get_or_create(user=request.user, waiver=waiver)
-    messages.success(request, "Thank you for signing the waiver.")
+    WaiverSignature.objects.get_or_create(user=target_user, waiver=waiver)
+
+    if target_user == request.user:
+        messages.success(request, "Thank you for signing the waiver.")
+    else:
+        messages.success(request, f"Thank you for signing the waiver on behalf of {target_user}.")
     return redirect("accounts:dashboard")

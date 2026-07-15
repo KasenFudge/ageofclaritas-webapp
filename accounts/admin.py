@@ -15,6 +15,11 @@ def make_veteran(modeladmin, request, queryset):
     queryset.update(is_veteran=True)
 
 
+@admin.action(description="Remove Veteran status from selected players")
+def remove_veteran(modeladmin, request, queryset):
+    queryset.update(is_veteran=False)
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     # Display fields in the grid layout
@@ -23,8 +28,9 @@ class CustomUserAdmin(UserAdmin):
     # Enable filtering by student status and core flags on the right sidebar
     list_filter = ("is_veteran", "is_student", "is_staff", "is_active")
 
-    # Add the make veteran action to the dropdown on the user list.
-    actions = [make_veteran]
+    # Add the make/remove veteran actions to the dropdown on the user list.
+    # A single row can be selected to fix one player, not just bulk operations.
+    actions = [make_veteran, remove_veteran]
 
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("username",)

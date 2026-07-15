@@ -30,7 +30,7 @@
       </button>
 
       <button @click="open('waiver')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
-        {% if active_waiver and not has_signed_current_waiver %}
+        {% if household_waiver_pending %}
           <span class="absolute top-4 right-4 flex h-3 w-3">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span class="relative inline-flex h-3 w-3 rounded-full bg-amber-500"></span>
@@ -45,10 +45,10 @@
         </div>
         <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Waiver</h3>
         <p class="text-slate-500 text-sm">
-          {% if has_signed_current_waiver %}
-            You're all signed up.
-          {% else %}
+          {% if household_waiver_pending %}
             Review and sign the current waiver.
+          {% else %}
+            You're all signed up.
           {% endif %}
         </p>
       </button>
@@ -122,7 +122,7 @@
     {# --- Account Settings --- #}
     <div x-show="activeModal === 'settings'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
     <div x-show="activeModal === 'settings'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+      <div @click.stop class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-serif font-bold text-slate-900">Account Settings</h2>
           <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
@@ -150,7 +150,7 @@
     {# --- Waivers --- #}
     <div x-show="activeModal === 'waiver'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
     <div x-show="activeModal === 'waiver'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+      <div @click.stop class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-serif font-bold text-slate-900">{{ active_waiver.title|default:"Waiver" }}</h2>
           <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
@@ -183,6 +183,43 @@
               <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm shadow-sm transition-colors">Sign Waiver</button>
             </form>
           {% endif %}
+
+          {% if child_waiver_status %}
+            <div class="mt-6 pt-6 border-t border-slate-100">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Household</h3>
+              <div class="space-y-3">
+                {% for child in child_waiver_status %}
+                  <div class="rounded-2xl border border-sky-200 bg-sky-50/40 p-4">
+                    <div class="flex items-center justify-between gap-3 mb-1">
+                      <span class="inline-block rounded-full bg-sky-100 text-sky-700 px-2 py-0.5 text-[10px] font-bold uppercase">{{ child.user.get_full_name|default:child.user.username }}</span>
+                      {% if child.has_signed %}
+                        <span class="inline-flex items-center gap-1 text-emerald-700 text-xs font-bold shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                            <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                            <path d="m9 11 3 3L22 4" />
+                          </svg>
+                          Signed
+                        </span>
+                      {% endif %}
+                    </div>
+
+                    {% if not child.has_signed %}
+                      <form method="post" action="{% url 'accounts:sign_waiver' %}" class="mt-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="waiver_id" value="{{ active_waiver.id }}" />
+                        <input type="hidden" name="user_id" value="{{ child.user.id }}" />
+                        <label class="flex items-start gap-2 text-sm text-slate-600 mb-3 cursor-pointer">
+                          <input type="checkbox" required class="mt-0.5 h-4 w-4 accent-navy-600 shrink-0" />
+                          I have read and agree to the terms above on behalf of {{ child.user.get_full_name|default:child.user.username }}.
+                        </label>
+                        <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-2.5 text-sm shadow-sm transition-colors">Sign for {{ child.user.get_full_name|default:child.user.username }}</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
         {% else %}
           <p class="text-slate-500 text-sm">There is no waiver currently required.</p>
         {% endif %}
@@ -206,7 +243,7 @@
     {# --- Upcoming Schedule --- #}
     <div x-show="activeModal === 'events'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
     <div x-show="activeModal === 'events'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+      <div @click.stop class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-serif font-bold text-slate-900">Upcoming Schedule</h2>
           <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
@@ -377,7 +414,7 @@
     {# --- Surveys --- #}
     <div x-show="activeModal === 'surveys'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
     <div x-show="activeModal === 'surveys'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div @click.stop class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+      <div @click.stop class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-xl font-serif font-bold text-slate-900">Surveys</h2>
           <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
