@@ -47,7 +47,7 @@ def checkout_page(request):
     # Fallback for if there is no registrations that need paid.
     if not outstanding_registrations.exists():
         # If they get here with nothing to pay, send them to show there is no outstanding balance.
-        return redirect("accounts:outstanding_balance")
+        return redirect("accounts:dashboard")
 
     # Sum up the exact outstanding cents from the unpaid registrations
     transaction_amount_cents = outstanding_registrations.aggregate(total=Sum("final_price_cents"))["total"] or 0
@@ -184,7 +184,7 @@ def payment_success_page(request):
 
     # Check if they have the active authorization token in their browser session from the checkout page.
     if "payment_intent_authorized" not in request.session:
-        return redirect("accounts:outstanding_balance")
+        return redirect("accounts:dashboard")
 
     # POP the token out of the session (If we decide to use it later)
     authorized_intent_id = request.session.pop("payment_intent_authorized")  # noqa: F841
