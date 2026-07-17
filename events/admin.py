@@ -1,7 +1,12 @@
 from django import forms
 from django.contrib import admin
+from django.db import models
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from .models import Event, EventMedia, EventPriceTier, EventRegistration
+
+# Centralized CKEditor 5 mapping for TextFields
+CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
 
 # ==========================================
 # CUSTOM FORMS FOR GATE PAYMENTS
@@ -184,6 +189,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
     prepopulated_fields = {"slug": ("title", "event_type")}
     fieldsets = (
         (

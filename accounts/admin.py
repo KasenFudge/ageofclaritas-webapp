@@ -23,7 +23,7 @@ def remove_veteran(modeladmin, request, queryset):
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     # Display fields in the grid layout
-    list_display = ("username", "email", "is_active", "is_student", "is_veteran", "is_staff")
+    list_display = ("username", "full_name", "email", "is_active", "is_student", "is_veteran", "is_staff")
 
     # Enable filtering by student status and core flags on the right sidebar
     list_filter = ("is_veteran", "is_student", "is_staff", "is_active")
@@ -63,6 +63,11 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+    # Show first + last name together in the list grid; sortable by last name
+    @admin.display(description="Full Name", ordering="last_name")
+    def full_name(self, obj):
+        return obj.get_full_name() or "—"
 
     # Helper method to calculate age cleanly inside the admin grid
     @admin.display(description="Age")

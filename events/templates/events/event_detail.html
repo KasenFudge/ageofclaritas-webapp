@@ -60,9 +60,7 @@
 
         <div class="my-8 h-px w-full bg-slate-200/80"></div>
 
-        <div class="space-y-4 text-base leading-8 text-slate-700 sm:text-lg">
-          <p>{{ event.description }}</p>
-        </div>
+        <div class="space-y-4 text-base leading-8 text-slate-700 sm:text-lg">{{ event.description|safe }}</div>
       </div>
 
       <div class="border-t border-slate-200 bg-slate-50 px-6 py-6 sm:px-8 lg:px-10">
