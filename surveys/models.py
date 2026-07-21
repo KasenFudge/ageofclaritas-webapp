@@ -59,7 +59,7 @@ class Survey(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.title and self.event:
-            self.title = f"{self.survey_type} Survey for {self.event}"
+            self.title = f"{self.get_survey_type_display()} Survey for {self.event}"
         if not self.due_date:
             self.due_date = self._default_due_date()
         super().save(*args, **kwargs)
