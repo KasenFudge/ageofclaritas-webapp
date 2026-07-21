@@ -29,7 +29,9 @@ class Survey(models.Model):
         default=SurveyType.FEEDBACK,
     )
     title = models.CharField(
-        max_length=80, help_text='If linked to an event, defaults to "{Event Type} Post Event Survey: {Event Title}".'
+        max_length=80,
+        blank=True,
+        help_text='If linked to an event, defaults to "{Event Type} Post Event Survey: {Event Title}".',
     )
     description = models.CharField(max_length=500, blank=True, default="")
     is_active = models.BooleanField(default=True)
