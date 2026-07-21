@@ -31,7 +31,7 @@ class Survey(models.Model):
     title = models.CharField(
         max_length=80,
         blank=True,
-        help_text='If linked to an event, defaults to "{Event Type} Post Event Survey: {Event Title}".',
+        help_text='If linked to an event, defaults to "{Survey Type} Survey for {Event Title}".',
     )
     description = models.CharField(max_length=500, blank=True, default="")
     is_active = models.BooleanField(default=True)
@@ -59,7 +59,7 @@ class Survey(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.title and self.event:
-            self.title = f"Survey: {self.event}"
+            self.title = f"{self.survey_type} Survey for {self.event}"
         if not self.due_date:
             self.due_date = self._default_due_date()
         super().save(*args, **kwargs)
