@@ -428,8 +428,7 @@
         {% if active_surveys %}
           <div class="space-y-3">
             {% for survey in active_surveys %}
-              {# TODO: swap href="#" for the real survey-taking URL once the surveys app has one, e.g. {% url 'surveys:respond' survey.pk %} #}
-              <a href="#" class="block rounded-2xl border border-slate-200 p-4 hover:border-navy-300 hover:bg-navy-50/40 transition-colors">
+              <a href="{% url 'surveys:respond' survey.pk %}" class="block rounded-2xl border border-slate-200 p-4 hover:border-navy-300 hover:bg-navy-50/40 transition-colors">
                 <div class="flex items-center justify-between gap-3 mb-1">
                   <p class="font-bold text-slate-900">{{ survey.title }}</p>
                   <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[10px] font-bold uppercase">{{ survey.get_survey_type_display }}</span>

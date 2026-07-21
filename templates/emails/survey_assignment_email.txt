@@ -1,0 +1,7 @@
+Hi {{ user.username }},
+
+You have a new survey to complete: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.
+
+{{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}
+
+Thank you for your time!

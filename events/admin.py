@@ -208,7 +208,7 @@ class EventAdmin(admin.ModelAdmin):
         (
             "Event Date/Time",
             {
-                "fields": ["start_time", "end_time", "downtime_due"],
+                "fields": ["start_time", "end_time"],
             },
         ),
         (

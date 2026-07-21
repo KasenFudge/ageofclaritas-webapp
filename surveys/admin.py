@@ -1,6 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
-from .models import Answer, Choice, Question, Response, Survey, SurveyQuestion
+from .models import Answer, Choice, Question, Response, Survey, SurveyAssignment, SurveyQuestion
+from .services import sync_survey_assignments
 
 # ==========================================
 # INLINES
@@ -35,6 +36,14 @@ class SurveyQuestionInline(admin.TabularInline):
             if hasattr(w, "can_view_related"):
                 w.can_view_related = True
         return formfield
+
+
+class SurveyAssignmentInline(admin.TabularInline):
+    model = SurveyAssignment
+    extra = 0
+    fields = ["user", "assigned_at"]
+    readonly_fields = ["assigned_at"]
+    autocomplete_fields = ["user"]
 
 
 class AnswerInline(admin.StackedInline):
@@ -75,11 +84,17 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(Survey)
 class SurveyAdmin(admin.ModelAdmin):
     # Added string reference safety checks for linked events
-    list_display = ["title", "survey_type", "event", "is_active"]
+    list_display = ["title", "survey_type", "event", "due_date", "is_active"]
     list_filter = ["survey_type", "is_active", "event"]
     search_fields = ["title", "event__title"]
     readonly_fields = ["created_at"]
-    inlines = [SurveyQuestionInline]
+    inlines = [SurveyQuestionInline, SurveyAssignmentInline]
+    actions = ["sync_assignments"]
+
+    @admin.action(description="Sync assignments from current check-ins")
+    def sync_assignments(self, request, queryset):
+        total = sum(sync_survey_assignments(survey) for survey in queryset)
+        self.message_user(request, f"Created {total} new assignment(s).", level=messages.SUCCESS)
 
 
 @admin.register(Response)

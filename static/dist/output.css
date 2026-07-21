@@ -58,6 +58,7 @@
     --color-indigo-300: oklch(78.5% 0.115 274.713);
     --color-indigo-400: oklch(67.3% 0.182 276.935);
     --color-indigo-500: oklch(58.5% 0.233 277.117);
+    --color-indigo-600: oklch(51.1% 0.262 276.966);
     --color-indigo-700: oklch(45.7% 0.24 277.023);
     --color-indigo-900: oklch(35.9% 0.144 278.697);
     --color-rose-600: oklch(58.6% 0.253 17.585);
@@ -1785,6 +1786,9 @@
   .bg-indigo-400 {
     background-color: var(--color-indigo-400);
   }
+  .bg-indigo-600 {
+    background-color: var(--color-indigo-600);
+  }
   .bg-indigo-700 {
     background-color: var(--color-indigo-700);
   }
@@ -2756,6 +2760,13 @@
       }
     }
   }
+  .hover\:bg-indigo-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-indigo-700);
+      }
+    }
+  }
   .hover\:bg-navy-50\/40 {
     &:hover {
       @media (hover: hover) {
@@ -3519,21 +3530,6 @@
   background-repeat: no-repeat;
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
-}
-.prose table {
-  display: block;
-  width: 100% !important;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.prose table > tbody, .prose table > thead, .prose table tr, .prose table td, .prose table th {
-  display: block;
-  width: 100%;
-}
-.prose figure.table {
-  width: 100% !important;
-  max-width: 100%;
 }
 @property --tw-translate-x {
   syntax: "*";

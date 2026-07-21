@@ -1,0 +1,6 @@
+<p>Hi {{ user.username }},</p>
+<p>You have a new survey to complete: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.</p>
+<p>
+  <a href="{{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}">Complete the Survey</a>
+</p>
+<p>Thank you for your time!</p>

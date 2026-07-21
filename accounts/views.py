@@ -156,7 +156,9 @@ def _build_dashboard_context(user):
         not has_signed_current_waiver or any(not status["has_signed"] for status in child_waiver_status)
     )
 
-    active_surveys = Survey.objects.filter(is_active=True).exclude(submissions__user=user).distinct()
+    active_surveys = (
+        Survey.objects.filter(is_active=True, assignments__user=user).exclude(submissions__user=user).distinct()
+    )
 
     return {
         "personal_registrations": personal_registrations,
