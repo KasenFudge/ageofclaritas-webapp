@@ -11,6 +11,7 @@ class SurveyType(models.TextChoices):
     FEEDBACK = "feedback", "Feedback"
     DOWNTIME = "downtime", "Downtime"
     NEW_PLAYER = "new_player", "New Player"
+    LUDUS = "ludus", "Ludus"
     OTHER = "other", "Other"
 
 
@@ -70,6 +71,9 @@ class Survey(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["survey_type", "event"], name="uq_one_survey_type_per_event")]
 
 
 class QuestionType(models.TextChoices):

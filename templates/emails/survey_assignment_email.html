@@ -1,6 +1,4 @@
-<p>Hi {{ user.username }},</p>
-<p>You have a new survey to complete: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.</p>
-<p>
-  <a href="{{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}">Complete the Survey</a>
-</p>
-<p>Thank you for your time!</p>
+<p>Dear {{ user.first_name|default:user.username }},</p>
+<p>We have put together a brief survey for you: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.</p>
+<p>Please fill out <a href="{{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}">this survey</a></p>
+<p>Thanks,<br>Claritas Staff</p>

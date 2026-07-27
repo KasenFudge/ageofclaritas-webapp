@@ -1,0 +1,11 @@
+Dear {{ user.first_name|default:user.username }},
+
+We want to thank you for joining us for another weekend of adventure, we hope you had a great time!
+
+{% if new_player_line %}As a new player, please fill out {{ new_player_line }} first.
+
+{% endif %}{% if other_line %}All players, please fill out:
+{{ other_line }}
+
+{% endif %}Thanks,
+Claritas Staff

@@ -1,0 +1,9 @@
+<p>Dear {{ user.first_name|default:user.username }},</p>
+<p>We want to thank you for joining us for another weekend of adventure, we hope you had a great time!</p>
+
+{% if new_player_line %}<p>As a new player, please fill out {{ new_player_line }} first.</p>{% endif %}
+
+{% if other_line %}<p>All players, please fill out:</p>
+<ul>{{ other_line }}</ul>{% endif %}
+
+<p>Thanks,<br>Claritas Staff</p>

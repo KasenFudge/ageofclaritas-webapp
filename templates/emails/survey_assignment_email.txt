@@ -1,7 +1,8 @@
-Hi {{ user.username }},
+Dear {{ user.first_name|default:user.username }},
 
-You have a new survey to complete: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.
+We have put together a brief survey for you: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.
 
-{{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}
+Please fill out {{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}
 
-Thank you for your time!
+Thanks,
+Claritas Staff

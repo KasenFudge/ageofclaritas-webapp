@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 
 from .models import Answer, Choice, Question, Response, Survey, SurveyAssignment, SurveyQuestion
-from .services import sync_survey_assignments
+from .services import sync_surveys_and_notify
 
 # ==========================================
 # INLINES
@@ -46,12 +46,12 @@ class SurveyAssignmentInline(admin.TabularInline):
     autocomplete_fields = ["user"]
 
 
-class AnswerInline(admin.StackedInline):
+class AnswerInline(admin.TabularInline):
     model = Answer
     extra = 0
     can_delete = False
-    readonly_fields = ["survey_question", "text_response", "selected_choices"]
-    fields = ["survey_question", "text_response", "selected_choices"]
+    readonly_fields = ["question_display", "answer_display"]
+    fields = ["question_display", "answer_display"]
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -62,7 +62,19 @@ class AnswerInline(admin.StackedInline):
             .get_queryset(request)
             .select_related("survey_question", "survey_question__question", "response", "response__survey")
             .prefetch_related("selected_choices")
+            .order_by("survey_question__position")
         )
+
+    @admin.display(description="Question")
+    def question_display(self, obj):
+        return obj.survey_question.question.text
+
+    @admin.display(description="Answer")
+    def answer_display(self, obj):
+        if obj.text_response:
+            return obj.text_response
+        choices = list(obj.selected_choices.all())
+        return ", ".join(choice.label for choice in choices) if choices else "—"
 
 
 # ==========================================
@@ -93,7 +105,9 @@ class SurveyAdmin(admin.ModelAdmin):
 
     @admin.action(description="Sync assignments from current check-ins")
     def sync_assignments(self, request, queryset):
-        total = sum(sync_survey_assignments(survey) for survey in queryset)
+        # Batched across the whole selection so a user newly eligible for more than one
+        # of the selected surveys gets a single combined email, not one per survey.
+        total = sync_surveys_and_notify(list(queryset))
         self.message_user(request, f"Created {total} new assignment(s).", level=messages.SUCCESS)
 
 
