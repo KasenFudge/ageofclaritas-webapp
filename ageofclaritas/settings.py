@@ -201,6 +201,12 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "core:index"
 LOGOUT_REDIRECT_URL = "core:index"
 
+# Governs both password-reset links and account-activation links (both use
+# django.contrib.auth.tokens.default_token_generator). Matched to the 24h
+# window the delete_unverified_accounts command uses, so an activation link
+# can't outlive the account it points to. Default is 3 days.
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
+
 # ==========================================
 # EMAIL CONFIGURATION (RESEND)
 # ==========================================
