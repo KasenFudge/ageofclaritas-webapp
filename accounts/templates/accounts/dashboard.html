@@ -53,6 +53,33 @@
         </p>
       </button>
 
+      <button @click="open('household')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
+        {% if incoming_guardian_request %}
+          <span class="absolute top-4 right-4 flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex h-3 w-3 rounded-full bg-amber-500"></span>
+          </span>
+        {% endif %}
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Household</h3>
+        <p class="text-slate-500 text-sm">
+          {% if incoming_guardian_request %}
+            A guardian link request is waiting for your response.
+          {% elif can_manage_dependents %}
+            Manage dependents and guardian links.
+          {% else %}
+            View your household.
+          {% endif %}
+        </p>
+      </button>
+
       <button @click="open('events')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
@@ -141,6 +168,18 @@
           </div>
           {% include 'includes/field_render.html' with field=settings_form.email %}
           {% include 'includes/field_render.html' with field=settings_form.date_of_birth %}
+
+          <div class="mt-2 mb-4 rounded-xl border {% if user.has_valid_student_discount %}border-emerald-200 bg-emerald-50{% else %}border-slate-200 bg-slate-50{% endif %} px-4 py-3 text-sm">
+            {% if user.has_valid_student_discount %}
+              <strong class="text-emerald-700">Student Discount Active</strong>
+              {% if user.student_status_expires %}
+                <span class="text-slate-600">— expires {{ user.student_status_expires|date:"F d, Y" }}</span>
+              {% endif %}
+            {% else %}
+              <strong class="text-slate-700">Not verified as a student.</strong>
+              <span class="text-slate-500">Send us a photo of your valid student ID to apply student discounts.</span>
+            {% endif %}
+          </div>
 
           <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm shadow-sm transition-colors mt-2">Save Changes</button>
         </form>
@@ -236,6 +275,94 @@
               {% endfor %}
             </ul>
           </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# --- Household --- #}
+    <div x-show="activeModal === 'household'" x-cloak x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/50" @click="close()"></div>
+    <div x-show="activeModal === 'household'" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click.stop class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-serif font-bold text-slate-900">Household</h2>
+          <button @click="close()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {% if incoming_guardian_request %}
+          <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 mb-6">
+            <p class="text-sm text-amber-800 mb-3">
+              <strong>{{ incoming_guardian_request.get_full_name|default:incoming_guardian_request.username }}</strong>
+              has requested to be your guardian on this account.
+            </p>
+            <div class="flex gap-3">
+              <form method="post" action="{% url 'accounts:respond_guardian_link' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="approve" />
+                <button type="submit" class="rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-2 px-4 text-sm shadow-sm transition-colors">Approve</button>
+              </form>
+              <form method="post" action="{% url 'accounts:respond_guardian_link' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="deny" />
+                <button type="submit" class="rounded-xl bg-white border border-slate-300 text-slate-700 font-bold py-2 px-4 text-sm transition-colors">Deny</button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if dependents %}
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Dependents</h3>
+          <div class="space-y-2 mb-6">
+            {% for dep in dependents %}
+              <div class="rounded-2xl border border-sky-200 bg-sky-50/40 p-4 flex items-center justify-between gap-3">
+                <span class="font-bold text-slate-900">{{ dep.get_full_name|default:dep.username }}</span>
+                <span class="text-xs text-slate-500">{{ dep.date_of_birth|date:"m/d/Y" }} · Age {{ dep.age }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if can_manage_dependents %}
+          <form method="post" action="{% url 'accounts:add_dependent' %}" class="mb-8" novalidate>
+            {% csrf_token %}
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Add a Dependent</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {% include 'includes/field_render.html' with field=dependent_form.first_name %}
+              {% include 'includes/field_render.html' with field=dependent_form.last_name %}
+            </div>
+            {% include 'includes/field_render.html' with field=dependent_form.date_of_birth %}
+            <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm shadow-sm transition-colors">Add Dependent</button>
+          </form>
+
+          <form method="post" action="{% url 'accounts:request_guardian_link' %}" novalidate>
+            {% csrf_token %}
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Link a Teen (14–17)</h3>
+            {% include 'includes/field_render.html' with field=guardian_link_form.identifier %}
+            <button type="submit" class="w-full rounded-xl bg-navy-700 hover:bg-navy-800 text-white font-bold py-3 text-sm shadow-sm transition-colors">Send Guardian Request</button>
+          </form>
+
+          {% if pending_guardian_requests_sent %}
+            <div class="mt-6 pt-6 border-t border-slate-100">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Pending Requests</h3>
+              <div class="space-y-2">
+                {% for teen in pending_guardian_requests_sent %}
+                  <p class="text-sm text-slate-600">Awaiting {{ teen.get_full_name|default:teen.username }}'s approval.</p>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        {% elif not incoming_guardian_request and not dependents %}
+          <p class="text-slate-500 text-sm">
+            Household management is available to verified adult (18+) accounts.
+            {% if user.needs_guardian_link %}
+              Ask a parent or guardian to send you a guardian link request from their own dashboard —
+              you'll need one confirmed before you can sign waivers or register for events.
+            {% endif %}
+          </p>
         {% endif %}
       </div>
     </div>
@@ -383,9 +510,7 @@
             </div>
             <form action="{% url 'payments:checkout' %}" method="post">
               {% csrf_token %}
-              {% for reg in outstanding_registrations %}
-                <input type="hidden" name="registration_ids" value="{{ reg.id }}" />
-              {% endfor %}
+              {% for reg in outstanding_registrations %}<input type="hidden" name="registration_ids" value="{{ reg.id }}" />{% endfor %}
               <button type="submit"
                       class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3.5 text-sm shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
                 Pay Now Online
@@ -433,8 +558,12 @@
                   <p class="font-bold text-slate-900">{{ survey.title }}</p>
                   <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[10px] font-bold">{{ survey.get_survey_type_display }}</span>
                 </div>
-                {% if survey.description %}<p class="text-sm text-slate-500">{{ survey.description }}</p>{% endif %}
-                {% if survey.due_date %}<p class="mt-1 text-xs text-slate-400">Due {{ survey.due_date|date:"F j, Y" }}</p>{% endif %}
+                {% if survey.description %}
+                  <p class="text-sm text-slate-500">{{ survey.description }}</p>
+                {% endif %}
+                {% if survey.due_date %}
+                  <p class="mt-1 text-xs text-slate-400">Due {{ survey.due_date|date:"F j, Y" }}</p>
+                {% endif %}
               </a>
             {% endfor %}
           </div>

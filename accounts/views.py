@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.db import transaction
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -17,9 +19,9 @@ from events.models import EventRegistration
 from payments.models import PaymentStatus
 from surveys.models import Survey
 
-from .forms import AccountSettingsForm, CustomUserCreationForm
+from .forms import AccountSettingsForm, AddDependentForm, CustomUserCreationForm, GuardianLinkRequestForm
 from .models import Waiver, WaiverSignature
-from .utils import send_activation_email
+from .utils import dependent_placeholder_email, generate_unique_username, send_activation_email
 
 User = get_user_model()
 
@@ -173,6 +175,10 @@ def _build_dashboard_context(user):
         "child_waiver_status": child_waiver_status,
         "household_waiver_pending": household_waiver_pending,
         "active_surveys": active_surveys,
+        "dependents": children,
+        "can_manage_dependents": user.can_manage_dependents,
+        "pending_guardian_requests_sent": list(user.pending_dependents.all()) if user.can_manage_dependents else [],
+        "incoming_guardian_request": user.pending_guardian,
     }
 
 
@@ -181,6 +187,8 @@ def account_dashboard_view(request):
     user = request.user
     context = _build_dashboard_context(user)
     context["settings_form"] = AccountSettingsForm(instance=user)
+    context["dependent_form"] = AddDependentForm()
+    context["guardian_link_form"] = GuardianLinkRequestForm()
     return render(request, "accounts/dashboard.html", context)
 
 
@@ -215,6 +223,10 @@ def sign_waiver_view(request):
     else:
         target_user = request.user
 
+    if target_user.needs_guardian_link:
+        messages.warning(request, f"{target_user} needs a confirmed guardian linked before signing a waiver.")
+        return redirect("accounts:dashboard")
+
     # get_or_create rather than create: guards against a double-submit
     # (e.g. double-click) tripping the unique_together constraint.
     WaiverSignature.objects.get_or_create(user=target_user, waiver=waiver)
@@ -223,4 +235,96 @@ def sign_waiver_view(request):
         messages.success(request, "Thank you for signing the waiver.")
     else:
         messages.success(request, f"Thank you for signing the waiver on behalf of {target_user}.")
+    return redirect("accounts:dashboard")
+
+
+@login_required
+@require_POST
+def add_dependent_view(request):
+    if not request.user.can_manage_dependents:
+        raise PermissionDenied("Only unlinked adult accounts can add dependents.")
+
+    form = AddDependentForm(request.POST)
+    if form.is_valid():
+        dependent = None
+        for _ in range(3):  # retry on a same-instant username collision from another parent
+            candidate = form.save(commit=False)
+            candidate.username = generate_unique_username(candidate.first_name, candidate.last_name)
+            candidate.email = dependent_placeholder_email(candidate.username)
+            candidate.set_unusable_password()
+            # Must never look like a pending-verification signup to delete_unverified_accounts.
+            candidate.is_active = True
+            candidate.parent_account = request.user
+            try:
+                candidate.save()
+                dependent = candidate
+                break
+            except ValidationError:
+                continue
+
+        if dependent is None:
+            messages.error(request, "Could not create the dependent profile, please try again.")
+            return redirect("accounts:dashboard")
+
+        messages.success(request, f"{dependent.get_full_name()} has been added to your household.")
+        return redirect("accounts:dashboard")
+
+    context = _build_dashboard_context(request.user)
+    context["settings_form"] = AccountSettingsForm(instance=request.user)
+    context["dependent_form"] = form
+    context["guardian_link_form"] = GuardianLinkRequestForm()
+    context["open_modal"] = "household"
+    return render(request, "accounts/dashboard.html", context)
+
+
+@login_required
+@require_POST
+def request_guardian_link_view(request):
+    if not request.user.can_manage_dependents:
+        raise PermissionDenied("Only unlinked adult accounts can request a guardian link.")
+
+    form = GuardianLinkRequestForm(request.POST, requesting_user=request.user)
+    if form.is_valid():
+        target = form.target_user
+        # Re-check under a row lock to close the gap between form validation and this
+        # save, in case two parents race to claim the same teen.
+        with transaction.atomic():
+            target = User.objects.select_for_update().get(pk=target.pk)
+            if target.parent_account_id is not None or target.pending_guardian_id is not None:
+                messages.error(request, f"{target} is no longer available to request.")
+                return redirect("accounts:dashboard")
+            target.pending_guardian = request.user
+            target.save(update_fields=["pending_guardian"])
+        messages.success(request, f"Guardian request sent to {target}. They must approve it before the link is active.")
+        return redirect("accounts:dashboard")
+
+    context = _build_dashboard_context(request.user)
+    context["settings_form"] = AccountSettingsForm(instance=request.user)
+    context["dependent_form"] = AddDependentForm()
+    context["guardian_link_form"] = form
+    context["open_modal"] = "household"
+    return render(request, "accounts/dashboard.html", context)
+
+
+@login_required
+@require_POST
+def respond_guardian_link_view(request):
+    user = request.user
+    if not user.pending_guardian_id:
+        messages.error(request, "There is no pending guardian request to respond to.")
+        return redirect("accounts:dashboard")
+
+    requester = user.pending_guardian
+    action = request.POST.get("action")
+    if action == "approve":
+        user.parent_account = requester
+        user.pending_guardian = None
+        user.save()
+        messages.success(request, f"You are now linked to {requester} as your guardian.")
+    elif action == "deny":
+        user.pending_guardian = None
+        user.save(update_fields=["pending_guardian"])
+        messages.info(request, "Guardian request denied.")
+    else:
+        messages.error(request, "Invalid action.")
     return redirect("accounts:dashboard")

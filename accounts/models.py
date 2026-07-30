@@ -41,6 +41,18 @@ class CustomUser(AbstractUser):
         # If they are a student and either have no expiration date or haven't reached it yet
         return True
 
+    @property
+    def can_manage_dependents(self):
+        """Only unlinked adults (18+) may add dependents or request a guardian link."""
+        return self.parent_account_id is None and self.age is not None and self.age >= 18
+
+    @property
+    def needs_guardian_link(self):
+        """Minors not yet linked to a confirmed guardian can't independently sign waivers
+        or register for events. Always False for dependents, since they always have
+        parent_account set at creation."""
+        return self.age is not None and self.age < 18 and self.parent_account_id is None
+
     # A registered parent account that can manage, register, and purchase event tickets for child accounts.
     parent_account = models.ForeignKey(
         "self",
@@ -52,6 +64,16 @@ class CustomUser(AbstractUser):
             "Links this profile to a primary adult guardian account. "
             "Enables unified family checkouts and minor event registration management."
         ),
+    )
+
+    # Set when an adult has requested to become this user's guardian, pending their approval.
+    pending_guardian = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="pending_dependents",
+        help_text="An adult account has requested to link as this user's guardian; awaiting approval.",
     )
 
     REQUIRED_FIELDS = ["email", "date_of_birth"]

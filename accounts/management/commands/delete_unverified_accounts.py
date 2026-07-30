@@ -39,6 +39,7 @@ class Command(BaseCommand):
             is_superuser=False,
             last_login__isnull=True,
             date_joined__lt=cutoff,
+            parent_account__isnull=True,  # never sweep dependent/linked-teen profiles
         )
 
         count = stale_accounts.count()

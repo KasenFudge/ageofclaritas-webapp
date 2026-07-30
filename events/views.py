@@ -67,6 +67,10 @@ def event_registration_view(request, slug, user_id=None):
     else:
         target_user = actor
 
+    if target_user.needs_guardian_link:
+        messages.warning(request, f"{target_user} needs a confirmed guardian linked before registering for events.")
+        return redirect("accounts:dashboard")
+
     # 3. Enforce Age & Validation Safeguards on the Target User
     if not target_user.date_of_birth:
         raise PermissionDenied(f"Birthdate required to register {target_user}.")

@@ -43,7 +43,7 @@ class CustomUserAdmin(UserAdmin):
         (
             "Personal Info (Custom)",
             {
-                "fields": ("date_of_birth", "parent_account"),
+                "fields": ("date_of_birth", "parent_account", "pending_guardian"),
             },
         ),
         (
