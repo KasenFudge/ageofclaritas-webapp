@@ -8,12 +8,12 @@ from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView
-from django_ratelimit.decorators import ratelimit
+from django_ratelimit.core import is_ratelimited
+from django_ratelimit.exceptions import Ratelimited
 
 from events.models import EventRegistration
 from payments.models import PaymentStatus
@@ -26,13 +26,20 @@ from .utils import dependent_placeholder_email, generate_unique_username, send_a
 User = get_user_model()
 
 
-@method_decorator(ratelimit(key="ip", rate="3/h", method="POST", block=True), name="post")
 class UserRegistrationView(CreateView):
     form_class = CustomUserCreationForm
     template_name = "accounts/register.html"
     success_url = reverse_lazy("accounts:login")
 
     def form_valid(self, form):
+        # Only count actual account creations against the limit, not invalid
+        # submissions (weak/mismatched passwords, the under-14 age gate, etc.) —
+        # a decorator on the whole post() method would burn quota on typos alone.
+        if is_ratelimited(
+            self.request, group="accounts.register", key="ip", rate="5/h", method="POST", increment=True
+        ):
+            raise Ratelimited
+
         # Save the user but don't commit to the database yet
         user = form.save(commit=False)
 
