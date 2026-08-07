@@ -62,3 +62,15 @@
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
 }
+
+/* CKEditor5 wraps every table in <figure class="table">, but Tailwind also
+   ships a utility literally named .table (display: table). That collision
+   makes the figure size itself to its content's natural width instead of
+   respecting its container -- invisible for narrow tables, but a wide
+   CKEditor table (many columns, or a long unbreakable phrase) blows out
+   and bleeds past the page edge. This cancels the accidental collision;
+   it doesn't touch any of the actual table/row/cell styling from
+   @tailwindcss/typography, which already renders correctly on its own. */
+.prose figure.table {
+  display: block;
+}

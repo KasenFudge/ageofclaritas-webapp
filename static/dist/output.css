@@ -3531,6 +3531,9 @@
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
 }
+.prose figure.table {
+  display: block;
+}
 @property --tw-translate-x {
   syntax: "*";
   inherits: false;
