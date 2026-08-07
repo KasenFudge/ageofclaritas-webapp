@@ -29,6 +29,23 @@ services:
     depends_on:
       - db
 
+  cleanup:
+    container_name: ageofclaritas_cleanup
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Sweeps out unverified/spam registrations every 30 min;
+    command: sh -c "while true; do python manage.py delete_unverified_accounts; sleep 1800; done"
+    volumes:
+      - .:/app
+    restart: always
+    networks:
+      - ageofclaritas_net
+    env_file:
+      - .env
+    depends_on:
+      - db
+
 volumes:
   ageofclaritas_data:
     name: ageofclaritas_data

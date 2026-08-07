@@ -30,12 +30,6 @@ def default_end_time():
     return timezone.make_aware(four_pm_tomorrow)
 
 
-def default_downtime_due():
-    now = timezone.now()
-    two_weeks_later = datetime.combine(now.date() + timedelta(weeks=2, days=1), time(hour=23, minute=59, second=59))
-    return timezone.make_aware(two_weeks_later)
-
-
 # --- Image Upload Path Macros ---
 def _upload_path(instance, filename, subdir=""):
     event = getattr(instance, "event", instance)
@@ -79,10 +73,6 @@ class Event(models.Model):
 
     start_time = models.DateTimeField(default=default_start_time)
     end_time = models.DateTimeField(default=default_end_time)
-    downtime_due = models.DateTimeField(
-        default=default_downtime_due,
-        help_text="This is the date by which attendees of the event must respond to the post event survey.",
-    )
 
     attendees = models.ManyToManyField(settings.AUTH_USER_MODEL, through="EventRegistration", related_name="events")
 

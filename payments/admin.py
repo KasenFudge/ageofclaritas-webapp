@@ -1,9 +1,10 @@
 # Register your models here.
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.db import transaction as db_transaction
 
 from events.models import EventRegistration
 
-from .models import Transaction
+from .models import PaymentStatus, Transaction
 
 
 class EventRegistrationInline(admin.TabularInline):
@@ -41,10 +42,51 @@ class TransactionAdmin(admin.ModelAdmin):
 
     inlines = [EventRegistrationInline]
 
+    actions = [
+        "force_mark_succeeded",
+        "force_mark_failed",
+        "force_mark_refunded",
+    ]
+
     # Convert cents to a human-readable dollar format for the overview table
     @admin.display(description="Total Amount")
     def total_amount_display(self, obj):
         return f"${obj.total_amount_cents / 100:.2f}"
+
+    # -------------------------------------------------------------
+    # Manual overrides for when the webhook missed something and you've
+    # already confirmed the real status in the Stripe dashboard yourself.
+    # Restricted to one row at a time so a bulk selection can't force
+    # a whole batch of transactions by accident.
+    # -------------------------------------------------------------
+    def _force_status(self, request, queryset, target_status, label):
+        if queryset.count() != 1:
+            self.message_user(
+                request,
+                "Select exactly one transaction to force - this is a manual override, not a bulk action.",
+                level=messages.ERROR,
+            )
+            return
+
+        txn = queryset.first()
+        with db_transaction.atomic():
+            locked = Transaction.objects.select_for_update().get(pk=txn.pk)
+            locked.payment_status = target_status
+            locked.save(update_fields=["payment_status"])
+
+        self.message_user(request, f"Transaction #{txn.pk} set to {label}.", level=messages.SUCCESS)
+
+    @admin.action(description="Force mark as SUCCEEDED (I've already confirmed this in Stripe)")
+    def force_mark_succeeded(self, request, queryset):
+        self._force_status(request, queryset, PaymentStatus.SUCCEEDED, "SUCCEEDED")
+
+    @admin.action(description="Force mark as FAILED (I've already confirmed this in Stripe)")
+    def force_mark_failed(self, request, queryset):
+        self._force_status(request, queryset, PaymentStatus.FAILED, "FAILED")
+
+    @admin.action(description="Force mark as REFUNDED (I've already confirmed this in Stripe)")
+    def force_mark_refunded(self, request, queryset):
+        self._force_status(request, queryset, PaymentStatus.REFUNDED, "REFUNDED")
 
     # Force all fields to be read-only when viewing an individual record detail page
     def get_readonly_fields(self, request, obj=None):

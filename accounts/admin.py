@@ -15,16 +15,22 @@ def make_veteran(modeladmin, request, queryset):
     queryset.update(is_veteran=True)
 
 
+@admin.action(description="Remove Veteran status from selected players")
+def remove_veteran(modeladmin, request, queryset):
+    queryset.update(is_veteran=False)
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     # Display fields in the grid layout
-    list_display = ("username", "email", "is_active", "is_student", "is_veteran", "is_staff")
+    list_display = ("username", "full_name", "email", "is_active", "is_student", "is_veteran", "is_staff")
 
     # Enable filtering by student status and core flags on the right sidebar
     list_filter = ("is_veteran", "is_student", "is_staff", "is_active")
 
-    # Add the make veteran action to the dropdown on the user list.
-    actions = [make_veteran]
+    # Add the make/remove veteran actions to the dropdown on the user list.
+    # A single row can be selected to fix one player, not just bulk operations.
+    actions = [make_veteran, remove_veteran]
 
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("username",)
@@ -37,7 +43,7 @@ class CustomUserAdmin(UserAdmin):
         (
             "Personal Info (Custom)",
             {
-                "fields": ("date_of_birth", "parent_account"),
+                "fields": ("date_of_birth", "parent_account", "pending_guardian"),
             },
         ),
         (
@@ -57,6 +63,11 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+    # Show first + last name together in the list grid; sortable by last name
+    @admin.display(description="Full Name", ordering="last_name")
+    def full_name(self, obj):
+        return obj.get_full_name() or "—"
 
     # Helper method to calculate age cleanly inside the admin grid
     @admin.display(description="Age")

@@ -1,5 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm
+from django.core.exceptions import ValidationError
+from django.db.models import Q
+from django.utils import timezone
 
 from .models import CustomUser
 
@@ -71,6 +74,17 @@ class CustomUserCreationForm(UserCreationForm):
             ),
         }
 
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data["date_of_birth"]
+        today = timezone.localdate()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        if age < 14:
+            raise ValidationError(
+                "You must be at least 14 to create your own account. If you're under 14, "
+                "ask a parent or guardian to add you as a dependent from their account dashboard."
+            )
+        return dob
+
 
 class AccountSettingsForm(forms.ModelForm):
     """Basic profile fields a player can self-edit from the account dashboard.
@@ -89,3 +103,55 @@ class AccountSettingsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+
+
+class AddDependentForm(forms.ModelForm):
+    """Lets a verified adult add a dependent (13 and under) profile from their
+    dashboard. No login is ever created for this profile — see add_dependent_view."""
+
+    class Meta:
+        model = CustomUser
+        fields = ["first_name", "last_name", "date_of_birth"]
+        widgets = {
+            "date_of_birth": forms.DateInput(attrs={"type": "date"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+
+
+class GuardianLinkRequestForm(forms.Form):
+    """Lets a verified adult request to become the guardian of an existing teen
+    (14-17) account. The teen must approve before the link takes effect."""
+
+    identifier = forms.CharField(label="Teen's username or email", max_length=150)
+
+    def __init__(self, *args, requesting_user=None, **kwargs):
+        self.requesting_user = requesting_user
+        super().__init__(*args, **kwargs)
+        self.fields["identifier"].widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+
+    def clean_identifier(self):
+        value = self.cleaned_data["identifier"].strip()
+        try:
+            target = CustomUser.objects.get(Q(username__iexact=value) | Q(email__iexact=value))
+        except CustomUser.DoesNotExist:
+            raise ValidationError("No account found with that username or email.")
+        except CustomUser.MultipleObjectsReturned:
+            raise ValidationError("That identifier matches more than one account; use the exact username.")
+
+        if target.id == self.requesting_user.id:
+            raise ValidationError("You cannot request yourself as a dependent.")
+        if not target.has_usable_password():
+            raise ValidationError("That account can't be linked this way.")
+        if target.age is not None and target.age >= 18:
+            raise ValidationError("Only minor accounts (under 18) can be linked via a guardian request.")
+        if target.parent_account_id is not None:
+            raise ValidationError(f"{target} already has a confirmed guardian on file.")
+        if target.pending_guardian_id is not None:
+            raise ValidationError(f"{target} already has a pending guardian request awaiting their response.")
+
+        self.target_user = target
+        return value

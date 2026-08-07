@@ -10,7 +10,21 @@
         </svg>
       </div>
       <h1 class="text-2xl font-serif font-bold text-slate-900 mb-4">Registration Successful!</h1>
-      <p class="text-sm text-center text-slate-600 mb-8 leading-relaxed">Please check your email to verify your account.</p>
+      <p class="text-sm text-center text-slate-600 mb-6 leading-relaxed">Please check your email to verify your account.</p>
+
+      <!-- Community Discord CTA -->
+      <a href="https://discord.gg/ufntthBSDB" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 text-sm uppercase tracking-wide transition-colors">
+        Join Our Discord Community
+      </a>
+      <p class="text-xs text-slate-400 mt-2 mb-6 leading-relaxed">Connect with other players, ask questions, and keep up with what's happening at Claritas.</p>
+
+      <!-- College Student Discount Note -->
+      <div class="rounded-xl bg-slate-50 border border-slate-200 px-4 py-4 text-left">
+        <p class="text-sm text-slate-700 leading-relaxed">
+          <span class="font-semibold text-slate-900">College students:</span> once you've joined, reach out to a
+          Game Master with a photo of your student ID so we can set up your student discount.
+        </p>
+      </div>
 
       <!-- The Resend Form -->
       <form action="{% url 'accounts:resend_verification' %}" method="post" class="mt-8 border-t border-slate-100 pt-6">

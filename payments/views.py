@@ -1,3 +1,5 @@
+import logging
+
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -5,6 +7,7 @@ from django.db import transaction as db_transaction
 from django.db.models import Q, Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import NoReverseMatch
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
@@ -13,6 +16,28 @@ from events.models import EventRegistration
 from .models import PaymentMethod, PaymentStatus, Transaction
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+logger = logging.getLogger(__name__)
+
+# NOTE: confirm this against your actual urls.py. If the "accounts:dashboard"
+# name doesn't exist (e.g. it was renamed to "accounts:outstanding_balance"),
+# every hit to either fallback below raises NoReverseMatch, which Django
+# turns into an unhandled 500. This is the prime suspect for the live 500 -
+# swap in the real name once confirmed.
+NO_BALANCE_REDIRECT = "accounts:dashboard"
+
+
+def _safe_redirect(request, url_name):
+    """
+    Redirect defensively: never let a bad/renamed URL name 500 a payment page.
+    Falls back to the site root and logs loudly so it gets fixed instead of
+    silently recurring.
+    """
+    try:
+        return redirect(url_name)
+    except NoReverseMatch:
+        logger.error("Payment flow tried to redirect to unknown URL name %r", url_name)
+        return redirect("/")
 
 
 @login_required
@@ -47,7 +72,7 @@ def checkout_page(request):
     # Fallback for if there is no registrations that need paid.
     if not outstanding_registrations.exists():
         # If they get here with nothing to pay, send them to show there is no outstanding balance.
-        return redirect("accounts:outstanding_balance")
+        return _safe_redirect(request, NO_BALANCE_REDIRECT)
 
     # Sum up the exact outstanding cents from the unpaid registrations
     transaction_amount_cents = outstanding_registrations.aggregate(total=Sum("final_price_cents"))["total"] or 0
@@ -132,8 +157,17 @@ def stripe_webhook(request):
     except ValueError:
         # Invalid payload layout
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError:
-        # Cryptographic signature matching verification failed
+    except stripe.SignatureVerificationError:
+        # Cryptographic signature matching verification failed.
+        # (stripe.error.SignatureVerificationError also works on current SDKs,
+        # but the flat top-level name is the one that's guaranteed going forward.)
+        return HttpResponse(status=400)
+    except Exception:
+        # Anything else here (a transient Stripe SDK error, etc.) must not bubble
+        # up as a 500 - Stripe will keep retrying a 500 for days, but if the bug
+        # is deterministic it'll just fail every retry too. Log it and 400 so it
+        # shows up in monitoring instead of silently stalling the payment status.
+        logger.exception("Unexpected error verifying Stripe webhook signature")
         return HttpResponse(status=400)
 
     stripe_id = None
@@ -154,13 +188,15 @@ def stripe_webhook(request):
     # 3. Handle System Refunds
     elif event["type"] == "charge.refunded":
         charge = event["data"]["object"]
-        stripe_id = charge["payment_intent"]
+        # bracket access raises KeyError (-> 500) if this field is ever absent;
+        # .get() degrades to a no-op update below instead of crashing the webhook.
+        stripe_id = charge.get("payment_intent")
         target_status = PaymentStatus.REFUNDED
 
     # 4. Execute Database Updates
     if stripe_id and target_status:
-        with db_transaction.atomic():
-            try:
+        try:
+            with db_transaction.atomic():
                 # Find the local transaction matching Stripe's unique intent identifier
                 local_transaction = Transaction.objects.select_for_update().get(stripe_session_id=stripe_id)
 
@@ -168,9 +204,21 @@ def stripe_webhook(request):
                 if local_transaction.payment_status != target_status:
                     local_transaction.payment_status = target_status
                     local_transaction.save()
-            except Transaction.DoesNotExist:
-                # Log this error if a payment succeeded on Stripe but has no matching row in your system
-                pass
+        except Transaction.DoesNotExist:
+            # This is exactly the "Stripe says paid, our DB disagrees" case -
+            # it must be loud, not a silent pass, or it'll keep happening unnoticed.
+            logger.error(
+                "Stripe webhook %s for intent %s has no matching Transaction (target_status=%s)",
+                event["type"],
+                stripe_id,
+                target_status,
+            )
+        except Transaction.MultipleObjectsReturned:
+            logger.error(
+                "Multiple Transactions share stripe_session_id=%s while handling %s - data integrity issue",
+                stripe_id,
+                event["type"],
+            )
 
     # Always return a 200 OK response to let Stripe know you safely received the message
     return HttpResponse(status=200)
@@ -184,7 +232,7 @@ def payment_success_page(request):
 
     # Check if they have the active authorization token in their browser session from the checkout page.
     if "payment_intent_authorized" not in request.session:
-        return redirect("accounts:outstanding_balance")
+        return _safe_redirect(request, NO_BALANCE_REDIRECT)
 
     # POP the token out of the session (If we decide to use it later)
     authorized_intent_id = request.session.pop("payment_intent_authorized")  # noqa: F841

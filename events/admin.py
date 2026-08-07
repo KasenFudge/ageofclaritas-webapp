@@ -1,7 +1,13 @@
 from django import forms
 from django.contrib import admin
+from django.db import models
+from django.utils import timezone
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 from .models import Event, EventMedia, EventPriceTier, EventRegistration
+
+# Centralized CKEditor 5 mapping for TextFields
+CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
 
 # ==========================================
 # CUSTOM FORMS FOR GATE PAYMENTS
@@ -144,7 +150,9 @@ class EventRegistrationAdmin(admin.ModelAdmin):
 
     @admin.display(ordering="declared_arrival_time", description="Scheduled Arrival")
     def formatted_arrival_time(self, obj):
-        return obj.declared_arrival_time.strftime("%a, %b %d — %I:%M %p")
+        # declared_arrival_time is stored in UTC (USE_TZ=True) — strftime() on the raw
+        # value would print the UTC clock time instead of the local one.
+        return timezone.localtime(obj.declared_arrival_time).strftime("%a, %b %d — %I:%M %p")
 
     @admin.display(ordering="final_price_cents", description="Price Paid")
     def formatted_final_price(self, obj):
@@ -184,6 +192,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
     prepopulated_fields = {"slug": ("title", "event_type")}
     fieldsets = (
         (
@@ -202,7 +211,7 @@ class EventAdmin(admin.ModelAdmin):
         (
             "Event Date/Time",
             {
-                "fields": ["start_time", "end_time", "downtime_due"],
+                "fields": ["start_time", "end_time"],
             },
         ),
         (

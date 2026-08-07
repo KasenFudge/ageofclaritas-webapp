@@ -42,7 +42,7 @@ Tailwind's scanner can find them here at the call site.
               <div>
                 <h3 class="text-lg font-serif font-bold tracking-tight text-slate-900">{{ event.display_title }}</h3>
                 <p class="mt-2 text-sm text-slate-500">{{ event.start_time|date:"F d, Y @ g:i A" }}</p>
-                <p class="mt-4 line-clamp-3 text-sm leading-7 text-slate-600">{{ event.description }}</p>
+                <p class="mt-4 line-clamp-3 text-sm leading-7 text-slate-600">{{ event.description|striptags|truncatewords:24 }}</p>
               </div>
 
               <div class="mt-6 flex items-center justify-between gap-3">

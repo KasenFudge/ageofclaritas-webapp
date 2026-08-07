@@ -51,4 +51,7 @@ urlpatterns = [
     path("dashboard/", views.account_dashboard_view, name="dashboard"),
     path("dashboard/settings/", views.update_account_settings_view, name="update_settings"),
     path("dashboard/sign-waiver/", views.sign_waiver_view, name="sign_waiver"),
+    path("dashboard/add-dependent/", views.add_dependent_view, name="add_dependent"),
+    path("dashboard/request-guardian-link/", views.request_guardian_link_view, name="request_guardian_link"),
+    path("dashboard/guardian-link/respond/", views.respond_guardian_link_view, name="respond_guardian_link"),
 ]

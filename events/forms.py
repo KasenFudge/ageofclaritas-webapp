@@ -44,6 +44,18 @@ class EventRegistrationForm(forms.ModelForm):
         help_text="Choose whether you'd like to pay online now or in person at the event.",
     )
 
+    # A checkbox as one more confirmation for first_time discount. Meant to catch
+    # old players using the new website for the first time.
+    is_first_event = forms.BooleanField(
+        label="This is my first Claritas event",
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASSES}),
+        help_text=(
+            "Uncheck this if you've attended an Age of Claritas event before -- even one that "
+            "predates this website. This determines your first-time player discount."
+        ),
+    )
+
     class Meta:
         model = EventRegistration
         fields = ["declared_arrival_time", "weapon_rental"]
@@ -52,6 +64,11 @@ class EventRegistrationForm(forms.ModelForm):
         self.event = event
         self.user = user
         super().__init__(*args, **kwargs)
+
+        # Already-flagged veterans don't need to be asked -- drop the field entirely so
+        # there's nothing for the view to misinterpret if it's absent from cleaned_data.
+        if self.user is not None and getattr(self.user, "is_veteran", False):
+            del self.fields["is_first_event"]
 
     def clean(self):
         cleaned_data = super().clean()

@@ -67,6 +67,10 @@ def event_registration_view(request, slug, user_id=None):
     else:
         target_user = actor
 
+    if target_user.needs_guardian_link:
+        messages.warning(request, f"{target_user} needs a confirmed guardian linked before registering for events.")
+        return redirect("accounts:dashboard")
+
     # 3. Enforce Age & Validation Safeguards on the Target User
     if not target_user.date_of_birth:
         raise PermissionDenied(f"Birthdate required to register {target_user}.")
@@ -107,6 +111,12 @@ def event_registration_view(request, slug, user_id=None):
             declared_arrival_time = form.cleaned_data.get("declared_arrival_time") or event.start_time
             weapon_rental = form.cleaned_data.get("weapon_rental", False)
             payment_method = form.cleaned_data.get("payment_method", "in_person")
+
+            # Self-reported "not my first event" - mark them as veteran for pricing so a first time discount
+            # is not applied to their account and we don't ask them in the future.
+            if form.cleaned_data.get("is_first_event") is False and not target_user.is_veteran:
+                target_user.is_veteran = True
+                target_user.save(update_fields=["is_veteran"])
 
             # Compute transaction details for the target attendee
             registration_time = timezone.now()

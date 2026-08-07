@@ -62,21 +62,3 @@
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
 }
-
-/* CKEditor wraps every table from our rich-text fields in <figure class="table">, and
-   that literal class name collides with Tailwind's own ".table" utility (display: table).
-   That made the figure itself a real table box, and table boxes are required to grow to
-   fit their content no matter what width we give them -- so a single resized column
-   (which CKEditor stores as an inline pixel width on its <td>) was enough to blow the
-   figure, and the whole page, wider than the screen on mobile.
-   Forcing the figure back to a plain block box breaks that collision. overflow-x: auto
-   then gives ONLY the figure its own internal scrollbar for tables wider than the
-   screen, while the real <table> inside keeps its native layout so columns still line
-   up (verified: this contains the overflow to the figure -- the page itself no longer
-   grows past the viewport). */
-.prose figure.table {
-  display: block;
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-}

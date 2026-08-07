@@ -1,12 +1,17 @@
+from datetime import datetime, time, timedelta
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 class SurveyType(models.TextChoices):
-    POST_EVENT = "post_event", "Post Event"
+    FEEDBACK = "feedback", "Feedback"
+    DOWNTIME = "downtime", "Downtime"
     NEW_PLAYER = "new_player", "New Player"
+    LUDUS = "ludus", "Ludus"
     OTHER = "other", "Other"
 
 
@@ -22,19 +27,42 @@ class Survey(models.Model):
     survey_type = models.CharField(
         max_length=20,
         choices=SurveyType.choices,
-        default=SurveyType.POST_EVENT,
+        default=SurveyType.FEEDBACK,
     )
     title = models.CharField(
-        max_length=80, help_text='If linked to an event, defaults to "{Event Type} Post Event Survey: {Event Title}".'
+        max_length=80,
+        blank=True,
+        help_text='If linked to an event, defaults to "{Survey Type} Survey for {Event Title}".',
     )
     description = models.CharField(max_length=500, blank=True, default="")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text=(
+            "Defaults to two weeks after the linked event ends (or two weeks from today if no "
+            "event is linked), at 11:59:59 PM."
+        ),
+    )
     questions = models.ManyToManyField("Question", through="SurveyQuestion", related_name="surveys")
+    assigned_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through="SurveyAssignment", related_name="assigned_surveys"
+    )
+
+    def _default_due_date(self):
+        if self.event_id and self.event.end_time:
+            base_date = timezone.localtime(self.event.end_time).date()
+        else:
+            base_date = timezone.localdate()
+        due = datetime.combine(base_date + timedelta(weeks=2), time(23, 59, 59))
+        return timezone.make_aware(due)
 
     def save(self, *args, **kwargs):
         if not self.title and self.event:
-            self.title = f"Survey: {self.event}"
+            self.title = f"{self.get_survey_type_display()} Survey for {self.event}"
+        if not self.due_date:
+            self.due_date = self._default_due_date()
         super().save(*args, **kwargs)
 
     def clean(self):
@@ -43,6 +71,9 @@ class Survey(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["survey_type", "event"], name="uq_one_survey_type_per_event")]
 
 
 class QuestionType(models.TextChoices):
@@ -76,6 +107,18 @@ class SurveyQuestion(models.Model):
 
     def __str__(self):
         return f"{self.survey}: {self.position} - {self.question}"
+
+
+class SurveyAssignment(models.Model):
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name="assignments")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="survey_assignments")
+    assigned_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["survey", "user"], name="uq_survey_assignment_once")]
+
+    def __str__(self):
+        return f"{self.survey} -> {self.user}"
 
 
 class Choice(models.Model):
@@ -131,7 +174,9 @@ class Answer(models.Model):
         qtype = self.survey_question.question.question_type if self.survey_question_id else None
 
         if qtype == QuestionType.TEXT:
-            if self.selected_choices.exists():
+            # An unsaved instance can't have any selected_choices rows yet (the m2m
+            # accessor requires a pk), so this is only meaningful once saved.
+            if self.pk and self.selected_choices.exists():
                 raise ValidationError("Choices are not allowed for a text question.")
             if self.survey_question.is_required and not (self.text_response or "").strip():
                 raise ValidationError("This text answer is required.")

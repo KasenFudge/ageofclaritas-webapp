@@ -33,6 +33,7 @@ urlpatterns = [
     path("payments/", include("payments.urls")),
     path("rulebook/", include("rulebook.urls")),
     path("events/", include("events.urls")),
+    path("surveys/", include("surveys.urls")),
     path("ckeditor5/", include("django_ckeditor_5.urls")),
 ]
 

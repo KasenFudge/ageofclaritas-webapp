@@ -1,0 +1,8 @@
+Dear {{ user.first_name|default:user.username }},
+
+We have put together a brief survey for you: "{{ survey.title }}"{% if survey.due_date %} (due {{ survey.due_date|date:"F j, Y" }}){% endif %}.
+
+Please fill out {{ protocol }}://{{ domain }}{% url 'surveys:respond' survey.pk %}
+
+Thanks,
+Claritas Staff

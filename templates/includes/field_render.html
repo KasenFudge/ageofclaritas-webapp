@@ -1,6 +1,6 @@
 <div class="mb-5">
   {% if field.field.widget.input_type == 'radio' %}
-    <span class="block text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">{{ field.label }}</span>
+    <span class="block text-sm font-semibold text-slate-500 mb-2">{{ field.label }}</span>
     <div class="space-y-2">
       {% for radio in field %}
         <label for="{{ radio.id_for_label }}" class="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
@@ -15,7 +15,7 @@
       {{ field.label }}
     </label>
   {% else %}
-    <label for="{{ field.id_for_label }}" class="block text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 mb-2">{{ field.label }}</label>
+    <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-slate-500 mb-2">{{ field.label }}</label>
     {{ field }}
   {% endif %}
 
