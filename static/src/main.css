@@ -63,27 +63,20 @@
   -webkit-mask-image: linear-gradient(to top, black, transparent);
 }
 
-/* Injects custom CSS into tables from our CKEditor Fields (assuming we use .prose, as we always should) 
-   Sets the width to take up the whole view port on desktops and on mobile makes it so that it will 
-   scroll internally instead of the whole screen. */
-.prose table {
-  display: block;
-  width: 100% !important;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.prose table > tbody,
-.prose table > thead,
-.prose table tr,
-.prose table td,
-.prose table th {
-  display: block;
-  width: 100%;
-}
-
+/* CKEditor wraps every table from our rich-text fields in <figure class="table">, and
+   that literal class name collides with Tailwind's own ".table" utility (display: table).
+   That made the figure itself a real table box, and table boxes are required to grow to
+   fit their content no matter what width we give them -- so a single resized column
+   (which CKEditor stores as an inline pixel width on its <td>) was enough to blow the
+   figure, and the whole page, wider than the screen on mobile.
+   Forcing the figure back to a plain block box breaks that collision. overflow-x: auto
+   then gives ONLY the figure its own internal scrollbar for tables wider than the
+   screen, while the real <table> inside keeps its native layout so columns still line
+   up (verified: this contains the overflow to the figure -- the page itself no longer
+   grows past the viewport). */
 .prose figure.table {
-  width: 100% !important;
+  display: block;
+  overflow-x: auto;
   max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }

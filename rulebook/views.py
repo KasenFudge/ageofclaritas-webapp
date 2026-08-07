@@ -1,10 +1,20 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Prefetch
+from django.db.models import Case, IntegerField, Prefetch, When
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
 
 from .models import Class, ClassType, Definition, IndexType, Kin, RulePage, Talent, TalentType
+
+# Sidebar faction lists mix Faction/Elemental/Manifold class_types together, but should
+# read as one alphabetical run per type (e.g. all Elemental factions, then all Manifold
+# factions) rather than everything interleaved alphabetically by name.
+SIDEBAR_FACTION_ORDER = Case(
+    When(class_type=ClassType.FACTION, then=0),
+    When(class_type=ClassType.ELEMENTAL, then=1),
+    When(class_type=ClassType.MANIFOLD, then=2),
+    output_field=IntegerField(),
+)
 
 
 # Create your views here.
@@ -18,7 +28,7 @@ class ClassesView(ListView):
                 "factions",
                 queryset=Class.objects.filter(
                     class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
-                ).order_by("name"),
+                ).order_by(SIDEBAR_FACTION_ORDER, "name"),
                 to_attr="sidebar_factions",
             )
         )
@@ -70,7 +80,7 @@ class ClassDetailView(DetailView):
                     queryset=Class.objects.filter(
                         class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
                     )
-                    .order_by("name")
+                    .order_by(SIDEBAR_FACTION_ORDER, "name")
                     .only("name", "slug", "class_type"),
                     to_attr="sidebar_factions",
                 )
