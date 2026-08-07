@@ -226,6 +226,7 @@ CKEDITOR_5_CONFIGS = {
             "|",
             "bold",
             "italic",
+            "underline",
             "|",
             "bulletedList",
             "numberedList",
@@ -237,6 +238,16 @@ CKEDITOR_5_CONFIGS = {
             "undo",
             "redo",
         ],
+        # The Font plugin (FontFamily/FontColor/FontSize/FontBackgroundColor)
+        # has no toolbar button above but is compiled into django-ckeditor-5's
+        # JS bundle regardless (see .venv/Lib/site-packages/django_ckeditor_5/
+        # static/django_ckeditor_5/src/ckeditor.js's builtinPlugins list) --
+        # meaning it silently accepted inline font-family/color/size styling
+        # pasted from Word/Google Docs. Removing it stops the editor from
+        # recognizing that styling in its schema at all on the next paste, at
+        # the actual source, rather than only cleaning it up after the fact
+        # (see rulebook/sanitize.py for the server-side half of that cleanup).
+        "removePlugins": ["Font"],
         "heading": {
             "options": [
                 {"model": "paragraph", "title": "Paragraph", "class": "ck-heading_paragraph"},

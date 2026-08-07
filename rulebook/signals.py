@@ -1,10 +1,11 @@
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.urls import NoReverseMatch, reverse
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
 
-from .models import Attribute, Class, Definition, IndexType, Kin, Talent
+from .models import Attribute, Class, Definition, IndexType, Kin, RulePage, Talent
+from .sanitize import sanitize_richtext
 
 # Definition.short_description is a CharField(max_length=300) -- keep every
 # value we write to it safely under that, no matter where it came from.
@@ -150,3 +151,27 @@ def sync_attribute_to_index(sender, instance, created, raw=False, **kwargs):
 @receiver(post_delete, sender=Attribute)
 def remove_attribute_from_index(sender, instance, **kwargs):
     remove_from_index(IndexType.ATTRIBUTE, instance.pk)
+
+
+# ------------------------------------------------------------------------
+# RICH-TEXT SANITIZATION (pre_save, runs before the index-mirror post_save
+# handlers above so Definition always receives the already-cleaned value)
+# ------------------------------------------------------------------------
+RICHTEXT_FIELDS = {
+    Class: ("description", "special_rules"),
+    Talent: ("description",),
+    Kin: ("short_description", "description"),
+    Attribute: ("description",),
+    RulePage: ("content",),
+}
+
+
+@receiver(pre_save)
+def sanitize_richtext_fields(sender, instance, raw=False, **kwargs):
+    if raw:
+        return
+    fields = RICHTEXT_FIELDS.get(sender)
+    if not fields:
+        return
+    for field_name in fields:
+        setattr(instance, field_name, sanitize_richtext(getattr(instance, field_name)))

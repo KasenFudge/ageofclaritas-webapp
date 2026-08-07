@@ -3534,6 +3534,43 @@
 .prose figure.table {
   display: block;
 }
+.prose :where([style]):not(:where(table, thead, tbody, tr, td, th)) {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  white-space: inherit !important;
+  background-color: transparent !important;
+  text-decoration: inherit !important;
+}
+.prose :where(table, thead, tbody, tr, td, th)[style] {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  text-decoration: inherit !important;
+}
+.prose td u, .prose th u {
+  font-family: var(--font-serif) !important;
+}
+.prose td :is(h1, h2, h3, h4, h5, h6), .prose th :is(h1, h2, h3, h4, h5, h6) {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  margin-block: calc(var(--spacing) * 2) !important;
+}
+.prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-block: calc(var(--spacing) * 2) !important;
+}
+.prose :where(ul, ol):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-block: calc(var(--spacing) * 2) !important;
+}
+.prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-block: calc(var(--spacing) * 0.5) !important;
+}
 @property --tw-translate-x {
   syntax: "*";
   inherits: false;
