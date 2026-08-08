@@ -30,7 +30,7 @@
      on hover, and lets a click on a dot jump directly + reset the timer.
   {% endcomment %}
   {% if testimonials %}
-    <section class="max-w-3xl mx-auto px-4 py-16 sm:py-20">
+    <section class="w-full max-w-3xl mx-auto px-4 py-16 sm:py-20">
       <h2 class="text-center text-2xl sm:text-3xl font-serif font-bold text-slate-900 mb-10">What Our Players Are Saying</h2>
 
       <div x-data="testimonialCarousel({{ testimonials|length }})" x-init="start()" @mouseenter="stop()" @mouseleave="start()" class="relative">
