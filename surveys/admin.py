@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.db import transaction as db_transaction
 
 from .models import Answer, Choice, Question, Response, Survey, SurveyAssignment, SurveyQuestion
 from .services import sync_surveys_and_notify
@@ -101,7 +102,7 @@ class SurveyAdmin(admin.ModelAdmin):
     search_fields = ["title", "event__title"]
     readonly_fields = ["created_at"]
     inlines = [SurveyQuestionInline, SurveyAssignmentInline]
-    actions = ["sync_assignments"]
+    actions = ["sync_assignments", "duplicate_survey"]
 
     @admin.action(description="Sync assignments from current check-ins")
     def sync_assignments(self, request, queryset):
@@ -109,6 +110,45 @@ class SurveyAdmin(admin.ModelAdmin):
         # of the selected surveys gets a single combined email, not one per survey.
         total = sync_surveys_and_notify(list(queryset))
         self.message_user(request, f"Created {total} new assignment(s).", level=messages.SUCCESS)
+
+    def _duplicate_one(self, original):
+        # Same question list, but detached from any event -- Feedback/Downtime surveys
+        # get a fresh copy per event with identical questions, and reselecting them by
+        # hand every time is exactly what this is meant to save someone from doing.
+        base_title = original.title or original.get_survey_type_display()
+        suffix = " (Copy)"
+        title = f"{base_title[: 80 - len(suffix)]}{suffix}"
+
+        copy = Survey.objects.create(
+            event=None,
+            survey_type=original.survey_type,
+            title=title,
+            description=original.description,
+            is_active=original.is_active,
+            # due_date is deliberately not copied -- it's stale relative to whatever
+            # event this copy eventually gets assigned to. Survey.save() will fill in
+            # a placeholder now and it's editable from the change form once assigned.
+        )
+        SurveyQuestion.objects.bulk_create(
+            [
+                SurveyQuestion(survey=copy, question_id=link.question_id, position=link.position, is_required=link.is_required)
+                for link in original.survey_questions.all()
+            ]
+        )
+        # SurveyAssignment/Response/Answer are per-event/per-user and never copied.
+        return copy
+
+    @admin.action(description="Duplicate selected survey(s) (same questions, unassigned from any event)")
+    def duplicate_survey(self, request, queryset):
+        with db_transaction.atomic():
+            copies = [self._duplicate_one(survey) for survey in queryset]
+
+        titles = ", ".join(copy.title for copy in copies)
+        self.message_user(
+            request,
+            f"Created {len(copies)} duplicate survey(s): {titles}. Assign each to an event from its edit page.",
+            level=messages.SUCCESS,
+        )
 
 
 @admin.register(Response)
