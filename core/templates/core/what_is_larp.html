@@ -73,7 +73,7 @@
         on Saturday and end at 4PM on Sunday. Game off is called at 10PM Saturday for junior adventurers and
         variable times for senior adventures. Game on is at 10AM on Sunday. Most players go home overnight, but
         you can tent-camp if you'd prefer. Meals are in-character, but you are welcome to leave to get food if
-        you'd like.
+        you'd like. You can find a schedule of our upcoming events on our <a href="{% url 'events:index' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">Events Page</a>
       </p>
     </section>
 
@@ -83,7 +83,7 @@
        from the orientation content above.
        =====================================================================
     {% endcomment %}
-    <section class="pt-8 border-t border-slate-200">
+    <section id="how-we-play" class="pt-8 border-t border-slate-200">
       <h2 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 tracking-wide mb-6">How We Play</h2>
 
       <div class="space-y-8">
@@ -136,7 +136,7 @@
        else on the site.
        ===================================================================== 
     {% endcomment %}
-    <section class="pt-8 border-t border-slate-200">
+    <section id="faq" class="pt-8 border-t border-slate-200 scroll-mt-24">
       <h2 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 mb-6">Frequently Asked Questions</h2>
 
       <div x-data="{ openFaq: null }" class="space-y-3">

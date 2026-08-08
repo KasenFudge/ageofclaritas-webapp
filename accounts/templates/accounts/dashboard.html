@@ -7,7 +7,27 @@
 {% endblock title_tag %}
 
 {% block content %}
-  <div x-data="{ activeModal: null, open(name) { this.activeModal = name }, close() { this.activeModal = null } }" x-init="{% if open_modal %}open('{{ open_modal }}'){% endif %}" @keydown.escape.window="close()" class="max-w-4xl mx-auto pb-16">
+  <div x-data="{
+         activeModal: null,
+         scrollY: 0,
+         open(name) {
+           this.activeModal = name;
+           this.scrollY = window.scrollY;
+           document.body.style.position = 'fixed';
+           document.body.style.top = `-${this.scrollY}px`;
+           document.body.style.width = '100%';
+         },
+         close() {
+           this.activeModal = null;
+           document.body.style.position = '';
+           document.body.style.top = '';
+           document.body.style.width = '';
+           window.scrollTo(0, this.scrollY);
+         },
+       }"
+       x-init="{% if open_modal %}open('{{ open_modal }}'){% endif %}"
+       @keydown.escape.window="close()"
+       class="max-w-4xl mx-auto pb-16">
 
     <h1 class="text-3xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-4 mb-8">My Account</h1>
 
