@@ -19,11 +19,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 logger = logging.getLogger(__name__)
 
-# NOTE: confirm this against your actual urls.py. If the "accounts:dashboard"
-# name doesn't exist (e.g. it was renamed to "accounts:outstanding_balance"),
-# every hit to either fallback below raises NoReverseMatch, which Django
-# turns into an unhandled 500. This is the prime suspect for the live 500 -
-# swap in the real name once confirmed.
+
 NO_BALANCE_REDIRECT = "accounts:dashboard"
 
 

@@ -11,9 +11,9 @@ from .models import SurveyType
 
 # Order matters: this is the order surveys are listed in the "All players" sentence.
 SURVEY_TYPE_LABELS = {
-    SurveyType.FEEDBACK: "our optional feedback survey",
-    SurveyType.DOWNTIME: "our survey for what you would like your character to do in their downtime",
-    SurveyType.LUDUS: "our ludus survey if you are a noble",
+    SurveyType.FEEDBACK: "Our optional feedback survey",
+    SurveyType.DOWNTIME: "Our survey for what you would like your character to do in their downtime",
+    SurveyType.LUDUS: "Our Ludus survey if you are a noble",
 }
 
 
@@ -31,11 +31,7 @@ def _send_event_recap_email(user, event_surveys, domain, protocol):
     event = event_surveys[0].event
 
     new_player_survey = next(
-        (
-            s
-            for s in event_surveys
-            if s.survey_type == SurveyType.NEW_PLAYER and is_new_player_for_event(user, s.event)
-        ),
+        (s for s in event_surveys if s.survey_type == SurveyType.NEW_PLAYER and is_new_player_for_event(user, s.event)),
         None,
     )
     other_surveys = [s for s in event_surveys if s.survey_type in SURVEY_TYPE_LABELS]
@@ -55,7 +51,9 @@ def _send_event_recap_email(user, event_surveys, domain, protocol):
     )
     html_other = mark_safe(
         "".join(
-            format_html('<li><a href="{}">{}</a></li>', _survey_url(s, domain, protocol), SURVEY_TYPE_LABELS[s.survey_type])
+            format_html(
+                '<li><a href="{}">{}</a></li>', _survey_url(s, domain, protocol), SURVEY_TYPE_LABELS[s.survey_type]
+            )
             for s in other_surveys
         )
     )

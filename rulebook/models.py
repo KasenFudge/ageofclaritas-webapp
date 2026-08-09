@@ -205,9 +205,8 @@ class Definition(models.Model):
         help_text="PK of the source row when this Definition is synced from another model. Null for glossary terms.",
     )
 
-    # Glossary is the only hand-authored, hover-only index_type now that
-    # Mechanic has been removed -- everything else is mirrored from a real
-    # model and renders as a link via its precomputed target_url.
+    # What index types should use a hover display.
+    # ? Should this just be every type?
     @property
     def uses_hover_display(self):
         return self.index_type == IndexType.GLOSSARY

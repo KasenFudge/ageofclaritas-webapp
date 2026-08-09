@@ -131,7 +131,9 @@ class SurveyAdmin(admin.ModelAdmin):
         )
         SurveyQuestion.objects.bulk_create(
             [
-                SurveyQuestion(survey=copy, question_id=link.question_id, position=link.position, is_required=link.is_required)
+                SurveyQuestion(
+                    survey=copy, question_id=link.question_id, position=link.position, is_required=link.is_required
+                )
                 for link in original.survey_questions.all()
             ]
         )

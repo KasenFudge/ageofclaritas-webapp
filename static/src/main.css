@@ -44,7 +44,7 @@
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  /* Opaque at the top, fully faded by 75% of the way down; the last fourth
+  /* Opaque at the top, fully faded by 85% of the way down; the remainder
      stays transparent so whatever's behind it (the section's own gradient
      background) shows through cleanly. */
   mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
@@ -56,38 +56,24 @@
   background-position: center bottom;
   background-repeat: no-repeat;
   /* Opaque at the bottom, fading smoothly to fully transparent by the very
-     top of whatever element this is applied to -- size the element itself
-     to control how much of the fade is visible, rather than leaving most
-     of a taller element sitting fully transparent and wasted. */
+     top of whatever element this is applied to. */
   mask-image: linear-gradient(to top, black, transparent);
   -webkit-mask-image: linear-gradient(to top, black, transparent);
 }
 
-/* CKEditor5 wraps every table in <figure class="table">, but Tailwind also
-   ships a utility literally named .table (display: table). That collision
-   makes the figure size itself to its content's natural width instead of
-   respecting its container -- invisible for narrow tables, but a wide
-   CKEditor table (many columns, or a long unbreakable phrase) blows out
-   and bleeds past the page edge. This cancels the accidental collision;
-   it doesn't touch any of the actual table/row/cell styling from
-   @tailwindcss/typography, which already renders correctly on its own. */
+/* ========================================================================
+   The following sections are for styling with CKEditor to make it more
+   compatible with TailwindCSS. For the most part this is changes that cause
+   them to inherit styles from the page for consistent styles.
+=========================================================================== */
+
+/* Cancels the collision of CKEditor5 wrapping tables with <figure class="table",
+   as it collides with Tailwind's own utility named .table. */
 .prose figure.table {
   display: block;
 }
 
-/* Talent/Kin/RulePage rich text is routinely pasted in from Google Docs, Word,
-   etc., which ships a pile of inline styles per span/paragraph (font-family,
-   font-size, color, line-height...) reflecting whatever the source document
-   happened to use. That's why the same page can look like three different
-   fonts and colors depending on which talent you're reading. rulebook/sanitize.py
-   strips most of this server-side on save now, but this stays as a visual
-   safety net for anything that slips through (older content re-saved before
-   the sanitizer existed, admin edits made directly against the DB, etc.).
-   EXCLUDES table/row/cell tags -- those get a narrower rule below, since
-   border/background color there can be legitimate, deliberate
-   tableProperties/tableCellProperties authoring rather than paste noise.
-   font-weight is deliberately left alone -- inline bold (e.g. rank labels
-   like "(Rank I)") is semantically meaningful, not noise. */
+/* Sets text outside of tables to inherit the style from parent elements. */
 .prose :where([style]):not(:where(table, thead, tbody, tr, td, th)) {
   font-family: inherit !important;
   font-size: inherit !important;
@@ -99,9 +85,8 @@
   text-decoration: inherit !important;
 }
 
-/* Table tags: only neutralize font/text metrics -- CKEditor's table toolbar
-   has no font controls, so those are always paste noise. background-color/
-   border-* are left alone; those ARE legitimate there. */
+/* Slightly more lenient text inheritance for tables. 
+ ? Should I just combine these into one rule? */
 .prose :where(table, thead, tbody, tr, td, th)[style] {
   font-family: inherit !important;
   font-size: inherit !important;
@@ -111,23 +96,15 @@
   text-decoration: inherit !important;
 }
 
-/* In-table "ability name" convention is bold+underline (see Talent
-   "Stun"/"Utility" under Hydromancy) -- render it in the site's heading
-   font so it visually matches the real Talent.name label style
-   (talent_section.html's `font-serif font-bold`) instead of inheriting
-   the page's sans body font. */
+/* This overrides the rule from above for 'headings' within tables, to control
+   the font to seperate them from the rest of the text in the cells. */
 .prose td u,
 .prose th u {
   font-family: var(--font-serif) !important;
 }
 
-/* Paste can promote an ordinary line to a heading tag inside a table cell
-   (observed: a "(Rank III) ..." rank line wrapped in <h3>). Headings ARE a
-   legitimate toolbar feature outside tables, so this is scoped to table
-   cells only -- must not touch real H1-H4 body content. !important for the
-   same reason as the p/ul/ol/li rule further down: this file's custom
-   rules land in the `base` layer (see that rule's comment), which loses to
-   Typography's own heading defaults in the `utilities` layer without it. */
+/* To avoid copy-paste issues with tables, this sets font style for headings
+   specifically within tables. */
 .prose td :is(h1, h2, h3, h4, h5, h6),
 .prose th :is(h1, h2, h3, h4, h5, h6) {
   font-family: inherit !important;
@@ -139,28 +116,12 @@
 
 /* Paragraph/list spacing for all CKEditor-rendered content, centralized here
    so every .prose template gets it automatically instead of repeating the
-   same utility classes per-template.
-
-   !important is required here, not just stylistic: Tailwind's CLI puts any
-   bare/unlayered-looking CSS written after an explicit `@layer base {}`
-   block earlier in this file (see the tap-highlight-color rule near the
-   top) into that same `base` layer in the compiled output, rather than
-   leaving it truly unlayered. `@tailwindcss/typography`'s own default
-   paragraph margin (a much larger 1.25em/20px) lives in the `utilities`
-   layer, which is declared *later* than `base` in this project's layer
-   order (`@layer theme, base, components, utilities;`, emitted by
-   `@import "tailwindcss"), so it would otherwise win regardless of
-   selector specificity -- confirmed by inspecting computed styles: this
-   rule was silently never applying before !important was added here,
-   letting Typography's much larger default spacing render as "harsh",
-   inconsistent gaps between ordinary paragraphs across every talent
-   description. !important reverses layer precedence in our favor (any
-   !important declaration beats any non-!important one regardless of
-   layer), which is exactly what's needed to reliably win here. */
+   same utility classes per-template. */
 .prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   margin-block: calc(var(--spacing) * 2) !important;
 }
-.prose :where(ul, ol):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose
+  :where(ul, ol):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   margin-block: calc(var(--spacing) * 2) !important;
 }
 .prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
