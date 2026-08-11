@@ -14,33 +14,16 @@
 {% block content %}
   <div class="max-w-4xl mx-auto space-y-8 pb-16" x-data="rulebookContent()" x-init="init()">
 
-    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">
-      {{ page.title }}
-    </h1>
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">{{ page.title }}</h1>
 
-    <div
-      class="prose prose-slate max-w-none
-             prose-h2:font-serif prose-h2:text-indigo-700 prose-h2:text-2xl
-             prose-h3:font-serif prose-h3:text-indigo-700 prose-h3:text-xl
-             prose-h4:font-serif prose-h4:text-indigo-700 prose-h4:text-lg"
-    >
+    <div class="prose prose-slate max-w-none prose-h2:font-serif prose-h2:text-navy-700 prose-h2:text-2xl prose-h3:font-serif prose-h3:text-navy-700 prose-h3:text-xl prose-h4:font-serif prose-h4:text-navy-700 prose-h4:text-lg">
       {{ page.content|parse_rules }}
     </div>
 
     {# === Table expand modal, shared by every table on the page === #}
-    <div
-      x-show="expandedTable"
-      x-cloak
-      @keydown.escape.window="expandedTable = null"
-      @click.self="expandedTable = null"
-      class="fixed inset-0 z-50 bg-slate-900/70 flex items-center justify-center p-6"
-    >
+    <div x-show="expandedTable" x-cloak @keydown.escape.window="expandedTable = null" @click.self="expandedTable = null" class="fixed inset-0 z-50 bg-slate-900/70 flex items-center justify-center p-6">
       <div class="relative bg-white rounded-xl shadow-2xl max-w-[90vw] max-h-[85vh] overflow-auto p-6">
-        <button
-          @click="expandedTable = null"
-          type="button"
-          class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 p-1 rounded-md hover:bg-slate-100 transition-colors"
-        >
+        <button @click="expandedTable = null" type="button" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 p-1 rounded-md hover:bg-slate-100 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>

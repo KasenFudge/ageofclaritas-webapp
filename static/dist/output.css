@@ -3461,9 +3461,9 @@
       line-height: var(--tw-leading, var(--text-2xl--line-height));
     }
   }
-  .prose-h2\:text-indigo-700 {
+  .prose-h2\:text-navy-700 {
     & :is(:where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
-      color: var(--color-indigo-700);
+      color: var(--color-navy-700);
     }
   }
   .prose-h3\:font-serif {
@@ -3477,9 +3477,9 @@
       line-height: var(--tw-leading, var(--text-xl--line-height));
     }
   }
-  .prose-h3\:text-indigo-700 {
+  .prose-h3\:text-navy-700 {
     & :is(:where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
-      color: var(--color-indigo-700);
+      color: var(--color-navy-700);
     }
   }
   .prose-h4\:font-serif {
@@ -3493,9 +3493,9 @@
       line-height: var(--tw-leading, var(--text-lg--line-height));
     }
   }
-  .prose-h4\:text-indigo-700 {
+  .prose-h4\:text-navy-700 {
     & :is(:where(h4):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
-      color: var(--color-indigo-700);
+      color: var(--color-navy-700);
     }
   }
   .\[\&_a\]\:relative {

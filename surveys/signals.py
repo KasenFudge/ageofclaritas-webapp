@@ -1,11 +1,18 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from events.models import EventRegistration
+from events.models import Event, EventRegistration, EventType
 
 from .models import Survey, SurveyAssignment, SurveyType
-from .services import sync_surveys_and_notify
+from .services import clone_template_surveys_for_event, sync_surveys_and_notify
 from .utils import send_survey_assignment_email
+
+
+@receiver(post_save, sender=Event)
+def create_surveys_from_templates(sender, instance, created, raw=False, **kwargs):
+    if raw or not created or instance.event_type not in (EventType.SENIOR, EventType.JUNIOR):
+        return
+    clone_template_surveys_for_event(instance)
 
 
 @receiver(post_save, sender=EventRegistration)

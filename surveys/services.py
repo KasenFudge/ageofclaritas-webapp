@@ -3,7 +3,7 @@ from collections import defaultdict
 from django.contrib.auth import get_user_model
 
 from .eligibility import attendee_user_ids, new_player_user_ids
-from .models import SurveyAssignment, SurveyType
+from .models import Survey, SurveyAssignment, SurveyQuestion, SurveyType
 from .utils import send_survey_assignment_email
 
 
@@ -50,3 +50,27 @@ def sync_surveys_and_notify(surveys) -> int:
             send_survey_assignment_email(users[user_id], assigned_surveys)
 
     return total_new
+
+
+def clone_template_surveys_for_event(event):
+    """
+    For newly created events, clone feedback and downtime surveys from a template survey.
+    (The template survey is a Survey of the type linked that is not linked to an Event).
+    """
+    created_surveys = []
+    for survey_type in (SurveyType.FEEDBACK, SurveyType.DOWNTIME):
+        template = Survey.objects.filter(event__isnull=True, survey_type=survey_type, is_active=True).first()
+        if not template:
+            continue
+        new_survey = Survey.objects.create(event=event, survey_type=survey_type, description=template.description)
+        SurveyQuestion.objects.bulk_create(
+            [
+                # Don't save a title or due date, done automatically on the save for the survey based on the event.
+                SurveyQuestion(
+                    survey=new_survey, question=sq.question, position=sq.position, is_required=sq.is_required
+                )
+                for sq in template.survey_questions.all()  # already ordered by position (Meta.ordering)
+            ]
+        )
+        created_surveys.append(new_survey)
+    return created_surveys
