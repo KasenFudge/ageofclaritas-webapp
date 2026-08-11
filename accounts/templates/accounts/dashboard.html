@@ -137,7 +137,7 @@
       </button>
 
       <button @click="open('surveys')" type="button" class="group relative text-left rounded-3xl bg-white shadow-lg ring-1 ring-slate-200/80 p-6 transition-all hover:shadow-xl hover:-translate-y-1 duration-150 ease-in-out active:scale-[0.95]">
-        {% if active_surveys %}<span class="absolute top-4 right-4 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-[10px] font-bold h-5 w-5">{{ active_surveys|length }}</span>{% endif %}
+        {% if survey_count %}<span class="absolute top-4 right-4 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-[10px] font-bold h-5 w-5">{{ survey_count }}</span>{% endif %}
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-navy-100 text-navy-700">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list">
             <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
@@ -150,7 +150,7 @@
         </div>
         <h3 class="font-serif font-bold text-lg text-slate-900 mb-1">Surveys</h3>
         <p class="text-slate-500 text-sm">
-          {% if active_surveys %}
+          {% if survey_count %}
             You have surveys waiting for a response.
           {% else %}
             You're all caught up.
@@ -570,23 +570,48 @@
           </button>
         </div>
 
-        {% if active_surveys %}
-          <div class="space-y-3">
-            {% for survey in active_surveys %}
-              <a href="{% url 'surveys:respond' survey.pk %}" class="block rounded-2xl border border-slate-200 p-4 hover:border-navy-300 hover:bg-navy-50/40 transition-colors">
-                <div class="flex items-center justify-between gap-3 mb-1">
-                  <p class="font-bold text-slate-900">{{ survey.title }}</p>
-                  <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[10px] font-bold">{{ survey.get_survey_type_display }}</span>
-                </div>
-                {% if survey.description %}
-                  <p class="text-sm text-slate-500">{{ survey.description }}</p>
-                {% endif %}
-                {% if survey.due_date %}
-                  <p class="mt-1 text-xs text-slate-400">Due {{ survey.due_date|date:"F j, Y" }}</p>
-                {% endif %}
-              </a>
-            {% endfor %}
-          </div>
+        {% if active_surveys or child_survey_entries %}
+          {% if active_surveys %}
+            <div class="space-y-3">
+              {% for survey in active_surveys %}
+                <a href="{% url 'surveys:respond' survey.pk %}" class="block rounded-2xl border border-slate-200 p-4 hover:border-navy-300 hover:bg-navy-50/40 transition-colors">
+                  <div class="flex items-center justify-between gap-3 mb-1">
+                    <p class="font-bold text-slate-900">{{ survey.title }}</p>
+                    <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[10px] font-bold">{{ survey.get_survey_type_display }}</span>
+                  </div>
+                  {% if survey.description %}
+                    <p class="text-sm text-slate-500">{{ survey.description }}</p>
+                  {% endif %}
+                  {% if survey.due_date %}
+                    <p class="mt-1 text-xs text-slate-400">Due {{ survey.due_date|date:"F j, Y" }}</p>
+                  {% endif %}
+                </a>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if child_survey_entries %}
+            <div class="{% if active_surveys %}mt-6{% endif %}">
+              <h3 class="text-xs font-bold tracking-wider text-slate-400 mb-3">Household</h3>
+              <div class="space-y-3">
+                {% for entry in child_survey_entries %}
+                  <a href="{% url 'surveys:respond_sub' entry.survey.pk entry.user.id %}" class="block rounded-2xl border border-sky-200 bg-sky-50/40 p-4 hover:border-sky-300 transition-colors">
+                    <span class="inline-block rounded-full bg-sky-100 text-sky-700 px-2 py-0.5 text-[10px] font-bold mb-1">{{ entry.user.get_full_name|default:entry.user.username }}</span>
+                    <div class="flex items-center justify-between gap-3 mb-1">
+                      <p class="font-bold text-slate-900">{{ entry.survey.title }}</p>
+                      <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[10px] font-bold">{{ entry.survey.get_survey_type_display }}</span>
+                    </div>
+                    {% if entry.survey.description %}
+                      <p class="text-sm text-slate-500">{{ entry.survey.description }}</p>
+                    {% endif %}
+                    {% if entry.survey.due_date %}
+                      <p class="mt-1 text-xs text-slate-400">Due {{ entry.survey.due_date|date:"F j, Y" }}</p>
+                    {% endif %}
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
         {% else %}
           <p class="text-slate-500 text-sm">You're all caught up! No surveys are waiting for your response.</p>
         {% endif %}

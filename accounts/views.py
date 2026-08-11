@@ -35,9 +35,7 @@ class UserRegistrationView(CreateView):
         # Only count actual account creations against the limit, not invalid
         # submissions (weak/mismatched passwords, the under-14 age gate, etc.) —
         # a decorator on the whole post() method would burn quota on typos alone.
-        if is_ratelimited(
-            self.request, group="accounts.register", key="ip", rate="5/h", method="POST", increment=True
-        ):
+        if is_ratelimited(self.request, group="accounts.register", key="ip", rate="5/h", method="POST", increment=True):
             raise Ratelimited
 
         # Save the user but don't commit to the database yet
@@ -169,6 +167,15 @@ def _build_dashboard_context(user):
         Survey.objects.filter(is_active=True, assignments__user=user).exclude(submissions__user=user).distinct()
     )
 
+    child_survey_entries = []
+    for child in children:
+        child_surveys = (
+            Survey.objects.filter(is_active=True, assignments__user=child).exclude(submissions__user=child).distinct()
+        )
+        child_survey_entries += [{"user": child, "survey": survey} for survey in child_surveys]
+
+    survey_count = len(active_surveys) + len(child_survey_entries)
+
     return {
         "personal_registrations": personal_registrations,
         "child_registrations": child_registrations,
@@ -182,6 +189,8 @@ def _build_dashboard_context(user):
         "child_waiver_status": child_waiver_status,
         "household_waiver_pending": household_waiver_pending,
         "active_surveys": active_surveys,
+        "child_survey_entries": child_survey_entries,
+        "survey_count": survey_count,
         "dependents": children,
         "can_manage_dependents": user.can_manage_dependents,
         "pending_guardian_requests_sent": list(user.pending_dependents.all()) if user.can_manage_dependents else [],

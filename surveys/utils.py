@@ -21,13 +21,35 @@ def _survey_url(survey, domain, protocol):
     return f"{protocol}://{domain}{reverse('surveys:respond', args=[survey.pk])}"
 
 
-def _send(user, subject, text_content, html_content):
-    email = EmailMultiAlternatives(subject, text_content, to=[user.email])
-    email.attach_alternative(html_content, "text/html")
-    email.send()
+def _recipients_for(user):
+    """
+    Who actually receives a survey-assignment email for `user`:
+    - 13 and under: their linked parent only (dependent accounts have no real email).
+    - 14-17: both the linked parent and the teen themselves, if they have a real usable
+      account -- a safeguard for accounts that never "aged up" out of dependent status.
+    - 18+ (or age unknown): the user themselves.
+    """
+    age = user.age
+    if age is not None and age <= 13:
+        return [user.parent_account] if user.parent_account_id else []
+    if age is not None and age <= 17:
+        recipients = [user.parent_account] if user.parent_account_id else []
+        if user.has_usable_password():
+            recipients.append(user)
+        return recipients
+    return [user]
 
 
-def _send_event_recap_email(user, event_surveys, domain, protocol):
+def _dispatch(user, subject, text_content, html_content):
+    for recipient in _recipients_for(user):
+        if recipient != user:
+            subject = f"For {user.first_name or user.username}: {subject}"
+        email = EmailMultiAlternatives(subject, text_content, to=[recipient.email])
+        email.attach_alternative(html_content, "text/html")
+        email.send()
+
+
+def _build_event_recap_email(user, event_surveys, domain, protocol):
     event = event_surveys[0].event
 
     new_player_survey = next(
@@ -67,7 +89,19 @@ def _send_event_recap_email(user, event_surveys, domain, protocol):
         "emails/survey_event_recap_email.html",
         {"user": user, "new_player_line": html_new_player, "other_line": html_other},
     )
-    _send(user, subject, text_content, html_content)
+    return subject, text_content, html_content
+
+
+def _build_plain_survey_email(user, survey, domain, protocol):
+    context = {
+        "user": user,
+        "survey": survey,
+        "domain": domain,
+        "protocol": protocol,
+    }
+    text_content = render_to_string("emails/survey_assignment_email.txt", context)
+    html_content = render_to_string("emails/survey_assignment_email.html", context)
+    return f"New survey: {survey.title}", text_content, html_content
 
 
 def send_survey_assignment_email(user, surveys):
@@ -76,7 +110,8 @@ def send_survey_assignment_email(user, surveys):
     together. Surveys linked to an event get the warm "thanks for attending" recap
     template, describing each survey type in its own line rather than a generic link;
     surveys with no event (manually-assigned OTHER surveys with nothing to recap) fall
-    back to a plain one-line notice, one per survey.
+    back to a plain one-line notice, one per survey. See `_recipients_for` for who
+    actually receives it -- may be `user`, their parent, or both, depending on age.
     """
     site = Site.objects.get_current()
     protocol = "http" if settings.DEBUG else "https"
@@ -85,15 +120,9 @@ def send_survey_assignment_email(user, surveys):
     plain_surveys = [s for s in surveys if not s.event_id]
 
     if event_surveys:
-        _send_event_recap_email(user, event_surveys, site.domain, protocol)
+        subject, text_content, html_content = _build_event_recap_email(user, event_surveys, site.domain, protocol)
+        _dispatch(user, subject, text_content, html_content)
 
     for survey in plain_surveys:
-        context = {
-            "user": user,
-            "survey": survey,
-            "domain": site.domain,
-            "protocol": protocol,
-        }
-        text_content = render_to_string("emails/survey_assignment_email.txt", context)
-        html_content = render_to_string("emails/survey_assignment_email.html", context)
-        _send(user, f"New survey: {survey.title}", text_content, html_content)
+        subject, text_content, html_content = _build_plain_survey_email(user, survey, site.domain, protocol)
+        _dispatch(user, subject, text_content, html_content)
