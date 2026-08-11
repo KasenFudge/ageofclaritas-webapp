@@ -201,10 +201,8 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "core:index"
 LOGOUT_REDIRECT_URL = "core:index"
 
-# Governs both password-reset links and account-activation links (both use
-# django.contrib.auth.tokens.default_token_generator). Matched to the 24h
-# window the delete_unverified_accounts command uses, so an activation link
-# can't outlive the account it points to. Default is 3 days.
+# Governs both password-reset links and account-activation links, so that
+# they expire after 24 hours.
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
 
 # ==========================================
@@ -223,6 +221,7 @@ CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
             "heading",
+            "style",
             "|",
             "bold",
             "italic",
@@ -238,15 +237,7 @@ CKEDITOR_5_CONFIGS = {
             "undo",
             "redo",
         ],
-        # The Font plugin (FontFamily/FontColor/FontSize/FontBackgroundColor)
-        # has no toolbar button above but is compiled into django-ckeditor-5's
-        # JS bundle regardless (see .venv/Lib/site-packages/django_ckeditor_5/
-        # static/django_ckeditor_5/src/ckeditor.js's builtinPlugins list) --
-        # meaning it silently accepted inline font-family/color/size styling
-        # pasted from Word/Google Docs. Removing it stops the editor from
-        # recognizing that styling in its schema at all on the next paste, at
-        # the actual source, rather than only cleaning it up after the fact
-        # (see rulebook/sanitize.py for the server-side half of that cleanup).
+        # Removes the Font plugin from CKEditor for consistent Font Styles.
         "removePlugins": ["Font"],
         "heading": {
             "options": [
@@ -259,6 +250,17 @@ CKEDITOR_5_CONFIGS = {
         },
         "table": {
             "contentToolbar": ["tableColumn", "tableRow", "mergeTableCells", "tableProperties", "tableCellProperties"]
+        },
+        # Support for a custom style to add space below a paragraph as opposed to introducing blank lines.
+        "htmlSupport": {
+            "allow": [
+                {"name": "p", "classes": ["spacing-loose"], "attributes": False, "styles": False},
+            ],
+        },
+        "style": {
+            "definitions": [
+                {"name": "Add Space Below", "element": "p", "classes": ["spacing-loose"]},
+            ],
         },
         "mention": {
             "feeds": [

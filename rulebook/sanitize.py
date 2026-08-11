@@ -1,24 +1,16 @@
 """
-Server-side HTML sanitizer for CKEditor 5 rich-text fields -- single source
-of truth called from both the pre_save signal handlers (rulebook/signals.py,
-accounts/signals.py, events/signals.py) and the one-time `clean_richtext`
-management command, so prevention and cleanup can never drift apart.
+Server-site HTML sanitizer for CKEditor5 and its rich-text fields. Used
+throughout the site in different signals.py files for consistent styling.
 
-Allowlist is scoped to what CKEDITOR_5_CONFIGS["default"]["toolbar"]
-(ageofclaritas/settings.py) can actually produce: heading (h1-h4), bold,
-italic, underline, bulletedList, numberedList, link, insertTable (+
-tableColumn/tableRow/mergeTableCells/tableProperties/tableCellProperties),
-undo, redo -- plus:
+Allowlist includes what the CKEditor5 config to add toolbar buttons
+is setup to support already, and also the following special cases:
 
-  - style="..." on table/thead/tbody/tr/td/th only: legitimately settable
-    via the tableProperties/tableCellProperties toolbar buttons (border/
-    background color, padding, alignment) -- narrowed to a specific CSS
-    property allowlist rather than blanket-stripped like other style
-    attributes.
-  - <blockquote>/<figure>/<figcaption>: compiled-in plugins with no
-    toolbar button (BlockQuote) or always emitted by an active one (Table
-    wraps every <table> in <figure class="table">; TableCaption emits
-    <figcaption>) -- harmless, so allowed through.
+  - style="..." is settable only on table tags, as this is allowed through
+    the CKEditor5 Toolbar.
+  - <blockquote>, <figure>, and <figcaption> are used for compiled-in plugins
+    that aren't directly tied to a specific toolbar button.
+  - class="spacing-loose" on <p> only: Used by the toolbars styles dropdown
+    in lieu of allowing blank lines for consistent style.
 
 Everything else with no toolbar button and no plugin-schema justification
 (bare <span style>, font-color/font-family anywhere, arbitrary classes,
@@ -86,6 +78,8 @@ def _allowed_attributes(tag, name, value):
         return name in ("href", "title")
     if tag == "figure":
         return name == "class" and value == "table"
+    if tag == "p":
+        return name == "class" and value == "spacing-loose"
     if tag in _TABLE_STYLE_TAGS:
         return name == "style"
     return False
@@ -100,46 +94,32 @@ _cleaner = bleach.sanitizer.Cleaner(
     css_sanitizer=CSSSanitizer(allowed_css_properties=_ALLOWED_TABLE_CSS_PROPERTIES),
 )
 
-# Matches one non-nested <p ...>...</p> pair (HTML doesn't allow nesting a
-# <p> inside a <p>, and neither CKEditor nor the cleaner above ever produces
-# that, so a non-greedy regex is safe here -- this only ever runs on output
-# that already passed through _cleaner, i.e. only the ALLOWED_TAGS/attribute
-# set above can appear in it).
+# Matches one non-nested <p ...>...</p> pair.
 _P_TAG_RE = re.compile(r"<p(?:\s[^>]*)?>(.*?)</p>", re.DOTALL)
 
 
 def _strip_empty_paragraphs(html):
-    """Removes <p> tags that are visually blank once tags/entities are
-    stripped -- most commonly '<p>&nbsp;</p>' or '<p><br></p>', which Word/
-    Google Docs paste routinely inserts as a manual "blank line" between
-    sections (e.g. between an ability's intro text and its Rank I/II/III
-    breakdown) instead of relying on paragraph spacing. Once main.css gives
-    every real <p> consistent margin-block spacing on its own, keeping
-    these doubles up the gap -- a manual blank line stacked on top of
-    automatic spacing reads as a much bigger, more jarring gap than either
-    alone, which is exactly the "artificial large whitespace between
-    lines" users see in talent descriptions with several such spacers."""
+    """
+    Removes <p> tags that are visually blank once tags/entities are
+    stripped, primarily '<p>&nbsp;</p>' or '<p><br></p>'
+    """
     return _P_TAG_RE.sub(lambda m: "" if is_html_blank(m.group(1)) else m.group(0), html)
 
 
 def sanitize_richtext(html):
-    """Cleans one CKEditor-authored HTML string. Safe to call on '', None, or
-    plain text with no markup (e.g. a bare [[slug]] shortcode -- see
-    rulebook/templatetags/rulebook_filters.py; shortcodes are substituted at
-    render time, long after this ever runs, so there's nothing here for this
-    function to see or mangle)."""
+    """
+    Cleans a CKEditor-authored HTML string.
+    """
     if not html:
         return html
     return _strip_empty_paragraphs(_cleaner.clean(html))
 
 
 def is_html_blank(value):
-    """True if `value` has no visible content once tags/entities are
-    stripped -- e.g. '<p>&nbsp;</p>' or '<p><br></p>', which a rich-text
-    widget commonly leaves behind after a user "clears" a field. Mirrors the
-    logic Class.has_special_rules already used ad hoc (see rulebook/models.py);
-    centralized here so other code (e.g. the droplet reference-data import)
-    can reuse the identical rule."""
+    """
+    True if `value` has no visible content once tags/entities are
+    stripped -- e.g. '<p>&nbsp;</p>' or '<p><br></p>'
+    """
     if not value:
         return True
     text = strip_tags(value).replace("&nbsp;", " ").replace("\xa0", " ")

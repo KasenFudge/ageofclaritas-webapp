@@ -3571,6 +3571,9 @@
 .prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   margin-block: calc(var(--spacing) * 0.5) !important;
 }
+.prose p.spacing-loose {
+  margin-bottom: calc(var(--spacing) * 6) !important;
+}
 @property --tw-translate-x {
   syntax: "*";
   inherits: false;

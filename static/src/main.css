@@ -127,3 +127,8 @@
 .prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   margin-block: calc(var(--spacing) * 0.5) !important;
 }
+
+/* Used with the custom "Add Space Below" style with <p> tags in CKEditor */
+.prose p.spacing-loose {
+  margin-bottom: calc(var(--spacing) * 6) !important;
+}
