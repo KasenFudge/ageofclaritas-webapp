@@ -184,9 +184,7 @@ def stripe_webhook(request):
     # 3. Handle System Refunds
     elif event["type"] == "charge.refunded":
         charge = event["data"]["object"]
-        # bracket access raises KeyError (-> 500) if this field is ever absent;
-        # .get() degrades to a no-op update below instead of crashing the webhook.
-        stripe_id = charge.get("payment_intent")
+        stripe_id = charge["payment_intent"] if "payment_intent" in charge else None
         target_status = PaymentStatus.REFUNDED
 
     # 4. Execute Database Updates
