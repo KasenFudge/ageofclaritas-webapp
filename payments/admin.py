@@ -1,6 +1,7 @@
 # Register your models here.
 from django.contrib import admin, messages
 from django.db import transaction as db_transaction
+from django.db.models import Prefetch
 
 from events.models import EventRegistration
 
@@ -35,12 +36,27 @@ class EventRegistrationInline(admin.TabularInline):
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     # Choose which columns to display in the overview list
-    list_display = ("id", "stripe_session_id", "total_amount_display", "payment_status", "payment_method", "created_at")
+    list_display = (
+        "id",
+        "stripe_session_id",
+        "registration_display",
+        "total_amount_display",
+        "payment_status",
+        "payment_method",
+        "created_at",
+    )
     list_filter = ("payment_status", "payment_method", "created_at")
     search_fields = ("id", "stripe_session_id")
     ordering = ("-created_at",)
 
     inlines = [EventRegistrationInline]
+
+    # Prefetch the attached registration (plus its user/event)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related(
+            Prefetch("registrations", queryset=EventRegistration.objects.select_related("user", "event"))
+        )
 
     actions = [
         "force_mark_succeeded",
@@ -52,6 +68,12 @@ class TransactionAdmin(admin.ModelAdmin):
     @admin.display(description="Total Amount")
     def total_amount_display(self, obj):
         return f"${obj.total_amount_cents / 100:.2f}"
+
+    # Show who/what this transaction is for
+    @admin.display(description="For")
+    def registration_display(self, obj):
+        first_reg = obj.registrations.first()
+        return str(first_reg) if first_reg else "—"
 
     # -------------------------------------------------------------
     # Manual overrides for when the webhook missed something and you've
