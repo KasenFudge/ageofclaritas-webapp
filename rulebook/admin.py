@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from .models import Attribute, Class, ClassType, Kin, Kin_Image, RulePage, Talent
+from .models import Attribute, Class, ClassType, Definition, Kin, Kin_Image, RulePage, Talent
 
 # Centralized CKEditor 5 mapping for TextFields
 CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
@@ -88,3 +88,12 @@ class RulePageAdmin(admin.ModelAdmin):
     list_display = ("title", "slug")
     search_fields = ["title"]
     prepopulated_fields = {"slug": ("title",)}
+
+
+@admin.register(Definition)
+class DefinitionAdmin(admin.ModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
+    list_display = ("term", "index_type", "slug", "source_id")
+    list_filter = ["index_type"]
+    search_fields = ["term", "short_description"]
+    ordering = ["index_type", "term"]
