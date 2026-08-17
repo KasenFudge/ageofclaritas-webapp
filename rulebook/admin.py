@@ -93,7 +93,7 @@ class RulePageAdmin(admin.ModelAdmin):
 @admin.register(Definition)
 class DefinitionAdmin(admin.ModelAdmin):
     formfield_overrides = CKEDITOR_5_OVERRIDE
-    list_display = ("term", "index_type", "slug", "source_id")
+    list_display = ("term", "index_type", "slug")
     list_filter = ["index_type"]
-    search_fields = ["term", "short_description"]
+    search_fields = ["term"]
     ordering = ["index_type", "term"]

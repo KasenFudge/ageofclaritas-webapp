@@ -164,11 +164,26 @@ class Attribute(models.Model):
 
 
 class IndexType(models.TextChoices):
+    # Mirrored from their own models by signals.py -- term/description/
+    # target_url are kept in sync with the source row (see sync_index).
     CLASS = "class", "Class"
     TALENT = "talent", "Talent"
     KIN = "kin", "Kin"
     ATTRIBUTE = "attribute", "Attribute"
+
+    # Hand-authored: no source model, so these exist only as Definition rows.
+    # GLOSSARY itself is the catch-all for terms that don't fit one of the
+    # more specific categories below.
     GLOSSARY = "glossary", "Glossary Term"
+    EXPERIENCE_DENOMINATION = "experience_denomination", "Experience Denomination"
+    CURRENCY_DENOMINATION = "currency_denomination", "Currency Denomination"
+    WEAPON_DEXTERITY = "weapon_dexterity", "Weapon Dexterity"
+    SHIELD = "shield", "Shield"
+    TOME = "tome", "Tome"
+    EQUIPMENT_CRAFTING = "equipment_crafting", "Equipment Crafting"
+    MAGICAL_CRAFTING = "magical_crafting", "Magical Crafting"
+    POTION_CRAFTING = "potion_crafting", "Potion Crafting"
+    FREQUENCY = "frequency", "Frequency"
 
 
 class RulePage(models.Model):
@@ -190,32 +205,29 @@ class RulePage(models.Model):
 
 class Definition(models.Model):
     term = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=120, unique=True, blank=True)
-    short_description = models.CharField(max_length=300, blank=True, default="")
+    slug = models.SlugField(max_length=140, unique=True, blank=True)
     description = models.TextField(blank=True, default="")
 
-    index_type = models.CharField(max_length=15, choices=IndexType.choices, default=IndexType.GLOSSARY)
+    index_type = models.CharField(max_length=30, choices=IndexType.choices, default=IndexType.GLOSSARY)
     target_url = models.CharField(max_length=255, blank=True, default="")
 
-    # Mirrored (Class/Talent/Kin/Attribute) rows use source_id for their real
-    # pk; hand-authored Glossary rows leave it null.
-    source_id = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        help_text="PK of the source row when this Definition is synced from another model. Null for glossary terms.",
-    )
-
-    # What index types should use a hover display.
-    # ? Should this just be every type?
-    @property
-    def uses_hover_display(self):
-        return self.index_type == IndexType.GLOSSARY
+    @staticmethod
+    def build_slug(index_type, value):
+        """
+        The slug convention shared by hand-authored rows (keyed off their own
+        term, in save() below) and mirrored rows (keyed off the source
+        object's own stable slug, in signals.sync_index). Keeping it in one
+        place means both paths -- and reindex_definitions's staleness check
+        -- always agree on what a given row's slug should be, which is what
+        lets Definition rows stay identifiable without a separate source_id.
+        """
+        return f"{slugify(index_type)}-{slugify(value)}"
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{slugify(self.index_type)}-{slugify(self.term)}"
+            self.slug = self.build_slug(self.index_type, self.term)
 
-        if self.index_type == IndexType.GLOSSARY and not self.target_url:
+        if not self.target_url:
             try:
                 self.target_url = f"{reverse('rulebook:glossary')}#{self.slug}"
             except NoReverseMatch:
@@ -228,6 +240,3 @@ class Definition(models.Model):
 
     class Meta:
         ordering = ["term"]
-        # NULL source_id (glossary terms) doesn't collide with itself in Postgres/SQLite/MySQL --
-        # each is treated as distinct, so any number of glossary rows can coexist here.
-        unique_together = ("index_type", "source_id")

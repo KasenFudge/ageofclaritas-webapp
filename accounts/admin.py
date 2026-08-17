@@ -33,7 +33,6 @@ class CustomUserAdmin(UserAdmin):
     actions = [make_veteran, remove_veteran]
 
     search_fields = ("username", "email", "first_name", "last_name")
-    ordering = ("username",)
 
     # Explicitly register dynamic or computed fields as read-only
     readonly_fields = ("display_age",)

@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
 
-from .models import Class, ClassType, Definition, IndexType, Kin, RulePage, Talent, TalentType
+from .models import Class, ClassType, Definition, Kin, RulePage, Talent, TalentType
 
 # Sidebar faction lists mix Faction/Elemental/Manifold class_types together, but should
 # read as one alphabetical run per type (e.g. all Elemental factions, then all Manifold
@@ -192,7 +192,7 @@ def rulepage_detail(request, slug):
 
 
 def glossary_list(request):
-    definitions = Definition.objects.filter(index_type=IndexType.GLOSSARY)
+    definitions = Definition.objects.all()
     sidebar_pages = RulePage.objects.all()
     return render(request, "rulebook/glossary.html", {"definitions": definitions, "sidebar_pages": sidebar_pages})
 

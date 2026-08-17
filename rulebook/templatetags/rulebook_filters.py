@@ -46,11 +46,8 @@ def parse_rules(text):
         except Definition.DoesNotExist:
             return match.group(0)  # leave the shortcode visible -- an easy typo to spot
 
-        if definition.uses_hover_display or not definition.target_url:
-            # short_description is curated/truncated specifically to be popup-sized;
-            # description (esp. for a Mechanic's full RulePage content) is not.
-            popup_content = definition.short_description or definition.description
-            return _popup(definition.term, popup_content)
+        if not definition.target_url:
+            return _popup(definition.term, definition.description)
 
         return _link(definition.term, definition.target_url)
 

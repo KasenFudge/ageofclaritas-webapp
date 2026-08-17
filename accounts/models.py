@@ -138,6 +138,9 @@ class CustomUser(AbstractUser):
         self.full_clean()  # Forces the clean() rules above to execute on .save() calls
         super().save(*args, **kwargs)
 
+    class Meta:
+        ordering = ["last_name", "first_name", "username"]
+
     # Later on will have stuff for characters here, will probably create a whole seperate app for them down the
     # line because it will get complicated. A foreign key relation.
 
