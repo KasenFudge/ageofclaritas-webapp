@@ -106,12 +106,8 @@ def _build_plain_survey_email(user, survey, domain, protocol):
 
 def send_survey_assignment_email(user, surveys):
     """
-    Sends one email covering every survey in `surveys` that was just assigned to `user`
-    together. Surveys linked to an event get the warm "thanks for attending" recap
-    template, describing each survey type in its own line rather than a generic link;
-    surveys with no event (manually-assigned OTHER surveys with nothing to recap) fall
-    back to a plain one-line notice, one per survey. See `_recipients_for` for who
-    actually receives it -- may be `user`, their parent, or both, depending on age.
+    Sends one email covering every survey in `surveys` that was just assigned to `user` together.
+    See `_recipients_for` for who actually receives it -- may be `user`, their parent, or both, depending on age.
     """
     site = Site.objects.get_current()
     protocol = "http" if settings.DEBUG else "https"

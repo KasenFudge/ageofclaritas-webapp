@@ -15,6 +15,15 @@ class SurveyType(models.TextChoices):
     OTHER = "other", "Other"
 
 
+def _default_due_date_for_event(event):
+    if event and event.end_time:
+        base_date = timezone.localtime(event.end_time).date()
+    else:
+        base_date = timezone.localdate()
+    due = datetime.combine(base_date + timedelta(weeks=2), time(23, 59, 59))
+    return timezone.make_aware(due)
+
+
 class Survey(models.Model):
     # Cross-app relation pointed safely using String boundaries
     event = models.ForeignKey(
@@ -51,12 +60,7 @@ class Survey(models.Model):
     )
 
     def _default_due_date(self):
-        if self.event_id and self.event.end_time:
-            base_date = timezone.localtime(self.event.end_time).date()
-        else:
-            base_date = timezone.localdate()
-        due = datetime.combine(base_date + timedelta(weeks=2), time(23, 59, 59))
-        return timezone.make_aware(due)
+        return _default_due_date_for_event(self.event)
 
     def save(self, *args, **kwargs):
         if not self.title and self.event:
