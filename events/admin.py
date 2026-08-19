@@ -193,7 +193,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     formfield_overrides = CKEDITOR_5_OVERRIDE
-    prepopulated_fields = {"slug": ("title", "event_type")}
+    readonly_fields = ["slug"]
     fieldsets = (
         (
             "Event Overview",

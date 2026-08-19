@@ -1,7 +1,6 @@
 {% extends 'layouts/sidebar_layout.html' %}
 
 {% load static %}
-{% load rulebook_filters %}
 
 {% block title_tag %}
   Age of Claritas - {{ page.title }}
@@ -17,7 +16,7 @@
     <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">{{ page.title }}</h1>
 
     <div class="prose prose-slate max-w-none prose-h2:font-serif prose-h2:text-navy-700 prose-h2:text-2xl prose-h3:font-serif prose-h3:text-navy-700 prose-h3:text-xl prose-h4:font-serif prose-h4:text-navy-700 prose-h4:text-lg">
-      {{ page.content|parse_rules }}
+      {{ page.content|safe }}
     </div>
 
     {# === Table expand modal, shared by every table on the page === #}

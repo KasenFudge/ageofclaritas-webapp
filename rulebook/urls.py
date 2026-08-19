@@ -12,5 +12,4 @@ urlpatterns = [
     path("mechanics/", views.rulepage_list, name="rulepage_list"),
     path("mechanics/<slug:slug>/", views.rulepage_detail, name="rulepage_detail"),
     path("glossary/", views.glossary_list, name="glossary"),
-    path("definitions/mentions/", views.definition_mentions, name="definition_mentions"),
 ]

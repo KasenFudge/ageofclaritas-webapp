@@ -17,23 +17,27 @@ def get_safe_url(view_name, **kwargs):
         return ""
 
 
-def sync_index(index_type, source_slug, *, term, description, target_url):
-    # Keyed off the source object's own (stable, unique) slug rather than its
-    # pk, so the Definition row can be found/updated/removed without needing
-    # a dedicated source_id field.
+def sync_index(index_type, source_id, *, term, description, target_url):
+    # update_or_create() only persists the columns named in `defaults` (it
+    # calls save(update_fields=...) under the hood on an update) -- slug must
+    # be listed explicitly here or a rename would recompute it in memory
+    # inside Definition.save() and then silently fail to write it, since
+    # Definition.save() itself doesn't control what update_fields it was
+    # called with.
     Definition.objects.update_or_create(
         index_type=index_type,
-        slug=Definition.build_slug(index_type, source_slug),
+        source_id=source_id,
         defaults={
             "term": term,
+            "slug": Definition.build_slug(index_type, term),
             "description": description,
             "target_url": target_url,
         },
     )
 
 
-def remove_from_index(index_type, source_slug):
-    Definition.objects.filter(index_type=index_type, slug=Definition.build_slug(index_type, source_slug)).delete()
+def remove_from_index(index_type, source_id):
+    Definition.objects.filter(index_type=index_type, source_id=source_id).delete()
 
 
 # ------------------------------------------------------------------------
@@ -45,7 +49,7 @@ def sync_class_to_index(sender, instance, created, raw=False, **kwargs):
         return
     sync_index(
         IndexType.CLASS,
-        instance.slug,
+        instance.pk,
         term=instance.name,
         description=instance.description,
         target_url=get_safe_url("rulebook:class_detail", slug=instance.slug),
@@ -54,7 +58,7 @@ def sync_class_to_index(sender, instance, created, raw=False, **kwargs):
 
 @receiver(post_delete, sender=Class)
 def remove_class_from_index(sender, instance, **kwargs):
-    remove_from_index(IndexType.CLASS, instance.slug)
+    remove_from_index(IndexType.CLASS, instance.pk)
 
 
 # ------------------------------------------------------------------------
@@ -72,7 +76,7 @@ def sync_talent_to_index(sender, instance, created, raw=False, **kwargs):
 
     sync_index(
         IndexType.TALENT,
-        instance.slug,
+        instance.pk,
         term=instance.name,
         description=instance.description,
         target_url=target_url,
@@ -81,7 +85,7 @@ def sync_talent_to_index(sender, instance, created, raw=False, **kwargs):
 
 @receiver(post_delete, sender=Talent)
 def remove_talent_from_index(sender, instance, **kwargs):
-    remove_from_index(IndexType.TALENT, instance.slug)
+    remove_from_index(IndexType.TALENT, instance.pk)
 
 
 # ------------------------------------------------------------------------
@@ -93,7 +97,7 @@ def sync_kin_to_index(sender, instance, created, raw=False, **kwargs):
         return
     sync_index(
         IndexType.KIN,
-        instance.slug,
+        instance.pk,
         term=instance.name,
         description=instance.description,
         target_url=get_safe_url("rulebook:kin_detail", slug=instance.slug),
@@ -102,7 +106,7 @@ def sync_kin_to_index(sender, instance, created, raw=False, **kwargs):
 
 @receiver(post_delete, sender=Kin)
 def remove_kin_from_index(sender, instance, **kwargs):
-    remove_from_index(IndexType.KIN, instance.slug)
+    remove_from_index(IndexType.KIN, instance.pk)
 
 
 # ------------------------------------------------------------------------
@@ -120,7 +124,7 @@ def sync_attribute_to_index(sender, instance, created, raw=False, **kwargs):
 
     sync_index(
         IndexType.ATTRIBUTE,
-        instance.slug,
+        instance.pk,
         term=instance.name,
         description=instance.description,
         target_url=target_url,
@@ -129,7 +133,7 @@ def sync_attribute_to_index(sender, instance, created, raw=False, **kwargs):
 
 @receiver(post_delete, sender=Attribute)
 def remove_attribute_from_index(sender, instance, **kwargs):
-    remove_from_index(IndexType.ATTRIBUTE, instance.slug)
+    remove_from_index(IndexType.ATTRIBUTE, instance.pk)
 
 
 # ------------------------------------------------------------------------

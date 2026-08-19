@@ -1,7 +1,6 @@
 {% extends 'layouts/sidebar_layout.html' %}
 
 {% load static %}
-{% load rulebook_filters %}
 
 {% block title_tag %}
   Age of Claritas - Glossary
@@ -23,7 +22,7 @@
         <div id="{{ definition.slug }}" class="scroll-mt-24">
           <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
           <div class="pl-3 border-l-2 border-indigo-300 text-slate-600 leading-relaxed">
-            {{ definition.description|parse_rules }}
+            {{ definition.description|safe }}
           </div>
         </div>
       {% empty %}

@@ -14,6 +14,8 @@ CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name=
 class TalentInline(admin.StackedInline):
     model = Talent
     formfield_overrides = CKEDITOR_5_OVERRIDE
+    readonly_fields = ("slug",)
+    fields = [("name", "slug"), "class_for", "description", "is_rankless", "priority", "talent_type"]
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
@@ -42,7 +44,8 @@ class ClassAdmin(admin.ModelAdmin):
     list_filter = [("guild", BaseClassFilter), "class_type"]
 
     list_display = ("name", "class_type", "guild")
-    prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ("slug",)
+    fields = [("name", "slug"), "description", "guild", "class_type", "special_rules"]
 
 
 # ==========================================
@@ -51,6 +54,7 @@ class ClassAdmin(admin.ModelAdmin):
 class AttributeInline(admin.TabularInline):
     model = Attribute
     formfield_overrides = CKEDITOR_5_OVERRIDE
+    readonly_fields = ("slug",)
 
     def get_extra(self, request, obj=None, **kwargs):
         if obj is None:  # Check if creating a new object
@@ -76,7 +80,8 @@ class KinAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
     list_display = ("name",)
-    prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ("slug",)
+    fields = [("name", "slug"), "short_description", "description", "size"]
 
 
 # ==========================================
@@ -87,13 +92,16 @@ class RulePageAdmin(admin.ModelAdmin):
     formfield_overrides = CKEDITOR_5_OVERRIDE
     list_display = ("title", "slug")
     search_fields = ["title"]
-    prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("slug",)
+    fields = [("title", "slug"), "content"]
 
 
 @admin.register(Definition)
 class DefinitionAdmin(admin.ModelAdmin):
     formfield_overrides = CKEDITOR_5_OVERRIDE
-    list_display = ("term", "index_type", "slug")
+    list_display = ("term", "index_type", "slug", "source_id")
     list_filter = ["index_type"]
     search_fields = ["term"]
     ordering = ["index_type", "term"]
+    readonly_fields = ("slug",)
+    fields = [("term", "slug"), "index_type", "description", "target_url", "source_id"]

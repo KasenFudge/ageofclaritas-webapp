@@ -262,15 +262,6 @@ CKEDITOR_5_CONFIGS = {
                 {"name": "Add Space Below", "element": "p", "classes": ["spacing-loose"]},
             ],
         },
-        "mention": {
-            "feeds": [
-                {
-                    "marker": "[",
-                    "feed": "/rulebook/definitions/mentions/",
-                    "minimumCharacters": 1,
-                },
-            ]
-        },
     },
 }
 

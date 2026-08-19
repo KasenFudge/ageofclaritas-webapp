@@ -112,9 +112,7 @@ class Event(models.Model):
         return f"{self.title} ({self.get_event_type_display()})"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            # Append event type to slug processing routine to isolate URLs uniquely
-            self.slug = slugify(f"{self.title}-{self.event_type}")
+        self.slug = slugify(f"{self.title}-{self.event_type}")
         super().save(*args, **kwargs)
 
     class Meta:

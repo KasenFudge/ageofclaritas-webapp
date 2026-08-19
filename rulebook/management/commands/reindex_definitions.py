@@ -33,11 +33,8 @@ class Command(BaseCommand):
         if options["prune"]:
             pruned = 0
             for model, index_type in synced_types:
-                valid_slugs = {
-                    Definition.build_slug(index_type, slug)
-                    for slug in model.objects.values_list("slug", flat=True)
-                }
-                stale = Definition.objects.filter(index_type=index_type).exclude(slug__in=valid_slugs)
+                valid_ids = set(model.objects.values_list("pk", flat=True))
+                stale = Definition.objects.filter(index_type=index_type).exclude(source_id__in=valid_ids)
                 pruned += stale.count()
                 stale.delete()
             self.stdout.write(f"Pruned {pruned} stale Definition row(s)")

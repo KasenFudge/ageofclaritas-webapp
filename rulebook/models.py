@@ -45,6 +45,7 @@ class Class(models.Model):
         if self.class_type == ClassType.GUILD:
             self.guild = None
 
+        self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     @property
@@ -106,8 +107,7 @@ class Talent(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -122,8 +122,7 @@ class Kin(models.Model):
     size = models.CharField(max_length=80, blank=True, default="")
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -152,8 +151,7 @@ class Attribute(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     class Meta:
@@ -193,8 +191,7 @@ class RulePage(models.Model):
     content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
+        self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -212,21 +209,20 @@ class Definition(models.Model):
     index_type = models.CharField(max_length=30, choices=IndexType.choices, default=IndexType.GLOSSARY)
     target_url = models.CharField(max_length=255, blank=True, default="")
 
+    # Mirrored (Class/Talent/Kin/Attribute) rows use source_id for their real
+    # pk; hand-authored rows leave it null.
+    source_id = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="PK of the source row when this Definition is synced from another model. Null for hand-authored entries.",
+    )
+
     @staticmethod
-    def build_slug(index_type, value):
-        """
-        The slug convention shared by hand-authored rows (keyed off their own
-        term, in save() below) and mirrored rows (keyed off the source
-        object's own stable slug, in signals.sync_index). Keeping it in one
-        place means both paths -- and reindex_definitions's staleness check
-        -- always agree on what a given row's slug should be, which is what
-        lets Definition rows stay identifiable without a separate source_id.
-        """
-        return f"{slugify(index_type)}-{slugify(value)}"
+    def build_slug(index_type, term):
+        return f"{slugify(index_type)}-{slugify(term)}"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = self.build_slug(self.index_type, self.term)
+        self.slug = self.build_slug(self.index_type, self.term)
 
         if not self.target_url:
             try:
@@ -241,3 +237,4 @@ class Definition(models.Model):
 
     class Meta:
         ordering = ["term"]
+        unique_together = ("index_type", "source_id")
