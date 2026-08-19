@@ -1,8 +1,20 @@
+import nested_admin
 from django.contrib import admin
 from django.db import models
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-from .models import Attribute, Class, ClassType, Definition, Kin, Kin_Image, RulePage, Talent
+from .models import (
+    Attribute,
+    Class,
+    ClassType,
+    Definition,
+    Kin,
+    Kin_Image,
+    RulePage,
+    RuleSection,
+    RuleSubsection,
+    Talent,
+)
 
 # Centralized CKEditor 5 mapping for TextFields
 CKEDITOR_5_OVERRIDE = {models.TextField: {"widget": CKEditor5Widget(config_name="default")}}
@@ -87,13 +99,40 @@ class KinAdmin(admin.ModelAdmin):
 # ==========================================
 # RULEBOOK PAGE & DEFINITION ADMINISTRATION
 # ==========================================
-@admin.register(RulePage)
-class RulePageAdmin(admin.ModelAdmin):
+class RuleSubsectionInline(nested_admin.NestedStackedInline):
+    model = RuleSubsection
     formfield_overrides = CKEDITOR_5_OVERRIDE
-    list_display = ("title", "slug")
+    readonly_fields = ("slug",)
+    fields = [("title", "slug"), "content", "priority"]
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj is None:  # Check if creating a new object
+            return 1  # Display one extra form on creation
+        return 0  # No extra forms on editing existing objects
+
+
+class RuleSectionInline(nested_admin.NestedStackedInline):
+    model = RuleSection
+    formfield_overrides = CKEDITOR_5_OVERRIDE
+    readonly_fields = ("slug",)
+    fields = [("title", "slug"), "content", "priority"]
+    inlines = [RuleSubsectionInline]
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj is None:  # Check if creating a new object
+            return 2  # Display two extra forms on creation
+        return 0  # No extra forms on editing existing objects
+
+
+@admin.register(RulePage)
+class RulePageAdmin(nested_admin.NestedModelAdmin):
+    formfield_overrides = CKEDITOR_5_OVERRIDE
+    inlines = [RuleSectionInline]
+    list_display = ("title", "slug", "priority")
+    list_editable = ("priority",)
     search_fields = ["title"]
     readonly_fields = ("slug",)
-    fields = [("title", "slug"), "content"]
+    fields = [("title", "slug"), "content", "priority"]
 
 
 @admin.register(Definition)

@@ -2,7 +2,7 @@ from django.db.models import Case, IntegerField, Prefetch, When
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView, TemplateView
 
-from .models import Class, ClassType, Definition, Kin, RulePage, Talent, TalentType
+from .models import Class, ClassType, Definition, Kin, RulePage, RuleSection, RuleSubsection, Talent, TalentType
 
 # Sidebar faction lists mix Faction/Elemental/Manifold class_types together, but should
 # read as one alphabetical run per type (e.g. all Elemental factions, then all Manifold
@@ -178,18 +178,39 @@ class CharacterCreationView(TemplateView):
     template_name = "rulebook/character_creation.html"
 
 
+def _sidebar_pages_queryset():
+    """RulePage queryset with a 2-tier Page->Section prefetch, shared by every
+    view that renders rulepage_sidebar.html."""
+    return RulePage.objects.prefetch_related(
+        Prefetch("sections", queryset=RuleSection.objects.order_by("priority", "title"), to_attr="sidebar_sections")
+    )
+
+
 def rulepage_list(request):
     pages = RulePage.objects.all()
-    return render(request, "rulebook/rulepage_list.html", {"pages": pages, "sidebar_pages": pages})
+    return render(request, "rulebook/rulepage_list.html", {"pages": pages, "sidebar_pages": _sidebar_pages_queryset()})
 
 
 def rulepage_detail(request, slug):
-    page = get_object_or_404(RulePage, slug=slug)
-    sidebar_pages = RulePage.objects.all()
-    return render(request, "rulebook/rulepage_detail.html", {"page": page, "sidebar_pages": sidebar_pages})
+    sections_qs = RuleSection.objects.prefetch_related(
+        Prefetch(
+            "subsections", queryset=RuleSubsection.objects.order_by("priority", "title"), to_attr="pref_subsections"
+        )
+    ).order_by("priority", "title")
+
+    page = get_object_or_404(
+        RulePage.objects.prefetch_related(Prefetch("sections", queryset=sections_qs, to_attr="pref_sections")),
+        slug=slug,
+    )
+    return render(
+        request, "rulebook/rulepage_detail.html", {"page": page, "sidebar_pages": _sidebar_pages_queryset()}
+    )
 
 
 def glossary_list(request):
     definitions = Definition.objects.all()
-    sidebar_pages = RulePage.objects.all()
-    return render(request, "rulebook/glossary.html", {"definitions": definitions, "sidebar_pages": sidebar_pages})
+    return render(
+        request,
+        "rulebook/glossary.html",
+        {"definitions": definitions, "sidebar_pages": _sidebar_pages_queryset()},
+    )

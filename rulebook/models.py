@@ -190,6 +190,10 @@ class RulePage(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
 
+    priority = models.IntegerField(
+        default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
+    )
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
@@ -198,7 +202,51 @@ class RulePage(models.Model):
         return self.title
 
     class Meta:
-        ordering = ["title"]
+        ordering = ["priority", "title"]
+
+
+class RuleSection(models.Model):
+    page = models.ForeignKey(RulePage, on_delete=models.CASCADE, related_name="sections")
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, blank=True)
+    content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
+
+    priority = models.IntegerField(
+        default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
+    )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.page.title} - {self.title}"
+
+    class Meta:
+        ordering = ["priority", "title"]
+        unique_together = ("page", "slug")
+
+
+class RuleSubsection(models.Model):
+    section = models.ForeignKey(RuleSection, on_delete=models.CASCADE, related_name="subsections")
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, blank=True)
+    content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
+
+    priority = models.IntegerField(
+        default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
+    )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.section.title} - {self.title}"
+
+    class Meta:
+        ordering = ["priority", "title"]
+        unique_together = ("section", "slug")
 
 
 class Definition(models.Model):

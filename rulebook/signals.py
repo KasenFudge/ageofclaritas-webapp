@@ -2,7 +2,7 @@ from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.urls import NoReverseMatch, reverse
 
-from .models import Attribute, Class, Definition, IndexType, Kin, RulePage, Talent
+from .models import Attribute, Class, Definition, IndexType, Kin, RulePage, RuleSection, RuleSubsection, Talent
 from .sanitize import sanitize_richtext
 
 
@@ -146,6 +146,8 @@ RICHTEXT_FIELDS = {
     Kin: ("short_description", "description"),
     Attribute: ("description",),
     RulePage: ("content",),
+    RuleSection: ("content",),
+    RuleSubsection: ("content",),
 }
 
 

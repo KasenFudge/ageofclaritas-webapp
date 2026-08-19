@@ -59,6 +59,16 @@
           <li>
             <a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}"
                class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if page_nav.id == page.id %}text-navy-700 bg-navy-50/70 border border-navy-100/80 shadow-sm{% endif %}">{{ page_nav.title }}</a>
+
+            {% if page_nav.sidebar_sections %}
+              <ul class="mt-1 ml-4 pl-3 space-y-1 border-l-2 border-slate-100 text-xs">
+                {% for section_nav in page_nav.sidebar_sections %}
+                  <li>
+                    <a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}#section-{{ section_nav.slug }}" class="block py-1 px-2 rounded text-slate-500 hover:text-navy-700 hover:bg-slate-50 transition-colors">{{ section_nav.title }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </li>
         {% endfor %}
         <li>
@@ -101,6 +111,13 @@
             <a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}"
                @click="mobileSidebarOpen = false"
                class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if page_nav.id == page.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ page_nav.title }}</a>
+            {% if page_nav.sidebar_sections %}
+              <ul class="mt-1 ml-5 pl-3 space-y-1 border-l-2 border-slate-100 text-sm">
+                {% for section_nav in page_nav.sidebar_sections %}
+                  <li><a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}#section-{{ section_nav.slug }}" @click="mobileSidebarOpen = false" class="block py-1.5 px-2 text-slate-500 active:text-navy-700 active:bg-slate-50 rounded-md">{{ section_nav.title }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </li>
         {% endfor %}
         <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">

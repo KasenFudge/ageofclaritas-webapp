@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third-Party Dependencies
     "django_ckeditor_5",  # Integrated rich-text rendering engine
+    "nested_admin",  # Inline-of-inlines editing for RulePage -> RuleSection -> RuleSubsection
     "anymail",  # Handles Emailing
     # Age of Claritas Core Modules
     "ageofclaritas",  # Structural configuration root
