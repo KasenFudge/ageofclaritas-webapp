@@ -183,6 +183,7 @@ class IndexType(models.TextChoices):
     EQUIPMENT_CRAFTING = "equipment_crafting", "Equipment Crafting"
     MAGICAL_CRAFTING = "magical_crafting", "Magical Crafting"
     POTION_CRAFTING = "potion_crafting", "Potion Crafting"
+    UTILIZATION_TAG = "utilization_tag", "Utilization Tag"
     FREQUENCY = "frequency", "Frequency"
 
 
