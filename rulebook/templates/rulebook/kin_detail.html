@@ -60,14 +60,14 @@
     {% endif %}
 
     <div class="pt-6 border-t border-slate-200">
-      <h2 class="text-2xl font-serif font-bold text-center uppercase tracking-wide text-slate-900 mb-6">Kin Attributes</h2>
+      <h2 class="text-2xl font-serif font-bold text-navy-700 mb-3">Kin Attributes</h2>
       <div class="space-y-4">
         {% for attribute in kin.attributes.all %}
-          <div class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-4 sm:p-6">
-            <h4 id="{{ attribute.slug }}" class="text-lg font-bold font-serif text-navy-700 scroll-mt-24">
+          <div id="{{ attribute.slug }}" class="bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm p-4 sm:p-6 scroll-mt-24">
+            <b class="block text-lg font-bold font-serif text-slate-900">
               {% if not attribute.can_start_with %}<span class="text-navy-700" title="Cannot be taken as a starting attribute">*</span>{% endif %}
               {{ attribute.name }}
-            </h4>
+            </b>
             <div class="pl-3 border-l-2 border-navy-200 text-slate-600 leading-relaxed prose prose-slate max-w-none">{{ attribute.description|safe }}</div>
           </div>
         {% empty %}

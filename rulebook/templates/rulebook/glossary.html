@@ -13,7 +13,7 @@
 {% block content %}
   <div class="max-w-4xl mx-auto space-y-8 pb-16">
 
-    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 pb-4">
       Glossary
     </h1>
 
@@ -21,7 +21,7 @@
       {% for definition in definitions %}
         <div id="{{ definition.slug }}" class="scroll-mt-24">
           <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
-          <div class="pl-3 border-l-2 border-indigo-300 text-slate-600 leading-relaxed">
+          <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed prose prose-slate max-w-none">
             {{ definition.description|safe }}
           </div>
         </div>
