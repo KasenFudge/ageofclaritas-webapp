@@ -20,7 +20,12 @@
     <div class="space-y-6">
       {% for definition in definitions %}
         <div id="{{ definition.slug }}" class="scroll-mt-24">
-          <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
+          <div class="flex flex-wrap items-center gap-2">
+            <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
+            {% if definition.tag %}
+              <span class="inline-flex items-center rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">{{ definition.tag }}</span>
+            {% endif %}
+          </div>
           <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed prose prose-slate max-w-none">
             {{ definition.description|safe }}
           </div>

@@ -35,6 +35,11 @@ def sync_index(index_type, source_id, *, term, description, target_url):
         },
     )
 
+    # Auto-fill the badge tag with the plain IndexType label the first time it's blank.
+    Definition.objects.filter(index_type=index_type, source_id=source_id, tag="").update(
+        tag=IndexType(index_type).label
+    )
+
 
 def remove_from_index(index_type, source_id):
     Definition.objects.filter(index_type=index_type, source_id=source_id).delete()

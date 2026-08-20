@@ -134,9 +134,9 @@ class RulePageAdmin(nested_admin.NestedModelAdmin):
 @admin.register(Definition)
 class DefinitionAdmin(admin.ModelAdmin):
     formfield_overrides = CKEDITOR_5_OVERRIDE
-    list_display = ("term", "index_type", "slug", "source_id")
-    list_filter = ["index_type"]
-    search_fields = ["term"]
+    list_display = ("term", "tag", "index_type", "slug", "source_id")
+    list_filter = ["index_type", "tag"]
+    search_fields = ["term", "tag"]
     ordering = ["index_type", "term"]
     readonly_fields = ("slug",)
-    fields = [("term", "slug"), "index_type", "description", "target_url", "source_id"]
+    fields = [("term", "slug"), "tag", "description", "target_url", "source_id"]

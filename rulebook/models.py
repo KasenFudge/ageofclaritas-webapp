@@ -170,9 +170,7 @@ class IndexType(models.TextChoices):
     ATTRIBUTE = "attribute", "Attribute"
 
     # Hand-authored: no source model, so these exist only as Definition rows.
-    # GLOSSARY itself is the catch-all for terms that don't fit one of the
-    # more specific categories below.
-    GLOSSARY = "glossary", "Glossary Term"
+    GLOSSARY = "glossary", "Glossary"
 
 
 class RulePage(models.Model):
@@ -242,6 +240,16 @@ class RuleSubsection(models.Model):
 class Definition(models.Model):
     term = models.CharField(max_length=100)
     slug = models.SlugField(max_length=140, unique=True, blank=True)
+    tag = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        help_text=(
+            "Optional short label shown as a badge next to the term on the Glossary page. "
+            "For Class/Talent/Kin/Attribute rows this is auto-filled with the Index Type's "
+            "label the first time it's blank, but never overwritten once set by hand -- edit freely."
+        ),
+    )
     description = models.TextField(blank=True, default="")
 
     index_type = models.CharField(max_length=30, choices=IndexType.choices, default=IndexType.GLOSSARY)
