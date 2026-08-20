@@ -13,28 +13,24 @@
 {% block content %}
   <div class="max-w-4xl mx-auto space-y-8 pb-16" x-data="rulebookContent()" x-init="init()">
 
-    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4">{{ page.title }}</h1>
+    <h1 class="text-4xl font-serif font-bold text-center text-slate-900 pb-4">{{ page.title }}</h1>
 
     <div class="prose prose-slate max-w-none prose-h2:font-serif prose-h2:text-navy-700 prose-h2:text-2xl prose-h3:font-serif prose-h3:text-navy-700 prose-h3:text-xl prose-h4:font-serif prose-h4:text-navy-700 prose-h4:text-lg">
       {{ page.content|safe }}
     </div>
 
     {% for section in page.pref_sections %}
-      <div id="section-{{ section.slug }}" class="scroll-mt-24 space-y-4">
-        <h2 class="text-2xl font-serif font-bold text-navy-700 border-b border-slate-200 pb-2">{{ section.title }}</h2>
-        <div class="prose prose-slate max-w-none prose-h3:font-serif prose-h3:text-navy-700 prose-h3:text-xl prose-h4:font-serif prose-h4:text-navy-700 prose-h4:text-lg">
-          {{ section.content|safe }}
-        </div>
+      <section id="section-{{ section.slug }}" class="pt-8 border-t border-slate-200 scroll-mt-24 space-y-4">
+        <h2 class="text-2xl font-serif font-bold text-navy-700 mb-3">{{ section.title }}</h2>
+        <div class="prose prose-slate max-w-none prose-h3:font-serif prose-h3:text-navy-700 prose-h3:text-xl prose-h4:font-serif prose-h4:text-navy-700 prose-h4:text-lg">{{ section.content|safe }}</div>
 
         {% for subsection in section.pref_subsections %}
-          <div id="subsection-{{ subsection.slug }}" class="scroll-mt-16 space-y-2">
-            <h3 class="text-xl font-serif font-bold text-navy-700">{{ subsection.title }}</h3>
-            <div class="prose prose-slate max-w-none">
-              {{ subsection.content|safe }}
-            </div>
+          <div id="subsection-{{ subsection.slug }}" class="scroll-mt-16">
+            <b class="block text-lg font-bold font-serif text-slate-900">{{ subsection.title }}</b>
+            <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed prose prose-slate max-w-none">{{ subsection.content|safe }}</div>
           </div>
         {% endfor %}
-      </div>
+      </section>
     {% endfor %}
 
     {# === Table expand modal, shared by every table on the page === #}

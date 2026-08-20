@@ -13,7 +13,7 @@
 {% block content %}
   <div class="max-w-4xl mx-auto space-y-8 pb-16">
 
-    <h1 id="{{ guild.slug }}" class="text-3xl sm:text-4xl font-serif font-bold text-center text-slate-900 border-b border-slate-200 pb-4 scroll-mt-24">{{ guild.name }}</h1>
+    <h1 id="{{ guild.slug }}" class="text-4xl font-serif font-bold text-center text-slate-900 pb-4 scroll-mt-24">{{ guild.name }}</h1>
 
     {% if guild.has_special_rules %}
       <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed prose prose-slate max-w-none">{{ guild.special_rules|safe }}</div>
@@ -33,7 +33,7 @@
 
     {% for faction in factions %}
       <section class="pt-8 border-t border-slate-200">
-        <h1 id="{{ faction.faction.slug }}" class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 mb-4 scroll-mt-24">{{ faction.faction.name }}</h1>
+        <h1 id="{{ faction.faction.slug }}" class="text-4xl sm:text-3xl font-serif font-bold text-center text-slate-900 mb-4 scroll-mt-24">{{ faction.faction.name }}</h1>
         {% if faction.faction.has_special_rules %}
           <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm text-slate-700 leading-relaxed prose prose-slate max-w-none">{{ faction.faction.special_rules|safe }}</div>
         {% endif %}

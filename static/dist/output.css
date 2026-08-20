@@ -19,6 +19,7 @@
     --color-amber-50: oklch(98.7% 0.022 95.277);
     --color-amber-100: oklch(96.2% 0.059 95.617);
     --color-amber-200: oklch(92.4% 0.12 95.746);
+    --color-amber-300: oklch(87.9% 0.169 91.605);
     --color-amber-400: oklch(82.8% 0.189 84.429);
     --color-amber-500: oklch(76.9% 0.188 70.08);
     --color-amber-600: oklch(66.6% 0.179 58.318);
@@ -45,6 +46,7 @@
     --color-sky-50: oklch(97.7% 0.013 236.62);
     --color-sky-100: oklch(95.1% 0.026 236.824);
     --color-sky-200: oklch(90.1% 0.058 230.902);
+    --color-sky-300: oklch(82.8% 0.111 230.318);
     --color-sky-600: oklch(58.8% 0.158 241.966);
     --color-sky-700: oklch(50% 0.134 242.749);
     --color-sky-800: oklch(44.3% 0.11 240.79);
@@ -395,9 +397,6 @@
   .bottom-2 {
     bottom: calc(var(--spacing) * 2);
   }
-  .bottom-full {
-    bottom: 100%;
-  }
   .left-0 {
     left: 0;
   }
@@ -418,9 +417,6 @@
   }
   .z-10 {
     z-index: 10;
-  }
-  .z-20 {
-    z-index: 20;
   }
   .z-40 {
     z-index: 40;
@@ -1398,14 +1394,14 @@
   .animate-spin {
     animation: var(--animate-spin);
   }
-  .cursor-help {
-    cursor: help;
-  }
   .cursor-pointer {
     cursor: pointer;
   }
   .cursor-zoom-in {
     cursor: zoom-in;
+  }
+  .scroll-mt-16 {
+    scroll-margin-top: calc(var(--spacing) * 16);
   }
   .scroll-mt-24 {
     scroll-margin-top: calc(var(--spacing) * 24);
@@ -1611,10 +1607,6 @@
     --tw-border-style: dashed;
     border-style: dashed;
   }
-  .border-dotted {
-    --tw-border-style: dotted;
-    border-style: dotted;
-  }
   .border-amber-200 {
     border-color: var(--color-amber-200);
   }
@@ -1641,9 +1633,6 @@
   }
   .border-indigo-300 {
     border-color: var(--color-indigo-300);
-  }
-  .border-indigo-400 {
-    border-color: var(--color-indigo-400);
   }
   .border-navy-100 {
     border-color: var(--color-navy-100);
@@ -2012,9 +2001,6 @@
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }
-  .p-3 {
-    padding: calc(var(--spacing) * 3);
-  }
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
@@ -2267,6 +2253,9 @@
   .tracking-wider {
     --tw-tracking: var(--tracking-wider);
     letter-spacing: var(--tracking-wider);
+  }
+  .text-amber-300 {
+    color: var(--color-amber-300);
   }
   .text-amber-700 {
     color: var(--color-amber-700);
@@ -2581,13 +2570,6 @@
     --tw-prose-invert-th-borders: oklch(44.6% 0.043 257.281);
     --tw-prose-invert-td-borders: oklch(37.2% 0.044 257.287);
   }
-  .group-hover\:block {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        display: block;
-      }
-    }
-  }
   .group-hover\:scale-105 {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
@@ -2667,6 +2649,13 @@
     &:hover {
       @media (hover: hover) {
         border-color: var(--color-navy-300);
+      }
+    }
+  }
+  .hover\:border-sky-300 {
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--color-sky-300);
       }
     }
   }
@@ -3570,6 +3559,9 @@
 }
 .prose :where(li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   margin-block: calc(var(--spacing) * 0.5) !important;
+}
+.prose :where(p, ul, ol):first-child:not( :where([class~="not-prose"], [class~="not-prose"] *) ) {
+  margin-block-start: 0 !important;
 }
 .prose p.spacing-loose {
   margin-bottom: calc(var(--spacing) * 6) !important;

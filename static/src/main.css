@@ -128,6 +128,15 @@
   margin-block: calc(var(--spacing) * 0.5) !important;
 }
 
+/* The first paragraph/list right after a heading or bold label (a talent name, 
+an attribute name, a section title, etc.) should be placed closer to the heading. */
+.prose
+  :where(p, ul, ol):first-child:not(
+    :where([class~="not-prose"], [class~="not-prose"] *)
+  ) {
+  margin-block-start: 0 !important;
+}
+
 /* Used with the custom "Add Space Below" style with <p> tags in CKEditor */
 .prose p.spacing-loose {
   margin-bottom: calc(var(--spacing) * 6) !important;

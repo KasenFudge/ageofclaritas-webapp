@@ -106,9 +106,7 @@ class RuleSubsectionInline(nested_admin.NestedStackedInline):
     fields = [("title", "slug"), "content", "priority"]
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj is None:  # Check if creating a new object
-            return 1  # Display one extra form on creation
-        return 0  # No extra forms on editing existing objects
+        return 0  # Don't automatically create RuleSubsections
 
 
 class RuleSectionInline(nested_admin.NestedStackedInline):
@@ -119,9 +117,7 @@ class RuleSectionInline(nested_admin.NestedStackedInline):
     inlines = [RuleSubsectionInline]
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj is None:  # Check if creating a new object
-            return 2  # Display two extra forms on creation
-        return 0  # No extra forms on editing existing objects
+        return 0  # Don't automatically create RuleSections
 
 
 @admin.register(RulePage)
