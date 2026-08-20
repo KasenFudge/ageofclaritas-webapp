@@ -20,12 +20,12 @@
     </div>
 
     {% for section in page.pref_sections %}
-      <section id="section-{{ section.slug }}" class="pt-8 border-t border-slate-200 scroll-mt-24 space-y-4">
+      <section id="{{ section.slug }}" class="pt-8 border-t border-slate-200 scroll-mt-24 space-y-4">
         <h2 class="text-2xl font-serif font-bold text-navy-700 mb-3">{{ section.title }}</h2>
         <div class="prose prose-slate max-w-none prose-h3:font-serif prose-h3:text-navy-700 prose-h3:text-xl prose-h4:font-serif prose-h4:text-navy-700 prose-h4:text-lg">{{ section.content|safe }}</div>
 
         {% for subsection in section.pref_subsections %}
-          <div id="subsection-{{ subsection.slug }}" class="scroll-mt-16">
+          <div id="{{ subsection.slug }}" class="scroll-mt-16">
             <b class="block text-lg font-bold font-serif text-slate-900">{{ subsection.title }}</b>
             <div class="pl-3 border-l-2 border-navy-300 text-slate-600 leading-relaxed prose prose-slate max-w-none">{{ subsection.content|safe }}</div>
           </div>

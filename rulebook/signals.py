@@ -18,12 +18,7 @@ def get_safe_url(view_name, **kwargs):
 
 
 def sync_index(index_type, source_id, *, term, description, target_url):
-    # update_or_create() only persists the columns named in `defaults` (it
-    # calls save(update_fields=...) under the hood on an update) -- slug must
-    # be listed explicitly here or a rename would recompute it in memory
-    # inside Definition.save() and then silently fail to write it, since
-    # Definition.save() itself doesn't control what update_fields it was
-    # called with.
+    """Creates or updates a definition based on another item in the database based on index_type and source_id."""
     Definition.objects.update_or_create(
         index_type=index_type,
         source_id=source_id,

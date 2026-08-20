@@ -196,15 +196,19 @@ class RulePage(models.Model):
 class RuleSection(models.Model):
     page = models.ForeignKey(RulePage, on_delete=models.CASCADE, related_name="sections")
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, blank=True)
+    slug = models.SlugField(max_length=115, blank=True)
     content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
 
     priority = models.IntegerField(
         default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
     )
 
+    @staticmethod
+    def build_slug(title):
+        return f"section-{slugify(title)}"
+
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = self.build_slug(self.title)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -218,15 +222,19 @@ class RuleSection(models.Model):
 class RuleSubsection(models.Model):
     section = models.ForeignKey(RuleSection, on_delete=models.CASCADE, related_name="subsections")
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, blank=True)
+    slug = models.SlugField(max_length=115, blank=True)
     content = models.TextField(blank=True, default="", help_text="CKEditor HTML content.")
 
     priority = models.IntegerField(
         default=100, help_text="Lower numbers float to the top (e.g., 0, 1, 2). Default is 100."
     )
 
+    @staticmethod
+    def build_slug(title):
+        return f"subsection-{slugify(title)}"
+
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = self.build_slug(self.title)
         super().save(*args, **kwargs)
 
     def __str__(self):

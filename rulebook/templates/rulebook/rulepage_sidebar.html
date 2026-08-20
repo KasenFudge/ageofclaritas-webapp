@@ -64,7 +64,7 @@
               <ul class="mt-1 ml-4 pl-3 space-y-1 border-l-2 border-slate-100 text-xs">
                 {% for section_nav in page_nav.sidebar_sections %}
                   <li>
-                    <a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}#section-{{ section_nav.slug }}" class="block py-1 px-2 rounded text-slate-500 hover:text-navy-700 hover:bg-slate-50 transition-colors">{{ section_nav.title }}</a>
+                    <a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}#{{ section_nav.slug }}" class="block py-1 px-2 rounded text-slate-500 hover:text-navy-700 hover:bg-slate-50 transition-colors">{{ section_nav.title }}</a>
                   </li>
                 {% endfor %}
               </ul>
@@ -114,7 +114,7 @@
             {% if page_nav.sidebar_sections %}
               <ul class="mt-1 ml-5 pl-3 space-y-1 border-l-2 border-slate-100 text-sm">
                 {% for section_nav in page_nav.sidebar_sections %}
-                  <li><a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}#section-{{ section_nav.slug }}" @click="mobileSidebarOpen = false" class="block py-1.5 px-2 text-slate-500 active:text-navy-700 active:bg-slate-50 rounded-md">{{ section_nav.title }}</a></li>
+                  <li><a href="{% url 'rulebook:rulepage_detail' slug=page_nav.slug %}#{{ section_nav.slug }}" @click="mobileSidebarOpen = false" class="block py-1.5 px-2 text-slate-500 active:text-navy-700 active:bg-slate-50 rounded-md">{{ section_nav.title }}</a></li>
                 {% endfor %}
               </ul>
             {% endif %}
