@@ -173,16 +173,6 @@ class IndexType(models.TextChoices):
     # GLOSSARY itself is the catch-all for terms that don't fit one of the
     # more specific categories below.
     GLOSSARY = "glossary", "Glossary Term"
-    EXPERIENCE_DENOMINATION = "experience_denomination", "Experience Denomination"
-    CURRENCY_DENOMINATION = "currency_denomination", "Currency Denomination"
-    WEAPON_DEXTERITY = "weapon_dexterity", "Weapon Dexterity"
-    SHIELD = "shield", "Shield"
-    TOME = "tome", "Tome"
-    EQUIPMENT_CRAFTING = "equipment_crafting", "Equipment Crafting"
-    MAGICAL_CRAFTING = "magical_crafting", "Magical Crafting"
-    POTION_CRAFTING = "potion_crafting", "Potion Crafting"
-    UTILIZATION_TAG = "utilization_tag", "Utilization Tag"
-    FREQUENCY = "frequency", "Frequency"
 
 
 class RulePage(models.Model):
