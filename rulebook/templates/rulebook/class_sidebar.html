@@ -1,15 +1,5 @@
 {# Wrapper for Alpine State - Now handles the sticky positioning on desktop, and mobile prev/next state #}
 <div x-data="{ mobileSidebarOpen: false, items: [
-  {% for guild_nav in sidebar_guilds %}
-    { name: '{{ guild_nav.name|escapejs }}', url: '{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}', active:
-    {% if guild_nav.id == guild.id %}
-      true
-    {% else %}
-      false
-    {% endif %}
-    },
-  {% endfor %}
-
   {% if classless_record %}
     { name: '{{ classless_record.name|escapejs }}', url: '{% url 'rulebook:class_detail' class_slug=classless_record.slug %}', active:
     {% if classless_record.id == guild.id %}
@@ -19,6 +9,16 @@
     {% endif %}
     },
   {% endif %}
+
+  {% for guild_nav in sidebar_guilds %}
+    { name: '{{ guild_nav.name|escapejs }}', url: '{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}', active:
+    {% if guild_nav.id == guild.id %}
+      true
+    {% else %}
+      false
+    {% endif %}
+    },
+  {% endfor %}
   ], currentIndex: 0 }" x-init="currentIndex = Math.max(items.findIndex(i => i.active), 0)" class="shrink-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] z-10">
 
   {# Mobile Bottom Navigation Bar #}
@@ -59,6 +59,15 @@
 
     <div class="flex-1 overflow-y-auto pl-6 pr-2">
       <ul class="space-y-2">
+        {% if classless_record %}
+          <li>
+            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
+               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if classless_record.id == guild.id %}text-navy-700 bg-navy-50/70 border border-navy-100/80 shadow-sm{% endif %}">
+              {{ classless_record.name }}
+            </a>
+          </li>
+        {% endif %}
+
         {% for guild_nav in sidebar_guilds %}
           <li>
             <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}"
@@ -82,19 +91,21 @@
             {% endif %}
           </li>
         {% endfor %}
-
-        {% if classless_record %}
-          <li>
-            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}"
-               class="block py-1.5 px-3 rounded-lg font-bold text-sm transition-all text-slate-800 hover:bg-slate-100 {% if classless_record.id == guild.id %}text-navy-700 bg-navy-50/70 border border-navy-100/80 shadow-sm{% endif %}">
-              {{ classless_record.name }}
-            </a>
-          </li>
-        {% endif %}
       </ul>
     </div>
 
-    <div class="shrink-0 mt-6 pt-4 px-6 border-t border-gray-200">
+    <div class="shrink-0 mt-6 pt-4 px-6 border-t border-gray-200 space-y-2">
+      <a href="{% url 'rulebook:skills_and_abilities' %}" class="flex items-center text-gray-500 hover:text-navy-600 font-semibold text-sm transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 6h13" />
+          <path d="M8 12h13" />
+          <path d="M8 18h13" />
+          <path d="M3 6h.01" />
+          <path d="M3 12h.01" />
+          <path d="M3 18h.01" />
+        </svg>
+        Skills and Abilities
+      </a>
       <a href="{% url 'rulebook:classes' %}" class="flex items-center text-gray-500 hover:text-navy-600 font-semibold text-sm transition-colors">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -120,6 +131,11 @@
 
     <div class="overflow-y-auto px-4 py-3 pb-20">
       <ul class="space-y-1 text-base font-medium">
+        {% if classless_record %}
+          <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
+            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if classless_record.id == guild.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ classless_record.name }}</a>
+          </li>
+        {% endif %}
         {% for guild_nav in sidebar_guilds %}
           <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
             <a href="{% url 'rulebook:class_detail' class_slug=guild_nav.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if guild_nav.id == guild.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ guild_nav.name }}</a>
@@ -132,12 +148,21 @@
             {% endif %}
           </li>
         {% endfor %}
-        {% if classless_record %}
-          <li class="border-b border-slate-50 last:border-0 pb-1 mb-1">
-            <a href="{% url 'rulebook:class_detail' class_slug=classless_record.slug %}" class="block px-3 py-2 rounded-xl text-slate-800 active:bg-slate-100 transition-colors {% if classless_record.id == guild.id %}text-navy-700 bg-navy-50 font-bold{% endif %}">{{ classless_record.name }}</a>
-          </li>
-        {% endif %}
       </ul>
+    </div>
+
+    <div class="shrink-0 px-4 py-3 border-t border-slate-100">
+      <a href="{% url 'rulebook:skills_and_abilities' %}" @click="mobileSidebarOpen = false" class="flex items-center text-gray-500 active:text-navy-600 font-semibold text-sm transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 6h13" />
+          <path d="M8 12h13" />
+          <path d="M8 18h13" />
+          <path d="M3 6h.01" />
+          <path d="M3 12h.01" />
+          <path d="M3 18h.01" />
+        </svg>
+        Skills and Abilities
+      </a>
     </div>
   </div>
 

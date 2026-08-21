@@ -1382,6 +1382,9 @@
     --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
+  .rotate-90 {
+    rotate: 90deg;
+  }
   .rotate-180 {
     rotate: 180deg;
   }
@@ -1591,6 +1594,10 @@
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
   }
+  .border-t-2 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 2px;
+  }
   .border-r {
     border-right-style: var(--tw-border-style);
     border-right-width: 1px;
@@ -1630,9 +1637,6 @@
   }
   .border-green-200 {
     border-color: var(--color-green-200);
-  }
-  .border-indigo-300 {
-    border-color: var(--color-indigo-300);
   }
   .border-navy-100 {
     border-color: var(--color-navy-100);
@@ -2094,6 +2098,9 @@
   .pt-8 {
     padding-top: calc(var(--spacing) * 8);
   }
+  .pt-10 {
+    padding-top: calc(var(--spacing) * 10);
+  }
   .pr-2 {
     padding-right: calc(var(--spacing) * 2);
   }
@@ -2111,9 +2118,6 @@
   }
   .pb-4 {
     padding-bottom: calc(var(--spacing) * 4);
-  }
-  .pb-5 {
-    padding-bottom: calc(var(--spacing) * 5);
   }
   .pb-16 {
     padding-bottom: calc(var(--spacing) * 16);
@@ -3141,6 +3145,11 @@
       color: #FF0069;
     }
   }
+  .active\:text-navy-600 {
+    &:active {
+      color: var(--color-navy-600);
+    }
+  }
   .active\:text-navy-700 {
     &:active {
       color: var(--color-navy-700);
@@ -3181,6 +3190,11 @@
       margin-bottom: calc(var(--spacing) * -8);
     }
   }
+  .sm\:flex {
+    @media (width >= 40rem) {
+      display: flex;
+    }
+  }
   .sm\:h-80 {
     @media (width >= 40rem) {
       height: calc(var(--spacing) * 80);
@@ -3189,6 +3203,11 @@
   .sm\:w-auto {
     @media (width >= 40rem) {
       width: auto;
+    }
+  }
+  .sm\:rotate-0 {
+    @media (width >= 40rem) {
+      rotate: 0deg;
     }
   }
   .sm\:grid-cols-2 {
@@ -3204,6 +3223,16 @@
   .sm\:grid-cols-\[1fr_120px\] {
     @media (width >= 40rem) {
       grid-template-columns: 1fr 120px;
+    }
+  }
+  .sm\:flex-row {
+    @media (width >= 40rem) {
+      flex-direction: row;
+    }
+  }
+  .sm\:flex-wrap {
+    @media (width >= 40rem) {
+      flex-wrap: wrap;
     }
   }
   .sm\:items-end {
@@ -3296,11 +3325,6 @@
     @media (width >= 40rem) {
       font-size: var(--text-xl);
       line-height: var(--tw-leading, var(--text-xl--line-height));
-    }
-  }
-  .md\:flex {
-    @media (width >= 48rem) {
-      display: flex;
     }
   }
   .md\:grid-cols-2 {

@@ -17,13 +17,13 @@
 
     <div class="grid gap-4 sm:grid-cols-2">
       {% for rule_page in pages %}
-        <a href="{% url 'rulebook:rulepage_detail' slug=rule_page.slug %}" class="sm:col-span-2 block p-5 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm hover:border-navy-200 hover:shadow-md transition-all">
+        <a href="{% url 'rulebook:rulepage_detail' slug=rule_page.slug %}" ontouchstart="" class="sm:col-span-2 block p-5 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:border-navy-200 hover:shadow-md active:scale-[0.97]">
           <h2 class="text-lg font-serif font-bold text-navy-700">{{ rule_page.title }}</h2>
         </a>
       {% empty %}
         <div class="col-span-full text-center text-slate-500 italic py-6">No rulebook pages have been added yet.</div>
       {% endfor %}
-      <a href="{% url 'rulebook:glossary' %}" class="sm:col-span-2 block p-5 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm hover:border-navy-200 hover:shadow-md transition-all">
+      <a href="{% url 'rulebook:glossary' %}" ontouchstart="" class="sm:col-span-2 block p-5 bg-slate-50 rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200 hover:border-navy-200 hover:shadow-md active:scale-[0.97]">
         <h2 class="text-lg font-serif font-bold text-navy-700">Glossary</h2>
       </a>
     </div>
