@@ -24,7 +24,16 @@ def _default_due_date_for_event(event):
     return timezone.make_aware(due)
 
 
+class SurveyQuerySet(models.QuerySet):
+    def open(self):
+        """Surveys whose due_date hasn't passed yet -- due_date is the single source of
+        truth for whether a survey is still accepting responses."""
+        return self.filter(due_date__gt=timezone.now())
+
+
 class Survey(models.Model):
+    objects = SurveyQuerySet.as_manager()
+
     # Cross-app relation pointed safely using String boundaries
     event = models.ForeignKey(
         "events.Event",
@@ -44,20 +53,22 @@ class Survey(models.Model):
         help_text='If linked to an event, defaults to "{Survey Type} Survey for {Event Title}".',
     )
     description = models.CharField(max_length=500, blank=True, default="")
-    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField(
-        null=True,
         blank=True,
         help_text=(
             "Defaults to two weeks after the linked event ends (or two weeks from today if no "
-            "event is linked), at 11:59:59 PM."
+            "event is linked), at 11:59:59 PM. Surveys stop accepting responses once this passes."
         ),
     )
     questions = models.ManyToManyField("Question", through="SurveyQuestion", related_name="surveys")
     assigned_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="SurveyAssignment", related_name="assigned_surveys"
     )
+
+    @property
+    def is_open(self):
+        return self.due_date > timezone.now()
 
     def _default_due_date(self):
         return _default_due_date_for_event(self.event)

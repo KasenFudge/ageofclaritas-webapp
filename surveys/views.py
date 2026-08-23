@@ -9,7 +9,7 @@ from .models import Survey
 
 @login_required
 def respond_view(request, pk, user_id=None):
-    survey = get_object_or_404(Survey, pk=pk, is_active=True)
+    survey = get_object_or_404(Survey, pk=pk)
     actor = request.user
 
     if user_id and user_id != actor.id:
@@ -19,6 +19,10 @@ def respond_view(request, pk, user_id=None):
 
     if not survey.assignments.filter(user=target_user).exists():
         raise PermissionDenied("You have not been assigned this survey.")
+
+    if not survey.is_open:
+        messages.error(request, "This survey is no longer accepting responses.")
+        return redirect("accounts:dashboard")
 
     if survey.submissions.filter(user=target_user).exists():
         messages.info(request, "You've already submitted this survey.")
