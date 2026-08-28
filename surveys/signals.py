@@ -63,9 +63,8 @@ def sync_linked_survey_defaults(sender, instance, created, raw=False, **kwargs):
 def sync_assignments_on_checkin(sender, instance, created, raw=False, **kwargs):
     if raw or not instance.checked_in:
         return
-    surveys = Survey.objects.filter(
+    surveys = Survey.objects.open().filter(
         event_id=instance.event_id,
-        is_active=True,
         survey_type__in=[SurveyType.FEEDBACK, SurveyType.DOWNTIME, SurveyType.NEW_PLAYER],
     )
     # Batched (not a per-survey loop) so on check in the ueer gets all

@@ -164,13 +164,13 @@ def _build_dashboard_context(user):
     )
 
     active_surveys = (
-        Survey.objects.filter(is_active=True, assignments__user=user).exclude(submissions__user=user).distinct()
+        Survey.objects.open().filter(assignments__user=user).exclude(submissions__user=user).distinct()
     )
 
     child_survey_entries = []
     for child in children:
         child_surveys = (
-            Survey.objects.filter(is_active=True, assignments__user=child).exclude(submissions__user=child).distinct()
+            Survey.objects.open().filter(assignments__user=child).exclude(submissions__user=child).distinct()
         )
         child_survey_entries += [{"user": child, "survey": survey} for survey in child_surveys]
 

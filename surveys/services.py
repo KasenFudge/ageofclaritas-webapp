@@ -59,7 +59,9 @@ def clone_template_surveys_for_event(event):
     """
     created_surveys = []
     for survey_type in (SurveyType.FEEDBACK, SurveyType.DOWNTIME):
-        template = Survey.objects.filter(event__isnull=True, survey_type=survey_type, is_active=True).first()
+        # No is_active flag anymore -- the most recently created unlinked survey of this
+        # type is treated as the canonical template to clone from.
+        template = Survey.objects.filter(event__isnull=True, survey_type=survey_type).order_by("-created_at").first()
         if not template:
             continue
         new_survey = Survey.objects.create(event=event, survey_type=survey_type, description=template.description)

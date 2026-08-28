@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.db import transaction as db_transaction
+from django.utils import timezone
 
 from .models import Answer, Choice, Question, Response, Survey, SurveyAssignment, SurveyQuestion
 from .services import sync_surveys_and_notify
@@ -94,15 +95,34 @@ class QuestionAdmin(admin.ModelAdmin):
         return super().get_queryset(request).prefetch_related("choices")
 
 
+class SurveyStatusFilter(admin.SimpleListFilter):
+    title = "status"
+    parameter_name = "status"
+
+    def lookups(self, request, model_admin):
+        return [("open", "Open"), ("expired", "Expired")]
+
+    def queryset(self, request, queryset):
+        if self.value() == "open":
+            return queryset.open()
+        if self.value() == "expired":
+            return queryset.filter(due_date__lte=timezone.now())
+        return queryset
+
+
 @admin.register(Survey)
 class SurveyAdmin(admin.ModelAdmin):
     # Added string reference safety checks for linked events
-    list_display = ["title", "survey_type", "event", "due_date", "is_active"]
-    list_filter = ["survey_type", "is_active", "event"]
+    list_display = ["title", "survey_type", "event", "due_date", "is_open"]
+    list_filter = ["survey_type", SurveyStatusFilter, "event"]
     search_fields = ["title", "event__title"]
     readonly_fields = ["created_at"]
     inlines = [SurveyQuestionInline, SurveyAssignmentInline]
     actions = ["sync_assignments", "duplicate_survey"]
+
+    @admin.display(description="Open", boolean=True)
+    def is_open(self, obj):
+        return obj.is_open
 
     @admin.action(description="Sync assignments from current check-ins")
     def sync_assignments(self, request, queryset):
@@ -124,7 +144,6 @@ class SurveyAdmin(admin.ModelAdmin):
             survey_type=original.survey_type,
             title=title,
             description=original.description,
-            is_active=original.is_active,
             # due_date is deliberately not copied -- it's stale relative to whatever
             # event this copy eventually gets assigned to. Survey.save() will fill in
             # a placeholder now and it's editable from the change form once assigned.
