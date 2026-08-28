@@ -59,6 +59,29 @@ def _classes_with_talents_queryset():
     )
 
 
+def _sidebar_guilds_queryset():
+    """Guild Class rows (name/slug/class_type only) with their Faction/Elemental/
+    Manifold children flattened into `sidebar_factions`, ordered for nav display.
+    Shared by ClassDetailView and skills_and_abilities for their respective
+    sidebars (class_sidebar.html / skills_and_abilities_sidebar.html)."""
+    return (
+        Class.objects.filter(class_type=ClassType.GUILD)
+        .order_by("name")
+        .prefetch_related(
+            Prefetch(
+                "factions",
+                queryset=Class.objects.filter(
+                    class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
+                )
+                .order_by(SIDEBAR_FACTION_ORDER, "name")
+                .only("name", "slug", "class_type"),
+                to_attr="sidebar_factions",
+            )
+        )
+        .only("name", "slug", "class_type")
+    )
+
+
 def _build_class_talent_context(guild):
     """Group one Guild/Classless Class row's (and its factions') talents by
     type, mirroring the Skills/Abilities/Tier/Warrior-Title sections rendered
@@ -134,22 +157,7 @@ class ClassDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         guild = self.object
 
-        context["sidebar_guilds"] = (
-            Class.objects.filter(class_type=ClassType.GUILD)
-            .order_by("name")
-            .prefetch_related(
-                Prefetch(
-                    "factions",
-                    queryset=Class.objects.filter(
-                        class_type__in=[ClassType.FACTION, ClassType.ELEMENTAL, ClassType.MANIFOLD]
-                    )
-                    .order_by(SIDEBAR_FACTION_ORDER, "name")
-                    .only("name", "slug", "class_type"),
-                    to_attr="sidebar_factions",
-                )
-            )
-            .only("name", "slug", "class_type")
-        )
+        context["sidebar_guilds"] = _sidebar_guilds_queryset()
         context["classless_record"] = Class.objects.filter(class_type=ClassType.CLASSLESS).first()
 
         # Give context ClassType and TalentType for comparison
@@ -174,7 +182,7 @@ def skills_and_abilities(request):
     return render(
         request,
         "rulebook/skills_and_abilities.html",
-        {"classes": classes, "classless_record": classless},
+        {"classes": classes, "classless_record": classless, "sidebar_guilds": _sidebar_guilds_queryset()},
     )
 
 

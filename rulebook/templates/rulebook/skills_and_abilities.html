@@ -1,18 +1,16 @@
-{% extends 'layouts/full_layout.html' %}
+{% extends 'layouts/sidebar_layout.html' %}
 
 {% block title_tag %}Age of Claritas - Skills and Abilities{% endblock title_tag %}
+
+{% block sidebar %}
+  {% include 'rulebook/skills_and_abilities_sidebar.html' %}
+{% endblock sidebar %}
 
 {% block content %}
   <div class="max-w-4xl mx-auto space-y-10 pb-16">
 
     <header class="text-center space-y-4">
       <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900 pb-4">Skills and Abilities</h1>
-      <a href="{% url 'rulebook:classes' %}" class="inline-flex items-center justify-center text-gray-500 hover:text-navy-600 font-semibold text-sm transition-colors">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Back to Class Index
-      </a>
     </header>
 
     {% comment %}
@@ -267,14 +265,6 @@
       </div>
 
     </div>
-
-    {% if classes %}
-      <nav class="flex flex-wrap justify-center gap-2" aria-label="Jump to class">
-        {% for class_ctx in classes %}
-          <a href="#{{ class_ctx.guild.slug }}" class="px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200/80 text-sm font-semibold text-navy-700 hover:bg-slate-100 hover:border-slate-300 transition-colors">{{ class_ctx.guild.name }}</a>
-        {% endfor %}
-      </nav>
-    {% endif %}
 
     {% for class_ctx in classes %}
       <section class="pt-10 border-t-2 border-slate-200 space-y-8">

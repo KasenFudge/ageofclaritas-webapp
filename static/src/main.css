@@ -40,6 +40,16 @@
   --font-quintessential: "Quintessential", sans-serif;
 }
 
+/* Hides the browser-native <select> arrow so its position is controllable. The visible
+   chevron is a real sibling <svg> (see event_registration.html), rotated open/closed
+   via Alpine.js like the navbar dropdown chevrons. */
+.themed-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 2.75rem;
+}
+
 .bg-photo-fade-top {
   background-size: cover;
   background-position: center top;
