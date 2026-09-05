@@ -23,8 +23,8 @@ class WhatIsLarpView(TemplateView):
     template_name = "core/what_is_larp.html"
 
 
-class JuniorLandingView(TemplateView):
-    template_name = "core/junior_landing.html"
+class JuniorAdventurersView(TemplateView):
+    template_name = "core/junior_adventurers.html"
 
 
 class FaqView(TemplateView):
