@@ -1,0 +1,292 @@
+{% extends 'layouts/full_layout.html' %}
+
+{% block title_tag %}
+  Age of Claritas - FAQ
+{% endblock title_tag %}
+
+{% block content %}
+  <div class="max-w-3xl mx-auto space-y-8 pb-16">
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900">Frequently Asked Questions</h1>
+    </header>
+
+    {% comment %}
+     =====================================================================
+       FAQ — accordion, one open at a time. Plain x-show/x-transition rather
+       than an x-collapse plugin, since only core Alpine is loaded anywhere
+       else on the site.
+       =====================================================================
+    {% endcomment %}
+    <section id="faq" class="scroll-mt-24">
+      <div x-data="{ openFaq: null }" class="space-y-3">
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 1 ? null : 1" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What kind of world is Claritas?</span>
+            <svg :class="openFaq === 1 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 1" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Claritas is a fantasy world with a deep history where much remains unknown. We have a hard magic
+            system, but the people of Claritas haven't figured it out fully, so there are a lot of mysteries. We
+            have storylines and settings that span all sorts of genres, so there's something for everyone, but in
+            general you can expect epic storylines, wild adventures, and weird challenges. You can learn more
+            about the Adventurer's Encampment
+            {# TODO: link once the Adventurer's Encampment page exists #}
+            <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>
+            and about the kinds of people that inhabit Claritas
+            <a href="{% url 'rulebook:kin' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 2 ? null : 2" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What kind of combat does Age of Claritas practice?</span>
+            <svg :class="openFaq === 2 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 2" x-transition class="px-5 pb-4 space-y-3 text-sm text-slate-600 leading-relaxed">
+            <p><span class="font-semibold text-slate-700">For LARPers:</span> We describe our combat as slightly more intense than softest-touch LARPs, and we use weapons that are slightly less padded than boffer weapons.</p>
+            <p><span class="font-semibold text-slate-700">For non-LARPers:</span> we're hitting each other with pretty soft weapons, and we're not hitting super hard. Talents make our combat more interesting than just weapon fighting. If being on the front lines of combat isn't your thing, we have plenty of play styles that might suit you!</p>
+            <p>
+              You can see our safety rules
+              {# TODO: link once the safety rules page exists #}
+              <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>
+              and our weapon guidelines
+              {# TODO: link once the weapon guidelines page exists #}
+              <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 3 ? null : 3" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What kinds of topics does Age of Claritas interact with?</span>
+            <svg :class="openFaq === 3 ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 3" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Many storylines focus on generally fun and fantastical themes. Junior LARPs will interact with some
+            serious topics, such as war, death, slavery, and poverty. Senior LARPs interact with more sensitive
+            themes, including genocide. Age of Claritas does not interact with explicitly sexual content. We
+            will very rarely interact with suicide, child endangerment, and substance abuse. If there are
+            specific topics you wish to avoid, please tell the GMs and we'll be sure to communicate with you.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 4 ? null : 4" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>Can I come to Junior LARP as an adult (18 and over)?</span>
+            <svg :class="openFaq === 4 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 4" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            If you meet our Certified NPC or parent NPC guidelines and pass the required background check you can
+            join us to NPC for junior events, but otherwise no. Exceptions may be made if you've turned 18 within
+            the month.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 5 ? null : 5" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>Can I come to Senior LARP as a Junior (under 18)?</span>
+            <svg :class="openFaq === 5 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 5" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">Nope! Exceptions may be made if you're turning 18 within the month.</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 6 ? null : 6" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What do I wear?</span>
+            <svg :class="openFaq === 6 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 6" x-transition class="px-5 pb-4 space-y-3 text-sm text-slate-600 leading-relaxed">
+            <p>
+              If you don't have fantasy clothing at your disposal, no worries! We recommend wearing a solid,
+              neutral colored base layer. The modern nature of jeans and athletic wear tend to make them stick
+              out a bit, so cotton, linen, or textured materials are a good option. After that, accessories like
+              belts, scarves, trinkets, and sashes go a long way. If you come out of costume, no worries! Many
+              players develop their character's costume as they develop the character, so there's no pressure to
+              come with costuming fully figured out.
+            </p>
+            <p>
+              If you have fantasy and costume clothing at your disposal, you are welcome to go all-out! We
+              recommend durable and mobile clothing. LARP includes a lot of movement, running, and walking, and
+              the more comfortable you are, the more you can focus on the game. Many players opt for long
+              sleeves (especially pants) during the summer to help with insects, poison ivy, and sun.
+              Comfortable and stable shoes are especially important! We know shoes are some of the harder pieces
+              to find in fantasy-appropriate styles; please wear whatever you think will work best for you. When
+              in doubt, pack spare options that are more comfortable, warmer, cooler, etc.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 7 ? null : 7" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>How do you handle extreme weather?</span>
+            <svg :class="openFaq === 7 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 7" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            We watch the weather closely leading up to an event. Our guideline for cold events is to cancel if
+            we expect 80% of the game-play hours to be below freezing. For hot weather, we'll cancel senior
+            events if the average temperature during game-play hours is over 98 degrees or if the heat index
+            reaches 110 degrees. For junior events we'll cancel if the average temperature during game-play is
+            over 94 degrees or if the heat index reaches 105 degrees. Regardless, we take many breaks for water,
+            shade, and rest during hot weather. We handle storms and snow on a case-by-case basis. Generally, we
+            try to announce cancelled or postponed events by Thursday evening before an event.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 8 ? null : 8" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What's the property like?</span>
+            <svg :class="openFaq === 8 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 8" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            We'll have tent-pavilions for socializing, benches, a porta-potty, and a fire pit. We have a public
+            water cooler, but we recommend you bring water or drinks for yourself. The property has pretty
+            well-established trails and open areas. Although our main areas are pretty cultivated, you should
+            prepare for standard weather and nature related challenges - bring sunscreen, bugspray, warm
+            clothes, and whatever else you need to be comfortable outside!
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 9 ? null : 9" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>What meal options are available?</span>
+            <svg :class="openFaq === 9 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 9" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Most players bring food. We'll have a fire pit (if the weather allows) that you can use to heat food
+            if you'd like. There are also fast food options within 10 minutes driving from the property if you'd
+            rather go out to get food, but we don't pause our game for meals. We have a public water cooler but
+            we recommend you bring water and drinks for yourself to be safe.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 10 ? null : 10" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>I forgot to submit my downtime! Now what?</span>
+            <svg :class="openFaq === 10 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 10" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Our GMs need time to prepare downtime replies, so the survey deadline isn't adjustable. If your
+            character intended to complete a downtime and didn't, you can either say your character spent time
+            doing the downtime but with no consequence (e.g. my character was studying magical theory like they
+            said they were going to, but their findings were inconsequential), or you can say they spent time in
+            the encampment resting.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+{% endblock content %}

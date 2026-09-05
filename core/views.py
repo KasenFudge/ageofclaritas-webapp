@@ -21,3 +21,11 @@ class TeamMemberView(ListView):
 
 class WhatIsLarpView(TemplateView):
     template_name = "core/what_is_larp.html"
+
+
+class JuniorLandingView(TemplateView):
+    template_name = "core/junior_landing.html"
+
+
+class FaqView(TemplateView):
+    template_name = "core/faq.html"

@@ -1,0 +1,267 @@
+{% extends 'layouts/full_layout.html' %}
+
+{% load static %}
+
+{% block title_tag %}
+  Age of Claritas - Junior Adventurers
+{% endblock title_tag %}
+
+{% block content %}
+  <div class="max-w-3xl mx-auto space-y-8 pb-16">
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900">Age of Claritas - Junior Larpers</h1>
+      <p class="text-slate-600 leading-relaxed">
+        Welcome to Age of Claritas, where we strive to offer fun and fulfilling adventure experiences through
+        immersive and engaging storytelling to children 8-17 years old.
+      </p>
+    </header>
+
+    <section id="who-we-are" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Who We Are</h2>
+      <img src="{% static 'images/JrPage/JrMain1.jpg' %}" alt="Junior adventurers in theatrical combat" class="float-left w-48 sm:w-56 h-auto rounded-xl mr-4 mb-2 mt-1" />
+      <p class="text-slate-600 leading-relaxed">
+        Age of Claritas is a KC-local family friendly live action adventure group. We've been hosting fantasy
+        themed events for children and teens since 2013. Our goal is to get kids outside, give them exciting
+        situations to problem solve their way out of, and let them be creative through character building,
+        costuming, and improvisation acting.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        We're proud of our roots as a children's LARP, and we remain the only LARP in the KC area to have
+        children-only events (alternating with senior events each month). Players under 18 are welcome to join
+        us as junior adventurers, and over 18 as senior adventurers. See our upcoming junior events on our
+        <a href="{% url 'events:index' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">Events Page</a>.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        Our GMs - Game Masters - have roots in stunt combat and acting, so theatrics and storytelling are a huge
+        focus for us. Our junior community is made up of people with all sorts of interests, including theater
+        kids, DnD/RPG enthusiasts, and a whole lot of kids who just enjoy adventure and swinging foam swords.
+        You can meet our GMs <a href="{% url 'core:our_team' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+      </p>
+    </section>
+
+    <section id="goals-and-values" class="pt-8 border-t border-slate-200 space-y-3 clear-left">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Our Goals and Values</h2>
+      <p class="text-slate-600 leading-relaxed">
+        Ultimately, we believe LARP is a uniquely effective medium for children to grow and learn about
+        themselves. For some this is a therapeutic way to play with different aspects of themselves that they
+        might not have an outlet for in real life, for some it's a way to learn about problem solving and
+        consequences, and for others it's just a fun fantasy world to explore. Regardless, we think everyone can
+        benefit from LARPing, no matter their age.
+      </p>
+    </section>
+
+    <section id="what-is-larp" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">What is LARP and what should I expect?</h2>
+      <p class="text-slate-600 leading-relaxed">
+        LARP stands for Live Action Role Play. Different LARP communities have different focuses and styles - at
+        Age of Claritas we focus on interesting storytelling driven by the players' autonomous, in-the-moment
+        choices. Age of Claritas events exercise many skills including improvisation, interpersonal
+        collaboration, and decision making.
+      </p>
+      <p class="text-slate-600 leading-relaxed">In general, junior adventurers will be expected to:</p>
+      <ul class="list-disc list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>Use improvisational acting skills to bring a character to life</li>
+        <li>Develop a character and understand our mechanical system</li>
+        <li>Work with other players' characters to solve problems and make decisions</li>
+        <li>Do basic mental math to keep track of stats during combat</li>
+        <li>Be comfortable being outside</li>
+      </ul>
+      <p class="text-slate-600 leading-relaxed">
+        We understand that there's a lot to focus on! No player needs to do all of these things perfectly, and
+        we're happy to help where we can during events.
+      </p>
+
+      <p class="text-slate-600 leading-relaxed">
+        <a href="{% url 'core:what_is_larp' %}#how-we-play" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">See more about How We Play here!</a>
+      </p>
+    </section>
+
+    <section id="who-can-attend" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Who can attend junior events other than 8-17 year-old players?</h2>
+      <img src="{% static 'images/JrPage/JrMain2.jpg' %}" alt="Junior adventurers on an outdoor adventure" class="float-right w-48 sm:w-56 h-auto rounded-xl ml-4 mb-2 mt-1" />
+      <p class="text-slate-600 leading-relaxed">
+        Other than our GMs and players, we allow parents of junior players and Certified NPCs to attend junior
+        events.
+      </p>
+
+      <p class="leading-relaxed font-semibold text-slate-700">Attending parent NPCs must:</p>
+      <ul class="list-disc list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>Fund and pass a GM-approved background check (this is an acceptable option, but you can suggest alternatives)</li>
+        <li>Sign the Code of Conduct and waiver</li>
+        <li>Have a child attending the event</li>
+      </ul>
+
+      <p class="leading-relaxed font-semibold text-slate-700">Certified NPCs must:</p>
+      <ul class="list-disc list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>Fund and pass a GM-approved background check (this is an acceptable option, but you can suggest alternatives)</li>
+        <li>Be over 18 years of age</li>
+        <li>Have attended at least 3 Senior Events in the past year</li>
+        <li>Have attended Age of Claritas events for 18 months</li>
+      </ul>
+      <p class="text-slate-600 leading-relaxed">
+        Claritas LLC reserves the right to refuse Certified NPC status to any person even if they meet these
+        qualifications. Certified NPCs can have their status revoked at any time.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        If you are interested in becoming a Certified NPC or NPCing as a parent, please email
+        <a href="mailto:info@ageofclaritas.com" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">info@ageofclaritas.com</a>.
+      </p>
+
+      <h3 class="text-xl font-serif font-bold text-navy-700 clear-right pt-4">What kinds of topics do Age of Claritas junior events interact with?</h3>
+      <p class="text-slate-600 leading-relaxed">
+        Junior events use appropriate language, avoid gore, and use slightly simpler mechanics, but other than
+        that are largely similar to our senior storylines. Most of our storylines focus on generally fun and
+        fantastical themes and challenges.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        Junior events will interact with some serious topics, such as war, death, slavery, poverty, and child
+        endangerment. Age of Claritas does not interact with explicitly sexual content. If there are specific
+        topics you wish to avoid (or do not want your child to engage with), please inform us and we'll be sure
+        to communicate with you.
+      </p>
+      <p class="text-slate-600 leading-relaxed">
+        You can see our junior Code of Conduct
+        {# TODO: link once the junior Code of Conduct page exists #}
+        <a href="#" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+      </p>
+    </section>
+
+    <section id="logistics" class="pt-8 border-t border-slate-200 space-y-3">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">The Logistics</h2>
+      <img src="{% static 'images/JrPage/JrMain3.jpg' %}" alt="Junior adventurers in action" class="float-left w-48 sm:w-56 h-auto rounded-xl mr-4 mb-2 mt-1" />
+      <h3 class="text-xl font-serif font-bold text-navy-700">The Location and Schedule</h3>
+      <p class="text-slate-600 leading-relaxed">
+        Our events take place at <a href="https://maps.app.goo.gl/TsZHi22YSea77SXSA" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">5014 Gibbs Rd, Kansas City, KS 66106</a> and
+        generally start at 9AM on Saturday and end at 4PM on Sunday. Game off is called at 10PM Saturday for
+        junior adventurers. Game on is at 10AM on Sunday. Most players go home overnight, but you can tent-camp
+        if you'd prefer. Meals are in-character, but players are welcome to leave to get food. You can find a
+        schedule of our upcoming events on our <a href="{% url 'events:index' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">Events Page</a>.
+      </p>
+    </section>
+
+    <section id="costs" class="pt-8 border-t border-slate-200 space-y-2 clear-left">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">Costs</h2>
+      <h3 class="text-xl font-serif font-bold text-navy-700">Junior Events</h3>
+      <p class="leading-relaxed font-semibold text-slate-700">Base Cost:</p>
+      <ul class="list-disc list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>$95 for 8-13 Years Old</li>
+        <li>$65 for 14-17 Years Old</li>
+      </ul>
+      <p class="leading-relaxed font-semibold text-slate-700">Optional costs:</p>
+      <ul class="list-disc list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>Weapon Rental: $20 (weapon rental fee is waived for the first event)</li>
+      </ul>
+      <p class="leading-relaxed font-semibold text-slate-700">Discounts:</p>
+      <ul class="list-disc list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>$10 off for Early Bird Signups (sign up by the end of the day Friday one week before event weekend!)</li>
+        <li>$10 off for those arriving after 3pm Saturday</li>
+        <li>$20 off for those attending Sunday only</li>
+      </ul>
+      <p class="text-slate-600 leading-relaxed">First Events are FREE for all first-time adventurers!</p>
+    </section>
+
+    {# === Junior Photo Gallery Carousel === #}
+    {# Auto-advancing, looping, pause-on-hover - same interaction pattern as the #}
+    {# homepage testimonial carousel (core/templates/core/index.html), just driven #}
+    {# by a fixed list of {% static %} images instead of a testimonials queryset. #}
+    {# Every slide is cropped to the same aspect ratio (object-cover) rather than #}
+    {# letterboxed to its native size, so mixed portrait/landscape photos don't #}
+    {# make the frame jump around between slides. #}
+    <section id="gallery" class="pt-8 border-t border-slate-200 clear-left">
+      <h2 class="text-2xl sm:text-3xl font-serif font-bold text-center text-slate-900 tracking-wide mb-6">Junior LARP in Action</h2>
+
+      <div x-data="juniorGalleryCarousel(12)" x-init="start()" @mouseenter="stop()" @mouseleave="start()" class="max-w-2xl mx-auto">
+        <div class="relative aspect-[3/2] rounded-xl border border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
+          <div class="absolute inset-0 flex transition-transform duration-700 ease-in-out" :style="{ transform: 'translateX(-' + (slide * 100) + '%)' }">
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel1.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 1)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel2.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 2)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel3.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 3)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel4.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 4)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel5.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 5)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel6.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 6)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel7.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 7)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel8.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 8)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel9.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 9)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel10.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 10)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel11.jpg' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 11)" />
+            </div>
+            <div class="w-full h-full shrink-0">
+              <img src="{% static 'images/JrPage/JrCarousel12.JPG' %}" class="w-full h-full object-cover" alt="Junior adventurers at Age of Claritas (photo 12)" />
+            </div>
+          </div>
+
+          <button @click="prev()" type="button" class="absolute z-10 left-2 top-1/2 -translate-y-1/2 bg-slate-900/40 hover:bg-slate-900/60 text-white rounded-full p-2 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            <span class="sr-only">Previous</span>
+          </button>
+          <button @click="next()" type="button" class="absolute z-10 right-2 top-1/2 -translate-y-1/2 bg-slate-900/40 hover:bg-slate-900/60 text-white rounded-full p-2 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+            <span class="sr-only">Next</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+  function juniorGalleryCarousel(total) {
+    return {
+      slide: 0,
+      total: total,
+      timer: null,
+      start() {
+        this.stop();
+
+        if (this.total <= 1) {
+          return;
+        }
+
+        this.timer = setInterval(() => {
+          this.slide = (this.slide + 1) % this.total;
+        }, 5000);
+      },
+      stop() {
+        if (this.timer) {
+          clearInterval(this.timer);
+          this.timer = null;
+        }
+      },
+      next() {
+        this.slide = (this.slide + 1) % this.total;
+        this.start();
+      },
+      prev() {
+        this.slide = (this.slide - 1 + this.total) % this.total;
+        this.start();
+      }
+    };
+  }
+  </script>
+{% endblock content %}
