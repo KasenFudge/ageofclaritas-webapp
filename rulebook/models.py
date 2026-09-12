@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Case, IntegerField, When
+from django.urls import NoReverseMatch, reverse
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
@@ -260,11 +261,21 @@ class Definition(models.Model):
     description = models.TextField(blank=True, default="")
 
     index_type = models.CharField(max_length=30, choices=IndexType.choices, default=IndexType.GLOSSARY)
+
+    # Site -> Glossary: where something elsewhere on the site should link to reach
+    # this definition. Auto-synced for Class/Talent/Kin/Attribute rows (see
+    # signals.sync_index); for hand-authored rows this defaults to the row's own
+    # anchor on the Glossary page itself if left blank.
+    glossary_url = models.CharField(max_length=255, blank=True, default="")
+
+    # Glossary -> Site: optional link the term itself points to when clicked on
+    # the Glossary page (e.g. a related rule page). Never auto-populated -- blank
+    # means the term just renders as plain text.
     target_url = models.CharField(
         max_length=255,
         blank=True,
         default="",
-        help_text=("Page that this term should link to when clicked in the Glossary."),
+        help_text="Optional link. If set, the term on the Glossary page links to this URL.",
     )
 
     # Mirrored (Class/Talent/Kin/Attribute) rows use source_id for their real
@@ -281,6 +292,13 @@ class Definition(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.build_slug(self.index_type, self.term)
+
+        if not self.glossary_url:
+            try:
+                self.glossary_url = f"{reverse('rulebook:glossary')}#{self.slug}"
+            except NoReverseMatch:
+                pass
+
         super().save(*args, **kwargs)
 
     def __str__(self):
