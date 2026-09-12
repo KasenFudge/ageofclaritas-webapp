@@ -1,7 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Case, IntegerField, When
-from django.urls import NoReverseMatch, reverse
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
@@ -261,7 +260,12 @@ class Definition(models.Model):
     description = models.TextField(blank=True, default="")
 
     index_type = models.CharField(max_length=30, choices=IndexType.choices, default=IndexType.GLOSSARY)
-    target_url = models.CharField(max_length=255, blank=True, default="")
+    target_url = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text=("Page that this term should link to when clicked in the Glossary."),
+    )
 
     # Mirrored (Class/Talent/Kin/Attribute) rows use source_id for their real
     # pk; hand-authored rows leave it null.
@@ -277,13 +281,6 @@ class Definition(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.build_slug(self.index_type, self.term)
-
-        if not self.target_url:
-            try:
-                self.target_url = f"{reverse('rulebook:glossary')}#{self.slug}"
-            except NoReverseMatch:
-                pass
-
         super().save(*args, **kwargs)
 
     def __str__(self):
