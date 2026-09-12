@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rulebook', '0012_alter_rulesection_slug_alter_rulesubsection_slug'),
+        ("rulebook", "0012_alter_rulesection_slug_alter_rulesubsection_slug"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='definition',
-            name='target_url',
-            field=models.CharField(blank=True, default='', help_text='Canonical page for this term (auto-filled for Class/Talent/Kin/Attribute rows with their detail page; left blank for hand-authored rows unless set by hand). If set, the term on the Glossary page links to this URL.', max_length=255),
+            model_name="definition",
+            name="target_url",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Page that this term should link to when clicked in the Glossary.",
+                max_length=255,
+            ),
         ),
     ]
