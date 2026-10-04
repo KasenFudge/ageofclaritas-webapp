@@ -1,9 +1,16 @@
 from dataclasses import dataclass
 from datetime import timedelta
 
+from django.db.models import Q
 from django.utils import timezone
 
 from events.models import EventType
+from payments.models import Promotion, Voucher, normalize_code
+
+
+# Raised when a promo code can't be applied. The message is shown to the player as-is.
+class PromoCodeError(Exception):
+    pass
 
 
 # Holds all of the logic for pricing for events.
@@ -13,6 +20,31 @@ class PriceQuote:
     discounts: list[dict]
     additional_items: list[dict]
     final_cents: int
+    # Set when an unused voucher was applied; the caller marks it used once the registration is saved.
+    voucher_id: int | None = None
+
+
+def _resolve_promo_code(code):
+    """
+    Validates a promo code, checking vouchers first and then active promotions.
+    Returns (voucher, promotion) with exactly one set, or raises PromoCodeError.
+    """
+    voucher = Voucher.objects.filter(code__iexact=code).first()
+    if voucher:
+        if voucher.is_used:
+            raise PromoCodeError("That voucher has already been used.")
+        return voucher, None
+
+    now = timezone.now()
+    promotion = (
+        Promotion.objects.filter(code__iexact=code, is_active=True, starts_at__lte=now)
+        .filter(Q(expires_at__isnull=True) | Q(expires_at__gt=now))
+        .first()
+    )
+    if promotion:
+        return None, promotion
+
+    raise PromoCodeError("No promotions were found for that code.")
 
 
 def attendee_price(event, user):
@@ -28,13 +60,19 @@ def attendee_price(event, user):
 
 
 # Creates a PriceQuote object for the user and applies discounts/additional items.
-def quote_price(*, event, user, registration_time, arrival_time, student_discount, weapon_rental) -> PriceQuote:
+def quote_price(
+    *, event, user, registration_time, arrival_time, student_discount, weapon_rental, promo_code=""
+) -> PriceQuote:
     # Initialize defaults for price information
     discounts: list[dict] = []
     additional_items: list[dict] = []
 
     # Calculate Base Price for price information
     base = attendee_price(event, user)
+
+    # Validate any promo code up front so a bad code always fails before anything else is priced
+    promo_code = normalize_code(promo_code)
+    voucher, promotion = _resolve_promo_code(promo_code) if promo_code else (None, None)
 
     # Enforce Clean Timezone Awareness Across Inputs
     if timezone.is_naive(registration_time):
@@ -70,6 +108,10 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
 
     # First Event Discount: Ticket is free if it is their first event, and a free weapon rental
     if is_first_event:
+        # Their ticket is already free; reject the code so a voucher isn't wasted
+        if promo_code:
+            raise PromoCodeError("Your first event is already free! Save this code for a future event.")
+
         discounts.append(
             {"type": "first_time", "amount_cents": base, "reason": "First-Time Player Discount: Free Event Entry"}
         )
@@ -135,6 +177,24 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
             if student_discount:
                 discounts.append({"type": "student_discount", "amount_cents": 500, "reason": "Active Student Discount"})
 
+        # Promo codes are applied last, after every other discount has been worked out.
+        # A voucher replaces all other discounts and covers the full ticket price.
+        if voucher:
+            discounts = [
+                {"type": "voucher", "amount_cents": base, "reason": "Voucher: Free Event Entry", "code": promo_code}
+            ]
+        # A promotion stacks, and is taken from what's left of the ticket so percentages apply after flat discounts.
+        elif promotion:
+            remaining = max(0, base - sum(d["amount_cents"] for d in discounts))
+            discounts.append(
+                {
+                    "type": "promotion",
+                    "amount_cents": promotion.discount_for(remaining),
+                    "reason": f"{promotion.name} ({promo_code})",
+                    "code": promo_code,
+                }
+            )
+
     # Compute final price and return a new PriceQuote object
     discount_total = sum(d["amount_cents"] for d in discounts)
     additional_items_total = sum(i["amount_cents"] for i in additional_items)
@@ -143,4 +203,10 @@ def quote_price(*, event, user, registration_time, arrival_time, student_discoun
     ticket_subtotal = max(0, base - discount_total)
     final = ticket_subtotal + additional_items_total
 
-    return PriceQuote(base_cents=base, discounts=discounts, additional_items=additional_items, final_cents=final)
+    return PriceQuote(
+        base_cents=base,
+        discounts=discounts,
+        additional_items=additional_items,
+        final_cents=final,
+        voucher_id=voucher.id if voucher else None,
+    )

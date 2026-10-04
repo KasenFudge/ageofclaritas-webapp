@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import transaction as db_transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
-from events.services.pricing import quote_price
+from events.services.pricing import PromoCodeError, quote_price
+from payments.models import Transaction, Voucher
 
 from .forms import EventRegistrationForm
 from .models import Event, EventRegistration, EventType
@@ -118,50 +120,65 @@ def event_registration_view(request, slug, user_id=None):
                 target_user.is_veteran = True
                 target_user.save(update_fields=["is_veteran"])
 
-            # Compute transaction details for the target attendee
+            # Compute transaction details for the target attendee, then save the registration and redeem any
+            # voucher together so a rejected or already-claimed code leaves nothing behind.
             registration_time = timezone.now()
-            quote = quote_price(
-                event=event,
-                user=target_user,
-                registration_time=registration_time,
-                arrival_time=declared_arrival_time,
-                student_discount=student_discount,
-                weapon_rental=weapon_rental,
-            )
-
-            registration = form.save(commit=False)
-            registration.event = event
-            registration.user = target_user  # Bound to the child/adult participant
-            registration.declared_arrival_time = declared_arrival_time
-
-            registration.base_price_cents = quote.base_cents
-            registration.final_price_cents = quote.final_cents
-            registration.discounts = quote.discounts
-            registration.additional_items = quote.additional_items
-            registration.save()
-
-            if quote.final_cents == 0:
-                from payments.models import Transaction
-
-                zero_dollar_transaction = Transaction.objects.create(
-                    total_amount_cents=0,
-                    payment_status="succeeded",
-                    payment_method="online" if payment_method == "online" else "in_person",
+            try:
+                quote = quote_price(
+                    event=event,
+                    user=target_user,
+                    registration_time=registration_time,
+                    arrival_time=declared_arrival_time,
+                    student_discount=student_discount,
+                    weapon_rental=weapon_rental,
+                    promo_code=form.cleaned_data.get("promo_code", ""),
                 )
-                registration.transaction = zero_dollar_transaction
-                registration.save()
 
-                messages.success(
-                    request,
-                    f"Successfully registered {target_user} for {event.title} with First Event Discount Applied!",
-                )
+                with db_transaction.atomic():
+                    registration = form.save(commit=False)
+                    registration.event = event
+                    registration.user = target_user  # Bound to the child/adult participant
+                    registration.declared_arrival_time = declared_arrival_time
+
+                    registration.base_price_cents = quote.base_cents
+                    registration.final_price_cents = quote.final_cents
+                    registration.discounts = quote.discounts
+                    registration.additional_items = quote.additional_items
+                    registration.save()
+
+                    if quote.voucher_id:
+                        # Lock and recheck so two registrations can't both redeem the same voucher
+                        voucher = Voucher.objects.select_for_update().get(pk=quote.voucher_id)
+                        if voucher.is_used:
+                            raise PromoCodeError("That voucher has already been used.")
+                        voucher.used_at = registration_time
+                        voucher.used_by_registration = registration
+                        voucher.save(update_fields=["used_at", "used_by_registration"])
+
+                    if quote.final_cents == 0:
+                        zero_dollar_transaction = Transaction.objects.create(
+                            total_amount_cents=0,
+                            payment_status="succeeded",
+                            payment_method="online" if payment_method == "online" else "in_person",
+                        )
+                        registration.transaction = zero_dollar_transaction
+                        registration.save()
+            except PromoCodeError as e:
+                # Send them back to the form with the promo field highlighted
+                form.reject_promo_code(str(e))
+                messages.warning(request, str(e))
+            else:
+                if quote.final_cents == 0:
+                    messages.success(
+                        request, f"Successfully registered {target_user} for {event.title}. No payment due!"
+                    )
+                    return redirect("accounts:dashboard")
+
+                if payment_method == "online":
+                    return redirect("payments:checkout")
+
+                messages.success(request, f"Successfully registered {target_user} for {event.title}!")
                 return redirect("accounts:dashboard")
-
-            if payment_method == "online":
-                return redirect("payments:checkout")
-
-            messages.success(request, f"Successfully registered {target_user} for {event.title}!")
-            return redirect("accounts:dashboard")
     else:
         _ = target_user.has_valid_student_discount
         form = EventRegistrationForm(event=event, user=target_user)

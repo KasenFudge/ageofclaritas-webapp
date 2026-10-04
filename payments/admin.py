@@ -5,7 +5,7 @@ from django.db.models import Prefetch
 
 from events.models import EventRegistration
 
-from .models import PaymentStatus, Transaction
+from .models import PaymentStatus, Promotion, Transaction, Voucher
 
 
 class EventRegistrationInline(admin.TabularInline):
@@ -127,3 +127,73 @@ class TransactionAdmin(admin.ModelAdmin):
         # We return True so an admin can click INTO a record to view details,
         # but because everything is marked read-only above, Django automatically hides the save buttons.
         return True
+
+
+class VoucherUsedFilter(admin.SimpleListFilter):
+    title = "Used"
+    parameter_name = "used"
+
+    def lookups(self, request, model_admin):
+        return (("yes", "Yes"), ("no", "No"))
+
+    def queryset(self, request, queryset):
+        if self.value() == "yes":
+            return queryset.filter(used_at__isnull=False)
+        if self.value() == "no":
+            return queryset.filter(used_at__isnull=True)
+        return queryset
+
+
+@admin.register(Voucher)
+class VoucherAdmin(admin.ModelAdmin):
+    # Leave the code blank when adding a voucher and one is generated on save to hand out.
+    list_display = ("code", "note", "is_used_display", "used_at", "used_by_registration", "created_at")
+    list_filter = (VoucherUsedFilter, "created_at")
+    search_fields = ("code", "note")
+    ordering = ("-created_at",)
+    list_select_related = ("used_by_registration__user", "used_by_registration__event")
+    fields = ("code", "note", "used_at", "used_by_registration", "created_at")
+    readonly_fields = ("used_by_registration", "created_at")
+
+    @admin.display(boolean=True, description="Used")
+    def is_used_display(self, obj):
+        return obj.is_used
+
+
+@admin.register(Promotion)
+class PromotionAdmin(admin.ModelAdmin):
+    list_display = (
+        "code",
+        "name",
+        "discount_display",
+        "starts_at",
+        "expires_at",
+        "is_active",
+        "is_currently_valid_display",
+    )
+    list_editable = ("is_active",)
+    list_filter = ("is_active", "discount_type")
+    search_fields = ("code", "name")
+    ordering = ("-starts_at",)
+    fieldsets = (
+        ("Promotion", {"fields": ["code", "name", "is_active"]}),
+        (
+            "Discount",
+            {
+                "fields": ["discount_type", "percent_off", "amount_off_cents"],
+                "description": "Fill in only the field matching the discount type. Taken off the ticket price "
+                "after any other discounts (add-ons like weapon rental are never discounted).",
+            },
+        ),
+        ("Schedule", {"fields": ["starts_at", "expires_at"]}),
+    )
+
+    @admin.display(description="Discount")
+    def discount_display(self, obj):
+        if obj.discount_type == Promotion.DiscountType.PERCENT:
+            return f"{obj.percent_off}%"
+        return f"${(obj.amount_off_cents or 0) / 100:.2f}"
+
+    @admin.display(boolean=True, description="Currently Valid")
+    def is_currently_valid_display(self, obj):
+        return obj.is_currently_valid
