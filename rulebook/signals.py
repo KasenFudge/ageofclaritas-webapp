@@ -17,7 +17,7 @@ def get_safe_url(view_name, **kwargs):
         return ""
 
 
-def sync_index(index_type, source_id, *, term, description, target_url):
+def sync_index(index_type, source_id, *, term, description, glossary_url):
     """Creates or updates a definition based on another item in the database based on index_type and source_id."""
     Definition.objects.update_or_create(
         index_type=index_type,
@@ -26,7 +26,7 @@ def sync_index(index_type, source_id, *, term, description, target_url):
             "term": term,
             "slug": Definition.build_slug(index_type, term),
             "description": description,
-            "target_url": target_url,
+            "glossary_url": glossary_url,
         },
     )
 
@@ -52,7 +52,7 @@ def sync_class_to_index(sender, instance, created, raw=False, **kwargs):
         instance.pk,
         term=instance.name,
         description=instance.description,
-        target_url=get_safe_url("rulebook:class_detail", slug=instance.slug),
+        glossary_url=get_safe_url("rulebook:class_detail", slug=instance.slug),
     )
 
 
@@ -68,18 +68,18 @@ def remove_class_from_index(sender, instance, **kwargs):
 def sync_talent_to_index(sender, instance, created, raw=False, **kwargs):
     if raw:
         return
-    target_url = ""
+    glossary_url = ""
     if instance.class_for_id:
         base_url = get_safe_url("rulebook:class_detail", slug=instance.class_for.slug)
         if base_url:
-            target_url = f"{base_url}#{instance.slug}"
+            glossary_url = f"{base_url}#{instance.slug}"
 
     sync_index(
         IndexType.TALENT,
         instance.pk,
         term=instance.name,
         description=instance.description,
-        target_url=target_url,
+        glossary_url=glossary_url,
     )
 
 
@@ -100,7 +100,7 @@ def sync_kin_to_index(sender, instance, created, raw=False, **kwargs):
         instance.pk,
         term=instance.name,
         description=instance.description,
-        target_url=get_safe_url("rulebook:kin_detail", slug=instance.slug),
+        glossary_url=get_safe_url("rulebook:kin_detail", slug=instance.slug),
     )
 
 
@@ -116,18 +116,18 @@ def remove_kin_from_index(sender, instance, **kwargs):
 def sync_attribute_to_index(sender, instance, created, raw=False, **kwargs):
     if raw:
         return
-    target_url = ""
+    glossary_url = ""
     if instance.kin_for_id:
         base_url = get_safe_url("rulebook:kin_detail", slug=instance.kin_for.slug)
         if base_url:
-            target_url = f"{base_url}#{instance.slug}"
+            glossary_url = f"{base_url}#{instance.slug}"
 
     sync_index(
         IndexType.ATTRIBUTE,
         instance.pk,
         term=instance.name,
         description=instance.description,
-        target_url=target_url,
+        glossary_url=glossary_url,
     )
 
 

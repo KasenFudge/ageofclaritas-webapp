@@ -139,4 +139,4 @@ class DefinitionAdmin(admin.ModelAdmin):
     search_fields = ["term", "tag"]
     ordering = ["index_type", "term"]
     readonly_fields = ("slug",)
-    fields = [("term", "slug"), "tag", "description", "target_url", "source_id"]
+    fields = [("term", "slug"), "tag", "description", "target_url", "glossary_url", "source_id"]

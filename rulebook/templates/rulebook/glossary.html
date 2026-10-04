@@ -21,7 +21,11 @@
       {% for definition in definitions %}
         <div id="{{ definition.slug }}" class="scroll-mt-24">
           <div class="flex flex-wrap items-center gap-2">
-            <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
+            {% if definition.target_url %}
+              <a href="{{ definition.target_url }}" class="block text-lg font-bold font-serif text-navy-700 hover:underline">{{ definition.term }}</a>
+            {% else %}
+              <b class="block text-lg font-bold font-serif text-slate-900">{{ definition.term }}</b>
+            {% endif %}
             {% if definition.tag %}
               <span class="inline-flex items-center rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">{{ definition.tag }}</span>
             {% endif %}

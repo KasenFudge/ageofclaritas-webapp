@@ -261,7 +261,22 @@ class Definition(models.Model):
     description = models.TextField(blank=True, default="")
 
     index_type = models.CharField(max_length=30, choices=IndexType.choices, default=IndexType.GLOSSARY)
-    target_url = models.CharField(max_length=255, blank=True, default="")
+
+    # Site -> Glossary: where something elsewhere on the site should link to reach
+    # this definition. Auto-synced for Class/Talent/Kin/Attribute rows (see
+    # signals.sync_index); for hand-authored rows this defaults to the row's own
+    # anchor on the Glossary page itself if left blank.
+    glossary_url = models.CharField(max_length=255, blank=True, default="")
+
+    # Glossary -> Site: optional link the term itself points to when clicked on
+    # the Glossary page (e.g. a related rule page). Never auto-populated -- blank
+    # means the term just renders as plain text.
+    target_url = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text="Optional link. If set, the term on the Glossary page links to this URL.",
+    )
 
     # Mirrored (Class/Talent/Kin/Attribute) rows use source_id for their real
     # pk; hand-authored rows leave it null.
@@ -278,9 +293,9 @@ class Definition(models.Model):
     def save(self, *args, **kwargs):
         self.slug = self.build_slug(self.index_type, self.term)
 
-        if not self.target_url:
+        if not self.glossary_url:
             try:
-                self.target_url = f"{reverse('rulebook:glossary')}#{self.slug}"
+                self.glossary_url = f"{reverse('rulebook:glossary')}#{self.slug}"
             except NoReverseMatch:
                 pass
 
