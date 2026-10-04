@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import Q, Sum
+from django.db.models import Prefetch, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -16,7 +16,8 @@ from django_ratelimit.core import is_ratelimited
 from django_ratelimit.exceptions import Ratelimited
 
 from events.models import EventRegistration
-from payments.models import PaymentStatus
+from payments.models import PaymentStatus, Transaction
+from payments.services import get_outstanding_registrations
 from surveys.models import Survey
 
 from .forms import AccountSettingsForm, AddDependentForm, CustomUserCreationForm, GuardianLinkRequestForm
@@ -114,27 +115,34 @@ def _build_dashboard_context(user):
 
     # 1. Upcoming Schedule Logic
     household_registrations = list(
-        EventRegistration.objects.filter(event__end_time__gte=now)
+        EventRegistration.objects.filter(user_id__in=household_ids, event__end_time__gte=now)
         .select_related("user", "event", "transaction")
         .order_by("event__start_time")
     )
     personal_registrations = [r for r in household_registrations if r.user_id == user.id]
     child_registrations = [r for r in household_registrations if r.user_id in child_ids]
 
-    # 2. Billing & Outstanding Balance Logic
-    outstanding_registrations = (
-        EventRegistration.objects.filter(user_id__in=household_ids)
-        .filter(
-            Q(transaction__isnull=True)
-            | Q(transaction__payment_status=PaymentStatus.INCOMPLETE)
-            | Q(transaction__payment_status=PaymentStatus.FAILED)
-        )
-        .filter(Q(event__end_time__gte=now) | Q(checked_in=True))
-        .select_related("user", "event")
-        .order_by("event__start_time")
-    )
+    # 2. Billing & Outstanding Balance Logic (shared with checkout so the totals always match)
+    outstanding_registrations = get_outstanding_registrations(household_ids)
     totals = outstanding_registrations.aggregate(total_cents=Sum("final_price_cents"))
     total_balance = (totals["total_cents"] or 0) / 100.0
+
+    # Completed payments (and any refunds on them), newest first, so players can see money going both ways
+    payment_history = (
+        Transaction.objects.filter(
+            registrations__user_id__in=household_ids,
+            payment_status__in=[PaymentStatus.SUCCEEDED, PaymentStatus.REFUNDED],
+            total_amount_cents__gt=0,
+        )
+        .distinct()
+        .order_by("-created_at")
+        .prefetch_related(
+            Prefetch(
+                "registrations",
+                queryset=EventRegistration.objects.select_related("user", "event").order_by("event__start_time"),
+            )
+        )
+    )
 
     # 3. Waivers & Surveys Logic
     active_waiver = Waiver.objects.filter(is_active=True).first()
@@ -163,9 +171,7 @@ def _build_dashboard_context(user):
         not has_signed_current_waiver or any(not status["has_signed"] for status in child_waiver_status)
     )
 
-    active_surveys = (
-        Survey.objects.open().filter(assignments__user=user).exclude(submissions__user=user).distinct()
-    )
+    active_surveys = Survey.objects.open().filter(assignments__user=user).exclude(submissions__user=user).distinct()
 
     child_survey_entries = []
     for child in children:
@@ -182,6 +188,7 @@ def _build_dashboard_context(user):
         "has_children": len(child_ids) > 0,
         "outstanding_registrations": outstanding_registrations,  # Added
         "total_balance": total_balance,  # Added
+        "payment_history": payment_history,
         "active_waiver": active_waiver,
         "has_signed_current_waiver": has_signed_current_waiver,
         "current_signature": current_signature,

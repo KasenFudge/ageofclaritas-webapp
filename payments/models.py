@@ -25,6 +25,8 @@ class PaymentStatus(models.TextChoices):
     SUCCEEDED = "succeeded", "Succeeded"
     FAILED = "failed", "Failed"
     REFUNDED = "refunded", "Refunded"
+    # Superseded by a newer checkout (e.g. after a price change); its Stripe PaymentIntent was canceled
+    CANCELED = "canceled", "Canceled"
 
 
 class PaymentMethod(models.TextChoices):
@@ -46,6 +48,25 @@ class Transaction(models.Model):
     )
     stripe_session_id = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Running total refunded against this payment (Stripe reports it cumulatively). Which registration
+    # each refund belongs to is tracked on EventRegistration.refunded_cents.
+    refunded_amount_cents = models.PositiveIntegerField(default=0)
+    refunded_at = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def total_amount(self):
+        return self.total_amount_cents / 100.0
+
+    @property
+    def unallocated_refund_cents(self) -> int:
+        """Refunded on Stripe but not yet assigned to a registration (a partial refund on a household payment)"""
+        allocated = sum(reg.refunded_cents for reg in self.registrations.all())
+        return max(0, self.refunded_amount_cents - allocated)
+
+    @property
+    def unallocated_refund(self):
+        return self.unallocated_refund_cents / 100.0
 
     def __str__(self):
         # Safely grab the first registration if it exists

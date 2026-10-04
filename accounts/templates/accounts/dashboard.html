@@ -413,6 +413,8 @@
                   </div>
                   {% if reg.is_refunded %}
                     <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">Refunded</span>
+                  {% elif reg.is_partially_refunded %}
+                    <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">Partially Refunded</span>
                   {% elif reg.is_failed %}
                     <span class="shrink-0 rounded-full bg-red-100 text-red-700 px-2.5 py-1 text-[11px] font-bold uppercase">Failed</span>
                   {% elif reg.is_paid %}
@@ -440,6 +442,8 @@
                     </div>
                     {% if reg.is_refunded %}
                       <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">Refunded</span>
+                    {% elif reg.is_partially_refunded %}
+                      <span class="shrink-0 rounded-full bg-navy-100 text-navy-700 px-2.5 py-1 text-[11px] font-bold uppercase">Partially Refunded</span>
                     {% elif reg.is_failed %}
                       <span class="shrink-0 rounded-full bg-red-100 text-red-700 px-2.5 py-1 text-[11px] font-bold uppercase">Failed</span>
                     {% elif reg.is_paid %}
@@ -514,6 +518,21 @@
                       <span class="font-semibold">+${{ item.amount|floatformat:2 }}</span>
                     </li>
                   {% endfor %}
+                  {% with adjustment=reg.formatted_price_adjustment %}
+                    {% if adjustment %}
+                      {% if adjustment.is_credit %}
+                        <li class="flex items-center justify-between px-5 py-2 bg-emerald-50/50 text-emerald-700">
+                          <span>Price Adjustment</span>
+                          <span class="font-semibold">-${{ adjustment.amount|floatformat:2 }}</span>
+                        </li>
+                      {% else %}
+                        <li class="flex items-center justify-between px-5 py-2 text-slate-500">
+                          <span>Price Adjustment</span>
+                          <span class="font-semibold">+${{ adjustment.amount|floatformat:2 }}</span>
+                        </li>
+                      {% endif %}
+                    {% endif %}
+                  {% endwith %}
                   <li class="flex items-center justify-between px-5 py-3 bg-slate-50">
                     <span class="text-slate-700 font-bold">Subtotal</span>
                     <span class="text-navy-700 font-bold">${{ reg.final_price|floatformat:2 }}</span>
@@ -551,6 +570,50 @@
             </div>
             <h3 class="text-lg font-serif font-bold text-slate-900 mb-2">Account Fully Cleared</h3>
             <p class="text-slate-500 text-sm">You have no outstanding charges at this time. All upcoming schedules are paid up!</p>
+          </div>
+        {% endif %}
+
+        {% if payment_history %}
+          <div class="mt-8 border-t border-slate-200 pt-6">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Payment History</h3>
+            <div class="space-y-4">
+              {% for payment in payment_history %}
+                <div class="overflow-hidden rounded-2xl border border-slate-200">
+                  <div class="flex items-center justify-between gap-4 bg-slate-50 px-5 py-3 border-b border-slate-200">
+                    <div class="min-w-0">
+                      <p class="font-bold text-slate-900">{{ payment.created_at|date:"M j, Y" }}</p>
+                      <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">{{ payment.get_payment_method_display }}</p>
+                    </div>
+                    <span class="shrink-0 font-bold text-navy-700">${{ payment.total_amount|floatformat:2 }}</span>
+                  </div>
+                  <ul class="divide-y divide-slate-100 text-sm">
+                    {% for reg in payment.registrations.all %}
+                      <li class="px-5 py-2.5">
+                        <div class="flex items-center justify-between gap-4">
+                          <span class="min-w-0 text-slate-600">
+                            {{ reg.event.title }}
+                            {% if reg.user != request.user %}<span class="text-slate-400">— {{ reg.user.get_full_name|default:reg.user.username }}</span>{% endif %}
+                          </span>
+                          <span class="shrink-0 text-slate-900 font-semibold">${{ reg.final_price|floatformat:2 }}</span>
+                        </div>
+                        {% if reg.refunded_cents %}
+                          <div class="mt-1 flex items-center justify-between gap-4 text-navy-700">
+                            <span>{% if reg.is_refunded %}Refunded{% else %}Partially refunded{% endif %}{% if reg.refunded_at %} on {{ reg.refunded_at|date:"M j, Y" }}{% endif %}</span>
+                            <span class="shrink-0 font-semibold">-${{ reg.refunded|floatformat:2 }}</span>
+                          </div>
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                    {% if payment.unallocated_refund_cents %}
+                      <li class="flex items-center justify-between gap-4 px-5 py-2.5 text-navy-700">
+                        <span>Refund processed{% if payment.refunded_at %} on {{ payment.refunded_at|date:"M j, Y" }}{% endif %}</span>
+                        <span class="shrink-0 font-semibold">-${{ payment.unallocated_refund|floatformat:2 }}</span>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              {% endfor %}
+            </div>
           </div>
         {% endif %}
       </div>

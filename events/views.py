@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
 from events.services.pricing import PromoCodeError, quote_price
-from payments.models import Transaction, Voucher
+from payments.models import Voucher
 
 from .forms import EventRegistrationForm
 from .models import Event, EventRegistration, EventType
@@ -77,7 +77,8 @@ def event_registration_view(request, slug, user_id=None):
     if not target_user.date_of_birth:
         raise PermissionDenied(f"Birthdate required to register {target_user}.")
 
-    event_date = event.start_time.date()
+    # Local date, not UTC: an evening start in UTC is already the next day
+    event_date = timezone.localdate(event.start_time)
     user_age = target_user.age_on(event_date)
 
     if event.event_type == EventType.JUNIOR:
@@ -116,7 +117,7 @@ def event_registration_view(request, slug, user_id=None):
 
             # Self-reported "not my first event" - mark them as veteran for pricing so a first time discount
             # is not applied to their account and we don't ask them in the future.
-            if form.cleaned_data.get("is_first_event") is False and not target_user.is_veteran:
+            if form.cleaned_data.get("is_first_event") is False and not target_user.is_veteran:  # Answered "No"
                 target_user.is_veteran = True
                 target_user.save(update_fields=["is_veteran"])
 
@@ -144,7 +145,7 @@ def event_registration_view(request, slug, user_id=None):
                     registration.final_price_cents = quote.final_cents
                     registration.discounts = quote.discounts
                     registration.additional_items = quote.additional_items
-                    registration.save()
+                    registration.save()  # A $0 registration is settled with a $0 transaction by the model
 
                     if quote.voucher_id:
                         # Lock and recheck so two registrations can't both redeem the same voucher
@@ -154,19 +155,9 @@ def event_registration_view(request, slug, user_id=None):
                         voucher.used_at = registration_time
                         voucher.used_by_registration = registration
                         voucher.save(update_fields=["used_at", "used_by_registration"])
-
-                    if quote.final_cents == 0:
-                        zero_dollar_transaction = Transaction.objects.create(
-                            total_amount_cents=0,
-                            payment_status="succeeded",
-                            payment_method="online" if payment_method == "online" else "in_person",
-                        )
-                        registration.transaction = zero_dollar_transaction
-                        registration.save()
             except PromoCodeError as e:
-                # Send them back to the form with the promo field highlighted
+                # Send them back to the form with the promo field highlighted (the field error is the only message)
                 form.reject_promo_code(str(e))
-                messages.warning(request, str(e))
             else:
                 if quote.final_cents == 0:
                     messages.success(

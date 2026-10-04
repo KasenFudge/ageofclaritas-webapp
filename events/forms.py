@@ -98,15 +98,18 @@ class EventRegistrationForm(forms.ModelForm):
         help_text="Choose whether you'd like to pay online now or in person at the event.",
     )
 
-    # A checkbox as one more confirmation for first_time discount. Meant to catch
-    # old players using the new website for the first time.
-    is_first_event = forms.BooleanField(
-        label="This is my first Claritas event",
-        required=False,
-        widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASSES}),
+    # A required Yes/No as one more confirmation for the first_time discount. Meant to catch old players
+    # using the new website for the first time. No default, so nobody gains or loses the discount by
+    # skipping it. Cleans to True/False so the view can check for an explicit "No".
+    is_first_event = forms.TypedChoiceField(
+        label="Is this your first Claritas event?",
+        choices=[("True", "Yes, this is my first event"), ("False", "No, I've attended before")],
+        coerce=lambda value: value == "True",
+        widget=forms.RadioSelect(attrs={"class": RADIO_CLASSES}),
+        error_messages={"required": "Please let us know whether this is your first Claritas event."},
         help_text=(
-            "Uncheck this if you've attended an Age of Claritas event before -- even one that "
-            "predates this website. This determines your first-time player discount."
+            "Count any Age of Claritas event you've attended, even one that predates this website. "
+            "This determines your first-time player discount."
         ),
     )
 

@@ -6,16 +6,17 @@ from django.db.models import Prefetch
 from events.models import EventRegistration
 
 from .models import PaymentStatus, Promotion, Transaction, Voucher
+from .services import record_refund
 
 
 class EventRegistrationInline(admin.TabularInline):
     model = EventRegistration
 
     # 1. Choose the relevant descriptive columns to display in the inline table row
-    fields = ("user", "event", "final_price_display")
+    fields = ("user", "event", "final_price_display", "refunded_display")
 
     # 2. Enforce the same fields to be fully read-only
-    readonly_fields = ("user", "event", "final_price_display")
+    readonly_fields = ("user", "event", "final_price_display", "refunded_display")
 
     # 3. Completely hide extra blank placeholder rows and block deletion/addition privileges
     extra = 0
@@ -24,6 +25,10 @@ class EventRegistrationInline(admin.TabularInline):
     @admin.display(description="Price Paid")
     def final_price_display(self, obj):
         return f"${obj.final_price_cents / 100:.2f}"
+
+    @admin.display(description="Refunded")
+    def refunded_display(self, obj):
+        return f"${obj.refunded_cents / 100:.2f}" if obj.refunded_cents else "—"
 
     # 4. Strict structural overrides to block UI manipulation buttons
     def has_add_permission(self, request, obj=None):
@@ -41,6 +46,7 @@ class TransactionAdmin(admin.ModelAdmin):
         "stripe_session_id",
         "registration_display",
         "total_amount_display",
+        "refunded_amount_display",
         "payment_status",
         "payment_method",
         "created_at",
@@ -69,6 +75,14 @@ class TransactionAdmin(admin.ModelAdmin):
     def total_amount_display(self, obj):
         return f"${obj.total_amount_cents / 100:.2f}"
 
+    @admin.display(description="Refunded")
+    def refunded_amount_display(self, obj):
+        if not obj.refunded_amount_cents:
+            return "—"
+        unassigned = obj.unallocated_refund_cents
+        note = f" (${unassigned / 100:.2f} not yet assigned to a registration)" if unassigned else ""
+        return f"${obj.refunded_amount_cents / 100:.2f}{note}"
+
     # Show who/what this transaction is for
     @admin.display(description="For")
     def registration_display(self, obj):
@@ -93,8 +107,12 @@ class TransactionAdmin(admin.ModelAdmin):
         txn = queryset.first()
         with db_transaction.atomic():
             locked = Transaction.objects.select_for_update().get(pk=txn.pk)
-            locked.payment_status = target_status
-            locked.save(update_fields=["payment_status"])
+            if target_status == PaymentStatus.REFUNDED:
+                # A full refund: also records the amount and marks every registration on it refunded
+                record_refund(locked, locked.total_amount_cents)
+            else:
+                locked.payment_status = target_status
+                locked.save(update_fields=["payment_status"])
 
         self.message_user(request, f"Transaction #{txn.pk} set to {label}.", level=messages.SUCCESS)
 

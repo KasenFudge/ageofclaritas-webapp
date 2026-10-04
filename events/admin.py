@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from django_ckeditor_5.widgets import CKEditor5Widget
 
+from payments.models import PaymentStatus
+
 from .models import Event, EventMedia, EventPriceTier, EventRegistration
 
 # Centralized CKEditor 5 mapping for TextFields
@@ -106,6 +108,8 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         "declared_arrival_time",
         "actual_arrival_time",
         "base_price_cents",
+        "price_adjustment_display",
+        "refunded_at",
         "discounts",
         "additional_items",
     ]
@@ -134,8 +138,17 @@ class EventRegistrationAdmin(admin.ModelAdmin):
                 "fields": [
                     "final_price_cents",
                     "base_price_cents",
+                    "price_adjustment_display",
+                    ("refunded_cents", "refunded_at"),
                 ],
-                "description": "Pricing information for this registration.",
+                "description": (
+                    "Pricing information for this registration. Changing the final price shows the player a "
+                    "'Price Adjustment' line on their bill, and setting it to 0 marks the registration paid. "
+                    "The final price is locked once paid; handle refunds or extra charges in Stripe. "
+                    "Full refunds, and refunds on a payment covering only this registration, are recorded "
+                    "automatically. For a partial refund on a household payment, enter the amount refunded "
+                    "for this person in Refunded Cents after refunding in Stripe."
+                ),
             },
         ),
         (
@@ -166,6 +179,24 @@ class EventRegistrationAdmin(admin.ModelAdmin):
             return any(item.get("type") == "weapon_rental" for item in obj.additional_items if isinstance(item, dict))
         return False
 
+    @admin.display(description="Price Adjustment")
+    def price_adjustment_display(self, obj):
+        adjustment = obj.formatted_price_adjustment if obj.pk else None
+        if not adjustment:
+            return "—"
+        return f"{'-' if adjustment['is_credit'] else '+'}${adjustment['amount']:.2f}"
+
+    # Lock the price once money has changed hands so the website and Stripe can't drift apart,
+    # and only allow recording a refund on a registration that was actually paid
+    def get_readonly_fields(self, request, obj=None):
+        readonly = list(super().get_readonly_fields(request, obj))
+        status = getattr(obj.transaction, "payment_status", None) if obj else None
+        if status in (PaymentStatus.SUCCEEDED, PaymentStatus.REFUNDED):
+            readonly.append("final_price_cents")
+        else:
+            readonly.append("refunded_cents")
+        return readonly
+
     # "Paid Indicator" Checkmark mapping to the model's is_paid @property
     @admin.display(boolean=True, description="Cleared/Paid")
     def payment_status_display(self, obj):
@@ -174,6 +205,8 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     # Intercept saving via the Standalone registration dashboard view
     def save_model(self, request, obj, form, change):
         obj.in_person_payment_received = form.cleaned_data.get("in_person_payment_received", False)
+        if "refunded_cents" in form.changed_data:
+            obj.refunded_at = timezone.now() if obj.refunded_cents else None
         super().save_model(request, obj, form, change)
 
     # Intercept saving when saved from inside the Inline event view

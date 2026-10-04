@@ -1,6 +1,7 @@
 from datetime import datetime, time, timedelta
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.templatetags.static import static
 from django.utils import timezone
@@ -158,6 +159,13 @@ class EventRegistration(models.Model):
         help_text="The parent transaction cart used to clear this registration online.",
     )
 
+    # Refunds are recorded per registration, since one payment can cover a whole household.
+    # Filled in automatically when Stripe's refund is unambiguous, otherwise by staff in admin.
+    refunded_cents = models.PositiveIntegerField(
+        default=0, help_text="Amount refunded in Stripe for this registration, in cents."
+    )
+    refunded_at = models.DateTimeField(null=True, blank=True)
+
     # Helper properties used in displaying the pay
     @property
     def is_paid(self) -> bool:
@@ -169,7 +177,20 @@ class EventRegistration(models.Model):
 
     @property
     def is_refunded(self) -> bool:
-        return getattr(self.transaction, "payment_status", None) == PaymentStatus.REFUNDED
+        """Refunded in full"""
+        return self.refunded_cents > 0 and self.refunded_cents >= self.final_price_cents
+
+    @property
+    def is_partially_refunded(self) -> bool:
+        return 0 < self.refunded_cents < self.final_price_cents
+
+    @property
+    def refunded(self):
+        return self.refunded_cents / 100.0
+
+    def clean(self):
+        if self.refunded_cents and self.final_price_cents is not None and self.refunded_cents > self.final_price_cents:
+            raise ValidationError({"refunded_cents": "Can't refund more than the registration's final price."})
 
     # Helper properties used in displaying pricing information in templates
     @property
@@ -193,6 +214,25 @@ class EventRegistration(models.Model):
             for i in self.additional_items
         ]
 
+    @property
+    def price_adjustment_cents(self) -> int:
+        """
+        Difference between the stored final price and what the discounts/items breakdown adds up to.
+        Non-zero only when staff edited final_price_cents after registration.
+        """
+        discount_total = sum(d["amount_cents"] for d in self.discounts)
+        items_total = sum(i["amount_cents"] for i in self.additional_items)
+        expected = max(0, self.base_price_cents - discount_total) + items_total
+        return self.final_price_cents - expected
+
+    @property
+    def formatted_price_adjustment(self):
+        """Price adjustment as an easily used format for templates, or None if there isn't one"""
+        cents = self.price_adjustment_cents
+        if not cents:
+            return None
+        return {"amount": abs(cents) / 100.0, "is_credit": cents < 0}
+
     def __str__(self):
         return f"{self.user} - {self.event}"
 
@@ -212,7 +252,7 @@ class EventRegistration(models.Model):
             # Check if staff explicitly confirmed payment at the gate
             is_paid_in_person = getattr(self, "in_person_payment_received", False)
 
-            if is_paid_in_person:
+            if is_paid_in_person and not self.is_paid:
                 # If they paid cash/check at the door, create a succeeded In Person transaction
                 completed_transaction = Transaction.objects.create(
                     total_amount_cents=self.final_price_cents,
@@ -220,6 +260,18 @@ class EventRegistration(models.Model):
                     payment_method=PaymentMethod.IN_PERSON,
                 )
                 self.transaction = completed_transaction
+
+        # Nothing to pay: settle it with a $0 transaction so it never shows as an outstanding balance
+        # (covers free registrations and prices lowered to $0 by staff after the fact).
+        unsettled_statuses = (PaymentStatus.INCOMPLETE, PaymentStatus.FAILED, PaymentStatus.CANCELED)
+        if self.final_price_cents == 0 and (
+            self.transaction is None or self.transaction.payment_status in unsettled_statuses
+        ):
+            self.transaction = Transaction.objects.create(
+                total_amount_cents=0,
+                payment_status=PaymentStatus.SUCCEEDED,
+                payment_method=PaymentMethod.ONLINE,
+            )
 
         super().save(*args, **kwargs)
 
