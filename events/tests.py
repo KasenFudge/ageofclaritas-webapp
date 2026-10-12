@@ -3,6 +3,7 @@ from itertools import count
 
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -513,10 +514,28 @@ class EventRegistrationViewTests(TestCase):
                 self.client.force_login(user)
                 self.assertEqual(self.client.get(self.url(event)).status_code, 403)
 
-    def test_minor_without_guardian_is_redirected(self):
+    def test_minor_without_guardian_is_told_to_link_one(self):
+        # Not blocked outright: the waiver, which only a guardian can sign, is the gate
+        Waiver.objects.create(title="Waiver", content="Terms")
         self.client.force_login(make_user("orphan", age=15))
         response = self.client.get(self.url(self.junior))
         self.assertRedirects(response, reverse("accounts:dashboard"), fetch_redirect_response=False)
+        # The dashboard banner carries the guidance, so there's no duplicate flash message
+        self.assertEqual(list(get_messages(response.wsgi_request)), [])
+        dashboard = self.client.get(reverse("accounts:dashboard"))
+        self.assertContains(dashboard, "To attend events, you'll need a parent or guardian.")
+        self.assertContains(dashboard, "orphan@example.test")
+
+    def test_linked_minor_is_told_who_signs_their_waiver(self):
+        Waiver.objects.create(title="Waiver", content="Terms")
+        self.client.force_login(self.make_child("linkedteen", 15))
+        response = self.client.get(self.url(self.junior))
+        message = str(list(get_messages(response.wsgi_request))[0])
+        self.assertIn("needs to sign the liability waiver for you", message)
+
+    def test_minor_without_guardian_can_register_when_no_waiver_is_required(self):
+        self.client.force_login(make_user("orphan", age=15))
+        self.assertEqual(self.client.get(self.url(self.junior)).status_code, 200)
 
     def test_unsigned_active_waiver_is_redirected(self):
         Waiver.objects.create(title="Waiver", content="Terms")
@@ -614,3 +633,65 @@ class EventRegistrationViewTests(TestCase):
         voucher.refresh_from_db()
         self.assertTrue(registration.is_paid)
         self.assertEqual(voucher.used_by_registration, registration)
+
+
+class EventDetailRegisterButtonTests(TestCase):
+    """The detail page only offers Register buttons that the registration view will accept."""
+
+    def setUp(self):
+        self.parent = make_user("parent")
+        self.junior = make_event(event_type=EventType.JUNIOR)
+        self.senior = make_event(event_type=EventType.SENIOR)
+
+    def detail(self, event, user):
+        self.client.force_login(user)
+        return self.client.get(reverse("events:detail", args=[event.slug]))
+
+    def test_age_ineligibility_reason_boundaries(self):
+        cases = [
+            (7, self.junior, False),
+            (8, self.junior, True),
+            (17, self.junior, True),
+            (18, self.junior, False),
+            (17, self.senior, False),
+            (18, self.senior, True),
+        ]
+        for age, event, eligible in cases:
+            with self.subTest(age=age, event=event.event_type):
+                user = make_user(f"age{age}{event.event_type}", age=age)
+                self.assertEqual(event.age_ineligibility_reason(user) is None, eligible)
+
+    def test_adult_without_children_is_pointed_at_add_child_on_junior_events(self):
+        response = self.detail(self.junior, self.parent)
+        self.assertNotContains(response, reverse("events:register", args=[self.junior.slug]))
+        self.assertContains(response, "Ages 8–17 only")
+        self.assertContains(response, "Add a child to your household")
+
+    def test_only_eligible_children_get_register_chips(self):
+        kid = make_user("kid", age=10, parent_account=self.parent)
+        toddler = make_user("toddler", age=4, parent_account=self.parent)
+        response = self.detail(self.junior, self.parent)
+        self.assertContains(response, reverse("events:register_sub", args=[self.junior.slug, kid.id]))
+        self.assertNotContains(response, reverse("events:register_sub", args=[self.junior.slug, toddler.id]))
+
+    def test_minor_sees_who_signs_their_waiver(self):
+        Waiver.objects.create(title="Waiver", content="Terms")
+        kid = make_user("kid", age=14, parent_account=self.parent)
+        response = self.detail(self.junior, kid)
+        self.assertContains(response, reverse("events:register", args=[self.junior.slug]))
+        self.assertContains(response, "needs to sign the liability waiver for you")
+
+    def test_logged_out_visitor_logs_in_and_returns_to_the_event(self):
+        detail_url = reverse("events:detail", args=[self.junior.slug])
+        response = self.client.get(detail_url)
+        login_link = f"{reverse('login')}?next={detail_url}"
+        self.assertContains(response, login_link)
+        self.assertContains(response, "Log in to Register")
+        self.assertNotContains(response, reverse("events:register", args=[self.junior.slug]))
+
+        # The login page keeps `next` through the POST, so they land back on the event
+        self.assertContains(self.client.get(login_link), f'name="next" value="{detail_url}"')
+        response = self.client.post(
+            reverse("login"), {"username": "parent", "password": "test-pass", "next": detail_url}
+        )
+        self.assertRedirects(response, detail_url, fetch_redirect_response=False)

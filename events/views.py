@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
+from accounts.utils import minor_waiver_message
 from events.services.pricing import PromoCodeError, quote_price
 from payments.models import Voucher
 
@@ -53,6 +54,19 @@ class EventDetailView(DetailView):
         # Give Context EventType for Comparison
         context["EventType"] = EventType
 
+        # Only offer Register buttons that will actually work for this viewer and their children
+        user = self.request.user
+        if user.is_authenticated:
+            event = self.object
+            children = list(user.child_accounts.all())
+            context["self_ineligible_reason"] = event.age_ineligibility_reason(user)
+            context["eligible_children"] = [c for c in children if event.age_ineligibility_reason(c) is None]
+            context["suggest_add_child"] = (
+                event.event_type == EventType.JUNIOR and not children and user.can_manage_dependents
+            )
+            if context["self_ineligible_reason"] is None and not user.has_signed_active_waiver():
+                context["minor_waiver_note"] = minor_waiver_message(user)
+
         return context
 
 
@@ -69,32 +83,23 @@ def event_registration_view(request, slug, user_id=None):
     else:
         target_user = actor
 
-    if target_user.needs_guardian_link:
-        messages.warning(request, f"{target_user} needs a confirmed guardian linked before registering for events.")
-        return redirect("accounts:dashboard")
+    # 3. Enforce Age Requirements on the Target User
+    if reason := event.age_ineligibility_reason(target_user):
+        raise PermissionDenied(reason)
 
-    # 3. Enforce Age & Validation Safeguards on the Target User
-    if not target_user.date_of_birth:
-        raise PermissionDenied(f"Birthdate required to register {target_user}.")
-
-    # Local date, not UTC: an evening start in UTC is already the next day
-    event_date = timezone.localdate(event.start_time)
-    user_age = target_user.age_on(event_date)
-
-    if event.event_type == EventType.JUNIOR:
-        if user_age < 8:
-            raise PermissionDenied(f"{target_user} must be 8 or older to register.")
-        if user_age >= 18:
-            raise PermissionDenied(f"Junior events are only for participants under 18 ({target_user} is {user_age}).")
-
-    if event.event_type == EventType.SENIOR and user_age < 18:
-        raise PermissionDenied(f"Senior events are only for participants 18+ ({target_user} is {user_age}).")
-
-    # 4. Enforce Active Waiver Signature
+    # 4. Enforce Active Waiver Signature. Minors can't sign their own, so tell them who has to.
     if not target_user.has_signed_active_waiver():
-        messages.warning(
-            request, f"An active liability waiver must be signed for {target_user} before completing registration."
+        # An unlinked minor's dashboard already shows this as a banner; don't repeat it as a message.
+        banner_covers_it = (
+            target_user == actor and target_user.needs_guardian_link and not target_user.pending_guardian_id
         )
+        if not banner_covers_it:
+            message = target_user == actor and minor_waiver_message(target_user)
+            messages.warning(
+                request,
+                message
+                or f"An active liability waiver must be signed for {target_user} before completing registration.",
+            )
         return redirect("accounts:dashboard")
 
     # 5. Prevent Duplicate Registrations

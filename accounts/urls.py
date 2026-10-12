@@ -17,6 +17,9 @@ urlpatterns = [
     path("registration_success/", views.registration_success, name="registration_success"),
     path("activate/<uidb64>/<token>/", views.activate_account, name="activate"),
     path("resend-verification/", views.resend_verification_email, name="resend_verification"),
+    # --- Username Recovery ---
+    path("username-recovery/", views.username_recovery_view, name="username_recovery"),
+    path("username-recovery/done/", views.username_recovery_done, name="username_recovery_done"),
     # --- Password Reset Flow ---
     path(
         "password-reset/",
@@ -51,7 +54,7 @@ urlpatterns = [
     path("dashboard/", views.account_dashboard_view, name="dashboard"),
     path("dashboard/settings/", views.update_account_settings_view, name="update_settings"),
     path("dashboard/sign-waiver/", views.sign_waiver_view, name="sign_waiver"),
-    path("dashboard/add-dependent/", views.add_dependent_view, name="add_dependent"),
-    path("dashboard/request-guardian-link/", views.request_guardian_link_view, name="request_guardian_link"),
+    path("dashboard/add-child/", views.add_child_view, name="add_child"),
+    path("dashboard/child/<int:user_id>/login/", views.update_child_login_view, name="update_child_login"),
     path("dashboard/guardian-link/respond/", views.respond_guardian_link_view, name="respond_guardian_link"),
 ]

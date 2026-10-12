@@ -1,0 +1,9 @@
+Hi {{ teen.first_name|default:teen.username }},
+
+{{ adult }} has asked to link to your Age of Claritas account as your parent or guardian. Once linked, they can sign the liability waiver for you, register you for events, and pay for them.
+
+To approve or deny the request, log in and open Household on your dashboard:
+
+{{ protocol }}://{{ domain }}{% url 'accounts:dashboard' %}?open=household
+
+If you don't know this person, just deny the request.

@@ -9,6 +9,12 @@
     <div class="rounded-3xl bg-white shadow-xl ring-1 ring-slate-200/80 p-8 sm:p-10">
       <h1 class="text-2xl font-serif font-bold text-center uppercase tracking-wide text-slate-900 mb-6">Register</h1>
 
+      <div class="mb-6 rounded-2xl border border-sky-200 bg-sky-50/60 px-4 py-3 text-sm text-slate-600 leading-relaxed">
+        <strong class="text-slate-800">Signing up a child?</strong> Create your own account first, then add them
+        from your dashboard. Under 13? A parent or guardian needs to create your account.
+        <a href="{% url 'core:junior_adventurers' %}#signing-up" class="font-semibold text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">How it works</a>
+      </div>
+
       <form method="post" novalidate>
         {% csrf_token %}
         {% include 'includes/field_render.html' with field=form.email %}

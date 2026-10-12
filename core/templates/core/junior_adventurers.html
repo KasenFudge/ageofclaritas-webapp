@@ -127,6 +127,42 @@
       </p>
     </section>
 
+    <section id="signing-up" class="pt-8 border-t border-slate-200 space-y-3 scroll-mt-24">
+      <h2 class="text-2xl font-serif font-bold text-navy-700">How to Sign Up</h2>
+      <p class="text-slate-600 leading-relaxed">
+        Every junior adventurer needs a parent or guardian with an account of their own, who signs the liability
+        waiver for them.
+      </p>
+
+      <h3 class="text-xl font-serif font-bold text-navy-700 pt-2">Parents and Guardians (any child under 18)</h3>
+      <ol class="list-decimal list-inside text-slate-600 leading-relaxed space-y-1">
+        <li>
+          <a href="{% url 'accounts:register' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">Create your account</a>
+          and verify your email.
+        </li>
+        <li>
+          On your <a href="{% url 'accounts:dashboard' %}?open=household" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">dashboard</a>,
+          open <strong>Household → Add a Child</strong> and choose a username and password they'll log in with.
+          Their email is optional; if you add one, they'll confirm it before logging in.
+        </li>
+        <li>Sign the liability waiver for them from your dashboard. You'll get a copy of every email we send them.</li>
+        <li>Register them from any event page, or let them log in and register themselves for events they're old enough for.</li>
+      </ol>
+
+      <h3 class="text-xl font-serif font-bold text-navy-700 pt-2">Teens 13 and Older</h3>
+      <p class="text-slate-600 leading-relaxed">
+        You can <a href="{% url 'accounts:register' %}" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">create your own account</a>,
+        but you can't sign the liability waiver yourself, so you can't attend until a parent or guardian is linked.
+        Have them open <strong>Household → Add a Child</strong> on their own account and enter your account's email.
+        Approve the request that shows up on your dashboard, and they'll be able to sign the waiver for you.
+      </p>
+
+      <p class="text-slate-600 leading-relaxed">
+        Questions? Email
+        <a href="mailto:info@ageofclaritas.com" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">info@ageofclaritas.com</a>.
+      </p>
+    </section>
+
     <section id="logistics" class="pt-8 border-t border-slate-200 space-y-3">
       <h2 class="text-2xl font-serif font-bold text-navy-700">The Logistics</h2>
       <img src="{% static 'images/JrPage/JrMain3.jpg' %}" alt="Junior adventurers in action" class="float-left w-48 sm:w-56 lg:w-72 h-auto rounded-xl mr-4 mb-2 mt-1" />

@@ -7,6 +7,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+# Youngest age that may create an account on their own. Anyone younger is added
+# by a parent or guardian from the Household section of their dashboard.
+MINOR_SELF_SIGNUP_AGE = 13
+
+# Children added without an email still need a unique one at the model level; see
+# accounts.utils.dependent_placeholder_email.
+DEPENDENT_EMAIL_DOMAIN = "dependent.invalid"
+
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -48,10 +56,16 @@ class CustomUser(AbstractUser):
 
     @property
     def needs_guardian_link(self):
-        """Minors not yet linked to a confirmed guardian can't independently sign waivers
-        or register for events. Always False for dependents, since they always have
-        parent_account set at creation."""
+        """A self-registered minor with no confirmed guardian. Nothing is blocked on this
+        directly (minors can never sign their own waiver, which is the real gate); it only
+        drives the guidance telling them to get linked. Always False for children a parent
+        added, since they have parent_account set at creation."""
         return self.age is not None and self.age < 18 and self.parent_account_id is None
+
+    @property
+    def has_real_email(self):
+        """False for children added without an email, who carry a placeholder address."""
+        return bool(self.email) and not self.email.endswith(f"@{DEPENDENT_EMAIL_DOMAIN}")
 
     # A registered parent account that can manage, register, and purchase event tickets for child accounts.
     parent_account = models.ForeignKey(

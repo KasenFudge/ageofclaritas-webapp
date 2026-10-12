@@ -143,6 +143,32 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 overflow-hidden">
+          <button @click="openFaq = openFaq === 11 ? null : 11" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
+            <span>How do I sign up my child?</span>
+            <svg :class="openFaq === 11 ? 'rotate-180' : ''"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="16"
+                 height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 class="text-slate-400 shrink-0 transition-transform">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div x-show="openFaq === 11" x-transition class="px-5 pb-4 text-sm text-slate-600 leading-relaxed">
+            Create your own account, then add any child under 18 from your dashboard (Household → Add a Child),
+            choosing a username and password they'll log in with. Their email is optional. Teens 13 and older can
+            also make their own account, but a parent or guardian has to add it to their household and sign the
+            liability waiver before they can attend. See the full steps
+            <a href="{% url 'core:junior_adventurers' %}#signing-up" class="text-navy-700 underline decoration-navy-300 hover:text-navy-900 hover:decoration-navy-500 transition-colors">here</a>.
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 overflow-hidden">
           <button @click="openFaq = openFaq === 6 ? null : 6" type="button" class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-bold text-slate-900 hover:bg-slate-50 transition-colors">
             <span>What do I wear?</span>
             <svg :class="openFaq === 6 ? 'rotate-180' : ''"

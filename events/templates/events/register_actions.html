@@ -1,0 +1,48 @@
+{% comment %}
+  Register buttons for event_detail.html. Expects `button_classes` and `chip_classes`
+  (the colour classes for this event type). Buttons are only shown when they'd work:
+  an ineligible viewer sees the age range instead, and only age-eligible children
+  get a chip. See EventDetailView.get_context_data for the context it reads.
+  Logged-out visitors are sent to log in and then back to this page (not straight to
+  the registration form), so a parent lands where their children's buttons are.
+{% endcomment %}
+{% if not user.is_authenticated %}
+  <a href="{% url 'login' %}?next={{ request.path|urlencode }}"
+     class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 text-center {{ button_classes }}">Log in to Register</a>
+  {% if event.age_range_label %}
+    <p class="text-left sm:text-right text-xs font-semibold text-slate-500">{{ event.age_range_label }}</p>
+  {% endif %}
+{% elif self_ineligible_reason %}
+  <span title="{{ self_ineligible_reason }}" class="inline-flex items-center justify-center rounded-xl bg-slate-200 px-5 py-3 text-sm font-bold text-slate-500 text-center">
+    {% if event.age_range_label %}
+      {{ event.age_range_label }} only
+    {% else %}
+      Not eligible
+    {% endif %}
+  </span>
+{% else %}
+  <a href="{% url 'events:register' slug=event.slug %}"
+     class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 text-center {{ button_classes }}">Register</a>
+{% endif %}
+
+{% if eligible_children %}
+  <div class="w-full sm:w-auto mt-2">
+    <p class="text-left sm:text-right text-xs font-semibold text-slate-500 mb-2">Register Children</p>
+    <div class="flex flex-wrap gap-2 sm:justify-end">
+      {% for child in eligible_children %}
+        <a href="{% url 'events:register_sub' slug=event.slug user_id=child.id %}" class="inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-medium text-white shadow-xs transition-colors {{ chip_classes }}">
+          {{ child.get_full_name|default:child.username }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% elif suggest_add_child %}
+  <a href="{% url 'accounts:dashboard' %}?open=household" class="text-sm font-semibold text-emerald-700 underline decoration-emerald-300 hover:text-emerald-900 hover:decoration-emerald-500 transition-colors">Add a child to your household →</a>
+{% endif %}
+
+{% if minor_waiver_note %}
+  <p class="max-w-xs text-left sm:text-right text-xs leading-relaxed text-amber-700">
+    {{ minor_waiver_note }}
+    <a href="{% url 'core:junior_adventurers' %}#signing-up" class="font-semibold underline">How it works</a>
+  </p>
+{% endif %}
