@@ -1,0 +1,18 @@
+<p>Hello,</p>
+<p>You asked for the username on your Age of Claritas account.</p>
+<p>Your username is: <strong>{{ user.username }}</strong></p>
+{% if children %}
+  <p>Your household's accounts:</p>
+  <ul>
+    {% for child in children %}
+      <li>{{ child.get_full_name|default:child.username }}: <strong>{{ child.username }}</strong></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+<p>
+  <a href="{{ protocol }}://{{ domain }}{% url 'accounts:login' %}">Log In</a>
+</p>
+<p>
+  Forgot your password too? <a href="{{ protocol }}://{{ domain }}{% url 'accounts:password_reset' %}">Reset it here</a>.
+</p>
+<p>If you did not request this, please ignore this email.</p>

@@ -1,5 +1,9 @@
 <p>Hi {{ user.username }},</p>
-<p>Thank you for registering! Please click the link below to verify your email address and activate your account:</p>
+{% if user.parent_account %}
+  <p>{{ user.parent_account }} created an Age of Claritas account for you. Your username is <strong>{{ user.username }}</strong>. Please click the link below to confirm your email address so you can log in:</p>
+{% else %}
+  <p>Thank you for registering! Please click the link below to verify your email address and activate your account:</p>
+{% endif %}
 <p>
   <a href="{{ protocol }}://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}">Verify My Account</a>
 </p>

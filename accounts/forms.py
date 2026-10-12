@@ -1,10 +1,11 @@
 from django import forms
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
-from django.db.models import Q
 from django.utils import timezone
 
-from .models import CustomUser
+from .models import MINOR_SELF_SIGNUP_AGE, CustomUser
 
 # Matches the same widget-styling convention used in events/forms.py — the classes
 # live on the widget itself so field_render.html never has to guess at markup.
@@ -54,6 +55,16 @@ class CustomSetPasswordForm(SetPasswordForm):
             self.fields[field].widget.attrs.update({"class": TEXT_INPUT_CLASSES})
 
 
+class UsernameRecoveryForm(forms.Form):
+    """Asks for the email on an account so its username (and its children's) can be emailed there."""
+
+    email = forms.EmailField(max_length=254, widget=forms.EmailInput(attrs={"autocomplete": "email"}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"].widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+
+
 class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -78,10 +89,10 @@ class CustomUserCreationForm(UserCreationForm):
         dob = self.cleaned_data["date_of_birth"]
         today = timezone.localdate()
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-        if age < 14:
+        if age < MINOR_SELF_SIGNUP_AGE:
             raise ValidationError(
-                "You must be at least 14 to create your own account. If you're under 14, "
-                "ask a parent or guardian to add you as a dependent from their account dashboard."
+                f"You must be at least {MINOR_SELF_SIGNUP_AGE} to create your own account. If you're younger, "
+                "a parent or guardian can create your account from theirs (Dashboard → Household)."
             )
         return dob
 
@@ -105,53 +116,158 @@ class AccountSettingsForm(forms.ModelForm):
             field.widget.attrs.update({"class": TEXT_INPUT_CLASSES})
 
 
-class AddDependentForm(forms.ModelForm):
-    """Lets a verified adult add a dependent (13 and under) profile from their
-    dashboard. No login is ever created for this profile — see add_dependent_view."""
+class ChildLoginForm(forms.Form):
+    """
+    The login half of a child's account: the username and password they sign in with,
+    plus an optional email of their own. Used directly when a parent edits an existing
+    child's login (or resets their password) from Household, and as the base of
+    AddChildForm when adding a new child.
+    """
 
-    class Meta:
-        model = CustomUser
-        fields = ["first_name", "last_name", "date_of_birth"]
-        widgets = {
-            "date_of_birth": forms.DateInput(attrs={"type": "date"}),
-        }
+    email = forms.EmailField(
+        required=False,
+        label="Their email (optional)",
+        help_text="If given, they confirm it before logging in. Emails about them always go to you as well.",
+    )
+    username = forms.CharField(
+        max_length=150,
+        required=False,
+        validators=[UnicodeUsernameValidator()],
+        help_text="What they'll log in with.",
+    )
+    password1 = forms.CharField(
+        label="Password",
+        required=False,
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+    )
+    password2 = forms.CharField(
+        label="Confirm password",
+        required=False,
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+    )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, child=None, **kwargs):
+        # `child` is the existing account being edited, or None when adding a new one.
+        self.child = child
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+        if child is not None and not self.is_bound:
+            self.initial.setdefault("username", child.username)
+            if child.has_real_email:
+                self.initial.setdefault("email", child.email)
 
+    @property
+    def password_required(self):
+        # Editing a child who already has a password can leave it blank to keep it.
+        return self.child is None or not self.child.has_usable_password()
 
-class GuardianLinkRequestForm(forms.Form):
-    """Lets a verified adult request to become the guardian of an existing teen
-    (14-17) account. The teen must approve before the link takes effect."""
+    def _other_users(self):
+        users = CustomUser.objects.all()
+        if self.child is not None:
+            users = users.exclude(pk=self.child.pk)
+        return users
 
-    identifier = forms.CharField(label="Teen's username or email", max_length=150)
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if email and self._other_users().filter(email__iexact=email).exists():
+            self.add_error("email", "That email is already used by another account.")
+        self._clean_login(cleaned_data)
+        return cleaned_data
 
-    def __init__(self, *args, requesting_user=None, **kwargs):
-        self.requesting_user = requesting_user
-        super().__init__(*args, **kwargs)
-        self.fields["identifier"].widget.attrs.update({"class": TEXT_INPUT_CLASSES})
+    def _clean_login(self, cleaned_data):
+        username = cleaned_data.get("username")
+        if not username:
+            if "username" not in self.errors:
+                self.add_error("username", "Choose a username for them to log in with.")
+        elif self._other_users().filter(username__iexact=username).exists():
+            self.add_error("username", "That username is already taken.")
 
-    def clean_identifier(self):
-        value = self.cleaned_data["identifier"].strip()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+        if not password1 and not password2:
+            if self.password_required:
+                self.add_error("password1", "Choose a password for them to log in with.")
+            return
+        if password1 != password2:
+            self.add_error("password2", "The two passwords don't match.")
+            return
+
+        # Checked against a stand-in so the similarity validator compares against their names too
+        candidate = self.child or CustomUser()
         try:
-            target = CustomUser.objects.get(Q(username__iexact=value) | Q(email__iexact=value))
-        except CustomUser.DoesNotExist:
-            raise ValidationError("No account found with that username or email.")
-        except CustomUser.MultipleObjectsReturned:
-            raise ValidationError("That identifier matches more than one account; use the exact username.")
+            password_validation.validate_password(
+                password1,
+                user=CustomUser(
+                    username=username or candidate.username,
+                    first_name=cleaned_data.get("first_name") or candidate.first_name,
+                    last_name=cleaned_data.get("last_name") or candidate.last_name,
+                    email=cleaned_data.get("email") or "",
+                ),
+            )
+        except ValidationError as error:
+            self.add_error("password1", error)
 
-        if target.id == self.requesting_user.id:
-            raise ValidationError("You cannot request yourself as a dependent.")
-        if not target.has_usable_password():
-            raise ValidationError("That account can't be linked this way.")
-        if target.age is not None and target.age >= 18:
-            raise ValidationError("Only minor accounts (under 18) can be linked via a guardian request.")
-        if target.parent_account_id is not None:
-            raise ValidationError(f"{target} already has a confirmed guardian on file.")
-        if target.pending_guardian_id is not None:
-            raise ValidationError(f"{target} already has a pending guardian request awaiting their response.")
 
-        self.target_user = target
-        return value
+class AddChildForm(ChildLoginForm):
+    """
+    The one way a parent or guardian adds a child under 18 to their household, always
+    with a login of their own. If the email entered already belongs to a teen who
+    registered by themselves, no new account is made: `link_target` is set instead and
+    the view sends that teen a guardian link request, so the other fields can be blank.
+    """
+
+    first_name = forms.CharField(max_length=150, required=False)
+    last_name = forms.CharField(max_length=150, required=False)
+    date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date"}))
+
+    field_order = ["first_name", "last_name", "date_of_birth", "email", "username", "password1", "password2"]
+
+    def __init__(self, *args, **kwargs):
+        # Shares the dashboard with the settings form, which has the same field names, so the
+        # ids need their own namespace for each label to point at the right input.
+        kwargs.setdefault("auto_id", "id_add_child_%s")
+        super().__init__(*args, **kwargs)
+        self.fields["email"].help_text = (
+            "If given, they confirm it before logging in. Already made their own account? "
+            "Enter its email and leave everything else blank to send them a link request."
+        )
+        self.link_target = None
+
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data.get("date_of_birth")
+        if dob is None:
+            return dob
+        today = timezone.localdate()
+        if dob > today:
+            raise ValidationError("Date of birth can't be in the future.")
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        if age >= 18:
+            raise ValidationError("Only children under 18 can be added. Adults need an account of their own.")
+        return dob
+
+    def clean(self):
+        # Skips ChildLoginForm.clean(): an existing email here means "link", not "taken".
+        cleaned_data = forms.Form.clean(self)
+
+        email = cleaned_data.get("email")
+        existing = CustomUser.objects.filter(email__iexact=email).first() if email else None
+        if existing is not None:
+            if existing.age is None or existing.age >= 18:
+                self.add_error("email", "That email belongs to an adult account, which can't be added as a child.")
+            elif existing.parent_account_id is not None:
+                self.add_error("email", f"{existing} is already linked to a parent or guardian.")
+            elif existing.pending_guardian_id is not None:
+                self.add_error("email", f"{existing} already has a guardian request waiting for their response.")
+            else:
+                self.link_target = existing
+            return cleaned_data
+
+        for name in ("first_name", "last_name", "date_of_birth"):
+            if not cleaned_data.get(name) and name not in self.errors:
+                self.add_error(name, "This field is required.")
+        self._clean_login(cleaned_data)
+        return cleaned_data

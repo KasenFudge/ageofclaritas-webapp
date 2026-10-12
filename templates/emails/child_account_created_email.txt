@@ -1,0 +1,9 @@
+Hi {{ parent.first_name|default:parent.username }},
+
+You've added {{ child.get_full_name|default:child.username }} to your Age of Claritas household. They log in with the username {{ child.username }} and the password you chose.
+{% if child.has_real_email %}
+We've sent a confirmation link to {{ child.email }}. They'll be able to log in once it's confirmed.
+{% endif %}
+You'll get a copy of every email we send about them. Don't forget to sign the liability waiver for them from your dashboard before their first event:
+
+{{ protocol }}://{{ domain }}{% url 'accounts:dashboard' %}?open=waiver

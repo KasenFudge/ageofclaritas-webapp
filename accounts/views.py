@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import Prefetch, Sum
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
@@ -20,11 +20,21 @@ from payments.models import PaymentStatus, Transaction
 from payments.services import get_outstanding_registrations
 from surveys.models import Survey
 
-from .forms import AccountSettingsForm, AddDependentForm, CustomUserCreationForm, GuardianLinkRequestForm
+from .forms import AccountSettingsForm, AddChildForm, ChildLoginForm, CustomUserCreationForm, UsernameRecoveryForm
 from .models import Waiver, WaiverSignature
-from .utils import dependent_placeholder_email, generate_unique_username, send_activation_email
+from .utils import (
+    dependent_placeholder_email,
+    minor_waiver_message,
+    send_activation_email,
+    send_child_account_created_email,
+    send_guardian_request_email,
+    send_username_reminder_email,
+)
 
 User = get_user_model()
+
+# Dashboard modals other pages may deep-link into with ?open=<name>
+DASHBOARD_MODALS = {"settings", "waiver", "household", "events", "billing", "surveys"}
 
 
 class UserRegistrationView(CreateView):
@@ -103,6 +113,28 @@ def resend_verification_email(request):
 
 def ratelimited_error(request, exception):
     return render(request, "accounts/ratelimited.html", status=429)
+
+
+def username_recovery_view(request):
+    form = UsernameRecoveryForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        if is_ratelimited(
+            request, group="accounts.username_recovery", key="ip", rate="5/h", method="POST", increment=True
+        ):
+            raise Ratelimited
+
+        user = User.objects.filter(email__iexact=form.cleaned_data["email"], is_active=True).first()
+        if user is not None and user.has_real_email:
+            send_username_reminder_email(request, user)
+
+        # Same response whether or not the email matched, so this can't be used to probe for accounts
+        return redirect("accounts:username_recovery_done")
+
+    return render(request, "accounts/username_recovery_form.html", {"form": form})
+
+
+def username_recovery_done(request):
+    return render(request, "accounts/username_recovery_done.html")
 
 
 def _build_dashboard_context(user):
@@ -202,17 +234,41 @@ def _build_dashboard_context(user):
         "can_manage_dependents": user.can_manage_dependents,
         "pending_guardian_requests_sent": list(user.pending_dependents.all()) if user.can_manage_dependents else [],
         "incoming_guardian_request": user.pending_guardian,
+        "minor_waiver_message": minor_waiver_message(user),
     }
+
+
+def _child_login_prefix(child):
+    # Every child's login form sits on the same page, so each needs its own field ids.
+    return f"child-{child.pk}"
+
+
+def _render_dashboard(request, open_modal=None, settings_form=None, add_child_form=None, child_login_form=None):
+    """
+    Renders the dashboard with fresh forms, swapping in whichever bound form failed
+    validation (and opening its modal) so the errors stay visible.
+    """
+    user = request.user
+    context = _build_dashboard_context(user)
+    context["settings_form"] = settings_form or AccountSettingsForm(instance=user)
+    context["add_child_form"] = add_child_form or AddChildForm()
+    context["child_logins"] = [
+        (
+            child,
+            child_login_form
+            if child_login_form is not None and child_login_form.child.pk == child.pk
+            else ChildLoginForm(child=child, prefix=_child_login_prefix(child)),
+        )
+        for child in context["dependents"]
+    ]
+    context["open_modal"] = open_modal
+    return render(request, "accounts/dashboard.html", context)
 
 
 @login_required
 def account_dashboard_view(request):
-    user = request.user
-    context = _build_dashboard_context(user)
-    context["settings_form"] = AccountSettingsForm(instance=user)
-    context["dependent_form"] = AddDependentForm()
-    context["guardian_link_form"] = GuardianLinkRequestForm()
-    return render(request, "accounts/dashboard.html", context)
+    open_modal = request.GET.get("open")
+    return _render_dashboard(request, open_modal=open_modal if open_modal in DASHBOARD_MODALS else None)
 
 
 @login_required
@@ -228,10 +284,7 @@ def update_account_settings_view(request):
     # Invalid submission: re-render the full dashboard directly (rather than
     # redirect) so the bound form + its errors survive, and force the
     # Settings modal open so the errors are actually visible.
-    context = _build_dashboard_context(request.user)
-    context["settings_form"] = form
-    context["open_modal"] = "settings"
-    return render(request, "accounts/dashboard.html", context)
+    return _render_dashboard(request, open_modal="settings", settings_form=form)
 
 
 @login_required
@@ -246,8 +299,9 @@ def sign_waiver_view(request):
     else:
         target_user = request.user
 
-    if target_user.needs_guardian_link:
-        messages.warning(request, f"{target_user} needs a confirmed guardian linked before signing a waiver.")
+    # Minors never sign for themselves; their parent or guardian signs on their behalf.
+    if target_user == request.user and (message := minor_waiver_message(target_user)):
+        messages.warning(request, message)
         return redirect("accounts:dashboard")
 
     # get_or_create rather than create: guards against a double-submit
@@ -261,72 +315,114 @@ def sign_waiver_view(request):
     return redirect("accounts:dashboard")
 
 
-@login_required
-@require_POST
-def add_dependent_view(request):
-    if not request.user.can_manage_dependents:
-        raise PermissionDenied("Only unlinked adult accounts can add dependents.")
-
-    form = AddDependentForm(request.POST)
-    if form.is_valid():
-        dependent = None
-        for _ in range(3):  # retry on a same-instant username collision from another parent
-            candidate = form.save(commit=False)
-            candidate.username = generate_unique_username(candidate.first_name, candidate.last_name)
-            candidate.email = dependent_placeholder_email(candidate.username)
-            candidate.set_unusable_password()
-            # Must never look like a pending-verification signup to delete_unverified_accounts.
-            candidate.is_active = True
-            candidate.parent_account = request.user
-            try:
-                candidate.save()
-                dependent = candidate
-                break
-            except ValidationError:
-                continue
-
-        if dependent is None:
-            messages.error(request, "Could not create the dependent profile, please try again.")
-            return redirect("accounts:dashboard")
-
-        messages.success(request, f"{dependent.get_full_name()} has been added to your household.")
-        return redirect("accounts:dashboard")
-
-    context = _build_dashboard_context(request.user)
-    context["settings_form"] = AccountSettingsForm(instance=request.user)
-    context["dependent_form"] = form
-    context["guardian_link_form"] = GuardianLinkRequestForm()
-    context["open_modal"] = "household"
-    return render(request, "accounts/dashboard.html", context)
+def _redirect_to_household():
+    return redirect(f"{reverse('accounts:dashboard')}?open=household")
 
 
 @login_required
 @require_POST
-def request_guardian_link_view(request):
+def add_child_view(request):
     if not request.user.can_manage_dependents:
-        raise PermissionDenied("Only unlinked adult accounts can request a guardian link.")
+        raise PermissionDenied("Only adult accounts can add children.")
 
-    form = GuardianLinkRequestForm(request.POST, requesting_user=request.user)
-    if form.is_valid():
-        target = form.target_user
+    form = AddChildForm(request.POST)
+    if not form.is_valid():
+        return _render_dashboard(request, open_modal="household", add_child_form=form)
+
+    if form.link_target is not None:
         # Re-check under a row lock to close the gap between form validation and this
         # save, in case two parents race to claim the same teen.
         with transaction.atomic():
-            target = User.objects.select_for_update().get(pk=target.pk)
-            if target.parent_account_id is not None or target.pending_guardian_id is not None:
-                messages.error(request, f"{target} is no longer available to request.")
-                return redirect("accounts:dashboard")
-            target.pending_guardian = request.user
-            target.save(update_fields=["pending_guardian"])
-        messages.success(request, f"Guardian request sent to {target}. They must approve it before the link is active.")
-        return redirect("accounts:dashboard")
+            teen = User.objects.select_for_update().get(pk=form.link_target.pk)
+            if teen.parent_account_id is not None or teen.pending_guardian_id is not None:
+                messages.error(request, f"{teen} is no longer available to link.")
+                return _redirect_to_household()
+            teen.pending_guardian = request.user
+            teen.save(update_fields=["pending_guardian"])
+        send_guardian_request_email(request, teen, request.user)
+        messages.success(
+            request,
+            f"{teen} already has an account, so we've sent them a request to link to you. "
+            "They'll join your household once they approve it from their dashboard.",
+        )
+        return _redirect_to_household()
 
-    context = _build_dashboard_context(request.user)
-    context["settings_form"] = AccountSettingsForm(instance=request.user)
-    context["dependent_form"] = AddDependentForm()
-    context["guardian_link_form"] = form
-    context["open_modal"] = "household"
-    return render(request, "accounts/dashboard.html", context)
+    data = form.cleaned_data
+    child = User(
+        first_name=data["first_name"],
+        last_name=data["last_name"],
+        date_of_birth=data["date_of_birth"],
+        username=data["username"],
+        parent_account=request.user,
+    )
+    child.set_password(data["password1"])
+    if data["email"]:
+        child.email = data["email"]
+        child.is_active = False  # Until they confirm the address, same as a normal signup
+    else:
+        child.email = dependent_placeholder_email(child.username)
+        child.is_active = True
+
+    try:
+        child.save()
+    except ValidationError:
+        # The username or email was taken between validation and save
+        form.add_error(None, "That username or email was just taken, please choose another.")
+        return _render_dashboard(request, open_modal="household", add_child_form=form)
+
+    send_child_account_created_email(request, child)
+    if data["email"]:
+        send_activation_email(request, child)
+        messages.success(
+            request,
+            f"{child.get_full_name()} has been added. We emailed {child.email} a confirmation link; "
+            f"once it's confirmed they can log in as {child.username}.",
+        )
+    else:
+        messages.success(request, f"{child.get_full_name()} has been added. They can log in now as {child.username}.")
+    return _redirect_to_household()
+
+
+@login_required
+@require_POST
+def update_child_login_view(request, user_id):
+    child = get_object_or_404(request.user.child_accounts.all(), id=user_id)
+    form = ChildLoginForm(request.POST, child=child, prefix=_child_login_prefix(child))
+    if not form.is_valid():
+        return _render_dashboard(request, open_modal="household", child_login_form=form)
+
+    data = form.cleaned_data
+    child.username = data["username"]
+    if data["password1"]:
+        child.set_password(data["password1"])
+
+    email_changed = False
+    if data["email"]:
+        if data["email"].lower() != child.email.lower():
+            child.email = data["email"]
+            child.is_active = False  # Until they confirm the new address
+            email_changed = True
+    else:
+        if child.has_real_email:
+            child.is_active = True  # Email removed, so there's nothing left to confirm
+        child.email = dependent_placeholder_email(child.username)
+
+    try:
+        child.save()
+    except ValidationError:
+        form.add_error(None, "That username or email was just taken, please choose another.")
+        return _render_dashboard(request, open_modal="household", child_login_form=form)
+
+    if email_changed:
+        send_activation_email(request, child)
+        messages.success(
+            request,
+            f"Updated {child.get_full_name()}'s login. We emailed {child.email} a confirmation link; "
+            "they can log in once it's confirmed.",
+        )
+    else:
+        messages.success(request, f"Updated {child.get_full_name()}'s login.")
+    return _redirect_to_household()
 
 
 @login_required

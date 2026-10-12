@@ -1,6 +1,6 @@
 Hi {{ user.username }},
 
-Thank you for registering! Please click the link below to verify your email address and activate your account:
+{% if user.parent_account %}{{ user.parent_account }} created an Age of Claritas account for you. Your username is {{ user.username }}. Please click the link below to confirm your email address so you can log in:{% else %}Thank you for registering! Please click the link below to verify your email address and activate your account:{% endif %}
 
 {{ protocol }}://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
 

@@ -108,6 +108,30 @@ class Event(models.Model):
             return self.event_image.url
         return static("images/AoCEventBackgroundDefault.png")
 
+    @property
+    def age_range_label(self) -> str:
+        """Short label for who may attend, shown in place of a Register button that wouldn't work."""
+        return {EventType.JUNIOR: "Ages 8–17", EventType.SENIOR: "Ages 18+"}.get(self.event_type, "")
+
+    def age_ineligibility_reason(self, user):
+        """
+        Why `user` is too young or too old to attend, or None if they're eligible.
+        Ages are taken on the local event date, not UTC: an evening start in UTC is
+        already the next day.
+        """
+        if not user.date_of_birth:
+            return f"Birthdate required to register {user}."
+
+        age = user.age_on(timezone.localdate(self.start_time))
+        if self.event_type == EventType.JUNIOR:
+            if age < 8:
+                return f"{user} must be 8 or older to register."
+            if age >= 18:
+                return f"Junior events are only for participants under 18 ({user} is {age})."
+        if self.event_type == EventType.SENIOR and age < 18:
+            return f"Senior events are only for participants 18+ ({user} is {age})."
+        return None
+
     def __str__(self):
         # Admin backend panel always sees the actual operational text layout
         return f"{self.title} ({self.get_event_type_display()})"
