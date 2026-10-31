@@ -127,7 +127,7 @@ class ChildLoginForm(forms.Form):
     email = forms.EmailField(
         required=False,
         label="Their email (optional)",
-        help_text="If given, they confirm it before logging in. Emails about them always go to you as well.",
+        help_text="If given, they will receive a confirmation email to confirm the email address. Emails about them are sent to you as well.",
     )
     username = forms.CharField(
         max_length=150,
