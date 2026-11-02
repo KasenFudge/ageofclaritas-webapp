@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -10,15 +11,18 @@ User = get_user_model()
 class Command(BaseCommand):
     help = (
         "Deletes accounts that registered but never verified their email within the "
-        "given time window (default 24 hours). Verified/active accounts are never touched."
+        "given time window (default: as long as a verification link lasts). Verified/active "
+        "accounts are never touched."
     )
 
     def add_arguments(self, parser):
+        # Matches the verification link lifetime, so no account is deleted while its link still works.
+        default_hours = settings.ACCOUNT_ACTIVATION_TIMEOUT / 3600
         parser.add_argument(
             "--hours",
             type=float,
-            default=24,
-            help="Age threshold in hours since registration (default: 24).",
+            default=default_hours,
+            help=f"Age threshold in hours since registration (default: {default_hours:g}).",
         )
         parser.add_argument(
             "--dry-run",

@@ -22,6 +22,7 @@ from surveys.models import Survey
 
 from .forms import AccountSettingsForm, AddChildForm, ChildLoginForm, CustomUserCreationForm, UsernameRecoveryForm
 from .models import Waiver, WaiverSignature
+from .tokens import account_activation_token
 from .utils import (
     dependent_placeholder_email,
     minor_waiver_message,
@@ -79,8 +80,11 @@ def activate_account(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
-    # Verify the token
-    if user is not None and default_token_generator.check_token(user, token):
+    # Verify the token. Links emailed before activation tokens got their own week-long
+    # generator were made with default_token_generator, so keep accepting those while they last.
+    if user is not None and (
+        account_activation_token.check_token(user, token) or default_token_generator.check_token(user, token)
+    ):
         user.is_active = True
         user.save()
         messages.success(request, "Your account has been successfully verified! You can now log in.")
@@ -101,7 +105,9 @@ def resend_verification_email(request):
 
             # Use the same email logic we created earlier
             send_activation_email(request, user)
-            messages.success(request, "Verification email resent! Please check your inbox.")
+            messages.success(
+                request, "Verification email resent! Please check your inbox, and your spam or junk folder too."
+            )
         except User.DoesNotExist:
             messages.error(request, "No account found with that email address.")
 

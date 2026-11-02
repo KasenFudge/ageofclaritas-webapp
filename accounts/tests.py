@@ -1,9 +1,12 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from io import StringIO
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
 from django.core.cache import cache
+from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -12,6 +15,7 @@ from django.utils.http import urlsafe_base64_encode
 
 from .forms import AddChildForm, ChildLoginForm, CustomUserCreationForm
 from .models import Waiver, WaiverSignature
+from .tokens import account_activation_token
 from .utils import dependent_placeholder_email, email_recipients, minor_waiver_message, send_to_household
 
 User = get_user_model()
@@ -140,7 +144,7 @@ class AddChildViewTests(TestCase):
         self.assertIn("parent created an Age of Claritas account for you", activation.body)
 
         uid = urlsafe_base64_encode(force_bytes(child.pk))
-        token = default_token_generator.make_token(child)
+        token = account_activation_token.make_token(child)
         self.client.get(reverse("accounts:activate", args=[uid, token]))
         self.assertTrue(self.client.login(username="robin", password=PASSWORD))
 
@@ -323,3 +327,50 @@ class UsernameRecoveryTests(TestCase):
         make_user("pending", is_active=False)
         self.recover("pending@example.test")
         self.assertEqual(mail.outbox, [])
+
+
+class ActivationWindowTests(TestCase):
+    """Verification links and unverified signups both last a week, while password reset links stay at a day."""
+
+    def setUp(self):
+        self.user = make_user("newbie", is_active=False)
+        self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+
+    def activate(self, token):
+        self.client.get(reverse("accounts:activate", args=[self.uid, token]))
+        self.user.refresh_from_db()
+        return self.user.is_active
+
+    def later(self, generator, days):
+        return patch.object(generator, "_now", return_value=datetime.now() + timedelta(days=days))
+
+    def test_link_still_works_after_six_days(self):
+        token = account_activation_token.make_token(self.user)
+        with self.later(account_activation_token, 6):
+            self.assertTrue(self.activate(token))
+
+    def test_link_expires_after_a_week(self):
+        token = account_activation_token.make_token(self.user)
+        with self.later(account_activation_token, 8):
+            self.assertFalse(self.activate(token))
+
+    def test_links_sent_before_the_change_still_work(self):
+        self.assertTrue(self.activate(default_token_generator.make_token(self.user)))
+
+    def test_password_reset_links_still_expire_after_a_day(self):
+        self.user.is_active = True
+        token = default_token_generator.make_token(self.user)
+        with self.later(default_token_generator, 2):
+            self.assertFalse(default_token_generator.check_token(self.user, token))
+
+    def test_activation_tokens_cannot_reset_passwords(self):
+        self.assertFalse(default_token_generator.check_token(self.user, account_activation_token.make_token(self.user)))
+
+    def test_cleanup_keeps_unverified_signups_for_a_week(self):
+        User.objects.filter(pk=self.user.pk).update(date_joined=timezone.now() - timedelta(days=3))
+        stale = make_user("stale", is_active=False)
+        User.objects.filter(pk=stale.pk).update(date_joined=timezone.now() - timedelta(days=8))
+
+        call_command("delete_unverified_accounts", stdout=StringIO())
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(User.objects.filter(pk=stale.pk).exists())

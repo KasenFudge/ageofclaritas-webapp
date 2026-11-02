@@ -202,9 +202,13 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "core:index"
 LOGOUT_REDIRECT_URL = "core:index"
 
-# Governs both password-reset links and account-activation links, so that
-# they expire after 24 hours.
+# Password-reset links expire after 24 hours.
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
+
+# Email verification links last a week (see accounts.tokens), and unverified signups are
+# kept just as long before delete_unverified_accounts removes them, so a verification
+# email that landed in spam can still be used days later.
+ACCOUNT_ACTIVATION_TIMEOUT = 60 * 60 * 24 * 7
 
 # ==========================================
 # EMAIL CONFIGURATION (RESEND)

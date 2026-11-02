@@ -10,7 +10,17 @@
         </svg>
       </div>
       <h1 class="text-2xl font-serif font-bold text-slate-900 mb-4">Registration Successful!</h1>
-      <p class="text-sm text-center text-slate-600 mb-6 leading-relaxed">Please check your email to verify your account.</p>
+      <p class="text-sm text-center text-slate-600 mb-4 leading-relaxed">
+        We've sent a verification link to{% if user_email %} <span class="font-semibold text-slate-900">{{ user_email }}</span>{% else %} your email{% endif %}.
+        Click it within 7 days to activate your account.
+      </p>
+      <div class="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 mb-6 text-left">
+        <p class="text-sm text-amber-800 leading-relaxed">
+          <span class="font-semibold">Don't see it?</span> Check your spam or junk folder. If it's there, mark it
+          "Not spam" and add <span class="font-semibold">info@ageofclaritas.com</span> to your contacts so our
+          emails reach your inbox.
+        </p>
+      </div>
 
       <!-- Community Discord CTA -->
       <a href="https://discord.gg/ufntthBSDB" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 text-sm uppercase tracking-wide transition-colors">
@@ -30,7 +40,7 @@
       <form action="{% url 'accounts:resend_verification' %}" method="post" class="mt-8 border-t border-slate-100 pt-6">
         {% csrf_token %}
         <input type="hidden" name="email" value="{{ user_email }}" />
-        <p class="text-xs text-slate-400 mb-4">Didn't receive the email?</p>
+        <p class="text-xs text-slate-400 mb-4">Still nothing after checking spam?</p>
         <button type="submit" class="w-full rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3 text-sm uppercase tracking-wide transition-colors">Resend Verification Email</button>
       </form>
     </div>
