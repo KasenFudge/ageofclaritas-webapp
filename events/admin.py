@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django import forms
 from django.contrib import admin
 from django.db import models
@@ -80,6 +82,39 @@ class WeaponRentalFilter(admin.SimpleListFilter):
         return queryset
 
 
+class UpcomingEventFilter(admin.RelatedFieldListFilter):
+    """Event filter for registrations that only offers events that haven't ended yet."""
+
+    def field_choices(self, field, request, model_admin):
+        events = Event.objects.filter(end_time__gte=timezone.now()).order_by("start_time")
+        return [(event.pk, str(event)) for event in events]
+
+
+class UpcomingStartTimeFilter(admin.SimpleListFilter):
+    """Start-time filter that only offers future date ranges."""
+
+    title = "start time"
+    parameter_name = "upcoming"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("7", "Next 7 days"),
+            ("30", "Next 30 days"),
+            ("90", "Next 90 days"),
+            ("all", "All upcoming"),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if not value:
+            return queryset
+        now = timezone.now()
+        queryset = queryset.filter(end_time__gte=now)
+        if value != "all":
+            queryset = queryset.filter(start_time__lte=now + timedelta(days=int(value)))
+        return queryset
+
+
 # ==========================================
 # ADMIN REGISTRATIONS
 # ==========================================
@@ -98,7 +133,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         "payment_status_display",
         "checked_in",
     ]
-    list_filter = ["event", "checked_in", WeaponRentalFilter, "declared_arrival_time"]
+    list_filter = [("event", UpcomingEventFilter), "checked_in", WeaponRentalFilter, "declared_arrival_time"]
     search_fields = ["user__username", "user__first_name", "user__last_name", "event__title"]
     ordering = ["declared_arrival_time", "user__last_name", "user__first_name"]
     list_per_page = 50
@@ -261,5 +296,5 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
     inlines = [PriceTierInline, EventRegistrationInline, EventMediaInline]
-    list_filter = ["event_type", "start_time"]
+    list_filter = ["event_type", UpcomingStartTimeFilter]
     search_fields = ["title", "description", "location"]
