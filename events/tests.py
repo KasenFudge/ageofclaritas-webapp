@@ -67,7 +67,9 @@ def make_registration(event, user, final_price_cents=5000, **extra):
     )
 
 
-def quote(event, user, registration_time=None, arrival_time=None, student=False, rental=False, promo_code=""):
+def quote(
+    event, user, registration_time=None, arrival_time=None, student=False, rental=False, promo_code="", saturday_only=False
+):
     return quote_price(
         event=event,
         user=user,
@@ -76,6 +78,7 @@ def quote(event, user, registration_time=None, arrival_time=None, student=False,
         student_discount=student,
         weapon_rental=rental,
         promo_code=promo_code,
+        saturday_only=saturday_only,
     )
 
 
@@ -178,6 +181,24 @@ class StandardDiscountTests(TestCase):
         self.assert_late_arrival(EventType.SENIOR, timedelta(hours=6), "late_arrival_saturday", 500)
         self.assert_late_arrival(EventType.SENIOR, timedelta(days=1), "late_arrival_sunday", 1500)
         self.assert_late_arrival(EventType.SENIOR, timedelta(hours=5), None, 0)
+
+    def test_saturday_only_discount(self):
+        for event_type, cents in ((EventType.JUNIOR, 1500), (EventType.SENIOR, 1000)):
+            event = make_event(event_type=event_type)
+            q = quote(event, self.veteran, registration_time=event.start_time - timedelta(days=3), saturday_only=True)
+            self.assertEqual(discount_types(q), ["saturday_only"])
+            self.assertEqual(q.discounts[0]["amount_cents"], cents)
+
+    def test_saturday_only_replaces_late_saturday_arrival(self):
+        event = make_event(event_type=EventType.SENIOR)
+        q = quote(
+            event,
+            self.veteran,
+            registration_time=event.start_time - timedelta(days=3),
+            arrival_time=event.start_time + timedelta(hours=6),
+            saturday_only=True,
+        )
+        self.assertEqual(discount_types(q), ["saturday_only"])
 
     def test_student_discount_senior_only(self):
         senior = make_event(event_type=EventType.SENIOR)
@@ -432,6 +453,27 @@ class EventRegistrationFormTests(TestCase):
         self.event = make_event()
         self.veteran = make_user("vet", is_veteran=True)
         self.newcomer = make_user("newcomer")
+
+    def test_main_event_fields_only_on_junior_and_senior_events(self):
+        for event_type, expected in ((EventType.SENIOR, True), (EventType.JUNIOR, True), (EventType.FEAST, False)):
+            form = EventRegistrationForm(event=make_event(event_type=event_type), user=self.veteran)
+            self.assertEqual("weapon_rental" in form.fields, expected)
+            self.assertEqual("saturday_only" in form.fields, expected)
+
+    def test_payment_method_skipped_for_free_events(self):
+        free = EventRegistrationForm(event=make_event(base_price_cents=0), user=self.veteran)
+        paid = EventRegistrationForm(event=self.event, user=self.veteran)
+        self.assertNotIn("payment_method", free.fields)
+        self.assertIn("payment_method", paid.fields)
+
+    def test_saturday_only_rejected_with_sunday_arrival(self):
+        form = EventRegistrationForm(
+            data=form_data(self.event, day_offset=1, saturday_only="on", is_first_event="False"),
+            event=self.event,
+            user=self.veteran,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("saturday_only", form.errors)
 
     def test_arrival_date_choices_cover_every_event_day(self):
         form = EventRegistrationForm(event=self.event, user=self.veteran)

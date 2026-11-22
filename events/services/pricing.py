@@ -13,6 +13,14 @@ class PromoCodeError(Exception):
     pass
 
 
+# Attendance-based discounts in cents, by event type: arriving Sunday, arriving Saturday after 3 PM,
+# and declaring Saturday-only attendance.
+ATTENDANCE_DISCOUNT_CENTS = {
+    EventType.JUNIOR: {"sunday": 2000, "saturday_only": 1500, "saturday_late": 1000},
+    EventType.SENIOR: {"sunday": 1500, "saturday_only": 1000, "saturday_late": 500},
+}
+
+
 # Holds all of the logic for pricing for events.
 @dataclass(frozen=True)
 class PriceQuote:
@@ -61,7 +69,7 @@ def attendee_price(event, user):
 
 # Creates a PriceQuote object for the user and applies discounts/additional items.
 def quote_price(
-    *, event, user, registration_time, arrival_time, student_discount, weapon_rental, promo_code=""
+    *, event, user, registration_time, arrival_time, student_discount, weapon_rental, promo_code="", saturday_only=False
 ) -> PriceQuote:
     # Initialize defaults for price information
     discounts: list[dict] = []
@@ -133,47 +141,39 @@ def quote_price(
             additional_items.append({"type": "weapon_rental", "amount_cents": 2000, "reason": "Weapon Rental"})
 
         # Process Type-Specific Rules
-        if event.event_type == EventType.JUNIOR:
-            if arrival_time:
-                local_arrival = timezone.localtime(arrival_time)
-                # weekday() returns 5 for Saturday, 6 for Sunday
-                if local_arrival.weekday() == 6:
-                    discounts.append(
-                        {
-                            "type": "late_arrival_sunday",
-                            "amount_cents": 2000,
-                            "reason": "Late Arrival Discount (Sunday-Only Attendance)",
-                        }
-                    )
-                elif local_arrival >= late_arrival_cutoff_sat:
-                    discounts.append(
-                        {
-                            "type": "late_arrival_saturday",
-                            "amount_cents": 1000,
-                            "reason": "Late Arrival Discount (Saturday after 3:00 PM)",
-                        }
-                    )
+        if event.event_type in ATTENDANCE_DISCOUNT_CENTS:
+            amounts = ATTENDANCE_DISCOUNT_CENTS[event.event_type]
+            local_arrival = timezone.localtime(arrival_time) if arrival_time else None
 
-        elif event.event_type == EventType.SENIOR:
-            if arrival_time:
-                local_arrival = timezone.localtime(arrival_time)
-                if local_arrival.weekday() == 6:
-                    discounts.append(
-                        {
-                            "type": "late_arrival_sunday",
-                            "amount_cents": 1500,
-                            "reason": "Late Arrival Discount (Sunday-Only Attendance)",
-                        }
-                    )
-                elif local_arrival >= late_arrival_cutoff_sat:
-                    discounts.append(
-                        {
-                            "type": "late_arrival_saturday",
-                            "amount_cents": 500,
-                            "reason": "Late Arrival Discount (Saturday after 3:00 PM)",
-                        }
-                    )
+            # weekday() returns 5 for Saturday, 6 for Sunday
+            if local_arrival and local_arrival.weekday() == 6:
+                discounts.append(
+                    {
+                        "type": "late_arrival_sunday",
+                        "amount_cents": amounts["sunday"],
+                        "reason": "Late Arrival Discount (Sunday-Only Attendance)",
+                    }
+                )
+            # Saturday-only is declared (there's no departure time to infer it from) and replaces the late
+            # Saturday arrival discount rather than stacking with it.
+            elif saturday_only:
+                discounts.append(
+                    {
+                        "type": "saturday_only",
+                        "amount_cents": amounts["saturday_only"],
+                        "reason": "Saturday-Only Attendance Discount",
+                    }
+                )
+            elif local_arrival and local_arrival >= late_arrival_cutoff_sat:
+                discounts.append(
+                    {
+                        "type": "late_arrival_saturday",
+                        "amount_cents": amounts["saturday_late"],
+                        "reason": "Late Arrival Discount (Saturday after 3:00 PM)",
+                    }
+                )
 
+        if event.event_type == EventType.SENIOR:
             if student_discount:
                 discounts.append({"type": "student_discount", "amount_cents": 500, "reason": "Active Student Discount"})
 

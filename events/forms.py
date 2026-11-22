@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from payments.models import normalize_code
 
-from .models import EventRegistration
+from .models import EventRegistration, EventType
 
 # Shared Tailwind widget styling. Defined once here so every widget stays visually
 # consistent without field_render.html needing to guess at or reach into rendered HTML.
@@ -83,6 +83,13 @@ class EventRegistrationForm(forms.ModelForm):
         label="AM/PM",
     )
 
+    saturday_only = forms.BooleanField(
+        label="I will only be attending on Saturday",
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASSES}),
+        help_text="Leaving after Saturday night? Check this to get the Saturday-only discount.",
+    )
+
     weapon_rental = forms.BooleanField(
         label="I need to rent weapons for this event",
         required=False,
@@ -136,6 +143,15 @@ class EventRegistrationForm(forms.ModelForm):
         if self.user is not None and getattr(self.user, "is_veteran", False):
             del self.fields["is_first_event"]
 
+        # Weapon rentals and attendance-based discounts only apply to the main (Junior/Senior) events.
+        if self.event is not None and self.event.event_type not in (EventType.JUNIOR, EventType.SENIOR):
+            del self.fields["weapon_rental"]
+            del self.fields["saturday_only"]
+
+        # Nothing to pay for on a free event, so don't ask how they plan to pay.
+        if self.event is not None and self.event.base_price_cents == 0:
+            del self.fields["payment_method"]
+
         # The arrival date dropdown only offers days the event is actually happening --
         # has to be (re)built on every instantiation, not just when unbound, since
         # ChoiceField validates submitted values against self.fields[...].choices.
@@ -185,6 +201,13 @@ class EventRegistrationForm(forms.ModelForm):
                 self.add_error("arrival_date", "Please choose an hour, minute, and AM/PM for your arrival time.")
 
         cleaned_data["declared_arrival_time"] = declared_arrival_time
+
+        # Saturday-only contradicts a Sunday arrival, so don't let the two be combined.
+        if cleaned_data.get("saturday_only") and declared_arrival_time:
+            if timezone.localtime(declared_arrival_time).weekday() == 6:
+                self.add_error(
+                    "saturday_only", "You can't attend Saturday only and also arrive on Sunday. Please fix one of them."
+                )
 
         # Bounds Validation: Verify the entire timestamp fits cleanly inside the event window
         if declared_arrival_time and self.event:

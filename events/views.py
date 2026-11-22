@@ -137,6 +137,7 @@ def event_registration_view(request, slug, user_id=None):
                     arrival_time=declared_arrival_time,
                     student_discount=student_discount,
                     weapon_rental=weapon_rental,
+                    saturday_only=form.cleaned_data.get("saturday_only", False),
                     promo_code=form.cleaned_data.get("promo_code", ""),
                 )
 
