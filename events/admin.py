@@ -196,6 +196,10 @@ class EventRegistrationAdmin(admin.ModelAdmin):
         ),
     )
 
+    # Only show registrations whose event hasn't ended yet (same rule as UpcomingEventFilter)
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(event__end_time__gte=timezone.now())
+
     @admin.display(ordering="declared_arrival_time", description="Scheduled Arrival")
     def formatted_arrival_time(self, obj):
         # declared_arrival_time is stored in UTC (USE_TZ=True) — strftime() on the raw
